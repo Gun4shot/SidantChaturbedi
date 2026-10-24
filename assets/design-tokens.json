@@ -1,0 +1,19 @@
+{
+  "color": {
+    "ink": "#183B3C",
+    "mist": "#B9DEDD",
+    "paper": "#FFF7DC",
+    "sun": "#F5B94C",
+    "coral": "#EE8063",
+    "forest": "#275B4B"
+  },
+  "type": {
+    "display": "Yomogi, Segoe Print, cursive",
+    "body": "DM Sans, system-ui, sans-serif"
+  },
+  "motion": {
+    "openingScrollLength": "460vh",
+    "easing": "scroll-linked",
+    "reducedMotionScrollLength": "240vh"
+  }
+}

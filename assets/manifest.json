@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "opening-sky",
+      "source": "assets/source/sky.png",
+      "export": "public/art/sky.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "provenance": "Generated for this portfolio with OpenAI image generation on 2026-10-19.",
+      "license": "project-generated",
+      "qa": "prototype-approved"
+    },
+    {
+      "id": "riverbank-ground",
+      "source": "assets/source/ground.png",
+      "export": "public/art/ground.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "provenance": "Generated for this portfolio with OpenAI image generation on 2026-10-19, using opening-sky as visual reference.",
+      "license": "project-generated",
+      "qa": "prototype-approved"
+    },
+    {
+      "id": "temporary-character",
+      "source": "assets/source/portrait.png",
+      "export": "public/art/portrait.webp",
+      "kind": "generated-character-study",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "provenance": "Generated for this portfolio with OpenAI image generation on 2026-10-19. Fictional person; not a likeness of Siddhant.",
+      "license": "project-generated",
+      "qa": "temporary-placeholder"
+    },
+    {
+      "id": "project-meadow-v2",
+      "source": "assets/source/project-meadow-v2.png",
+      "export": "public/art/project-meadow-v2.png",
+      "kind": "generated-collage-art",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Generated with OpenAI image generation on 2026-10-22; exact prompts in docs/meadow-book-v2-art.md",
+      "license": "project-generated",
+      "qa": "visually-inspected"
+    },
+    {
+      "id": "project-flowers-v2",
+      "source": "assets/source/project-flowers-v2.png",
+      "export": "public/art/project-flowers-v2.png",
+      "kind": "generated-collage-art",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "provenance": "Generated with OpenAI image generation on 2026-10-22; exact prompts in docs/meadow-book-v2-art.md",
+      "license": "project-generated",
+      "qa": "visually-inspected"
+    },
+    {
+      "id": "project-butterfly-v2",
+      "source": "assets/source/project-butterfly-v2.png",
+      "export": "public/art/project-butterfly-v2.png",
+      "kind": "generated-collage-art",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "provenance": "Generated with OpenAI image generation on 2026-10-22; exact prompts in docs/meadow-book-v2-art.md",
+      "license": "project-generated",
+      "qa": "visually-inspected"
+    },
+    {
+      "id": "journal-cover-v2",
+      "source": "assets/source/journal-cover-v2.png",
+      "export": "public/art/journal-cover-v2.png",
+      "kind": "generated-collage-art",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "provenance": "Generated with OpenAI image generation on 2026-10-22; exact prompts in docs/meadow-book-v2-art.md",
+      "license": "project-generated",
+      "qa": "visually-inspected"
+    }
+  ]
+}
