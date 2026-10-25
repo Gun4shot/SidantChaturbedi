@@ -40,8 +40,8 @@ const HonorsJourney = forwardRef<HonorsHandle, { staticMode: boolean; onTravel(p
     style.setProperty('--grove-breath', `${Math.sin(time*.27)*.6}deg`)
     crane.current.style.width='384px'
     crane.current.style.opacity=String(pose.craneOpacity)
-    const flutter=pose.wing*5
-    crane.current.style.setProperty('--wing-fold',`${pose.wing*13}deg`)
+    const flutter=pose.wing*1.5
+    crane.current.style.setProperty('--wing-fold',`${pose.wing*10}deg`)
     crane.current.style.transform=`translate3d(${pose.x}px,${pose.y}px,0) translate(-45%,-58%) rotate(${pose.rotation+flutter}deg) scale(${pose.size/384})`
     ornaments.current.forEach((el,i)=>{if(el)el.style.setProperty('--sway',`${Math.sin(time*.8+i*1.8)*(i===selected?1.1:2.2)*(1-departure.release)}deg`)})
     return anchor.current

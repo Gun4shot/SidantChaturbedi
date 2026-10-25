@@ -7,6 +7,7 @@ export const publications = [
     venue:'Geomatics, Natural Hazards and Risk · 17(1)',authors:'Sidant Chaturbedi, Basu Dev Ghimire & Sandesh Singh',
     detail:'Published 17 August 2026. I contributed methodology, software, analysis, visualization and writing. The study combines seasonal backscatter contrasts with anomaly detection across monsoon-affected road corridors.',
     tags:['Sentinel-1 SAR','Python','Geospatial analysis'],
+    figure:'/art/sentinel-road-vulnerability-figure.png',figureAlt:'Dual-polarimetric anomaly map for Sindhuli from the Sentinel-1 road vulnerability study.',figureCaption:'Published study figure · Sindhuli anomaly map, June–September 2025.',
     links:[{label:'Read the paper',url:'https://doi.org/10.1080/19475705.2026.2719295'},{label:'Code & figures',url:'https://github.com/Gun4shot/Sentinal-1-SAR-framework'}]},
   { id:'graphs',short:'Roads as networks',category:'02 / GRAPH LEARNING',status:'Submitted manuscript',
     title:'Graph-attention road surface classification',

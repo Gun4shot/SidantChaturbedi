@@ -243,7 +243,7 @@ test('scenery blends gradually across the bird flight', () => {
       for(const value of Object.values(pose)) assert.ok(Number.isFinite(value))
       if(pose.blend>0&&pose.blend<1) {
         assert.ok(pose.blend>=0 && pose.blend<=1)
-        assert.ok(pose.size<=w*1.601)
+        assert.ok(pose.size<=w*2.051)
       }
     }
     const end=honorsFlight(2.14,w,h)
@@ -300,7 +300,7 @@ test('bird passage stays sharp and crosses its close-up within a short scroll sp
     for(let p=FLIGHT_START;p<GROVE_SETTLED;p+=.0001) {
       const pose=honorsFlight(p,w,h)
       assert.ok(!Object.hasOwn(pose,'blur')); assert.ok(!Object.hasOwn(pose,'paper'))
-      assert.ok(pose.size<=w*1.601)
+      assert.ok(pose.size<=w*2.051)
       if(pose.blend>.01 && pose.blend<.99) blendSpan+=.0001
     }
     assert.ok(blendSpan>.1,'scenery changes over a broad continuous scroll span')
@@ -312,7 +312,7 @@ test('bird passage stays sharp and crosses its close-up within a short scroll sp
 
 import { publicationMotion, LIBRARY_START, LIBRARY_END } from '../src/publication-motion.ts'
 import { publications } from '../src/publications.ts'
-test('library fall is continuous, reversible, and keeps the medal aligned with its floor',()=>{
+test('library fall is continuous, reversible, and keeps the medal aligned with its desk surface',()=>{
   for(const [w,h] of [[1280,720],[390,844]]){
     const anchor={x:w*.55,y:h*.55,size:80}
     const start=publicationMotion(LIBRARY_START,w,h,anchor)
@@ -320,7 +320,8 @@ test('library fall is continuous, reversible, and keeps the medal aligned with i
     assert.equal(start.release,0);assert.equal(start.blend,0)
     const finish=publicationMotion(LIBRARY_END,w,h,anchor)
     assert.equal(finish.blend,1);assert.equal(finish.ui,1);assert.equal(finish.blur,0)
-    assert.ok(Math.abs(finish.y+finish.size*(.36/.74)*finish.scaleY-finish.floor)<1e-8)
+    assert.ok(Math.abs(finish.y+finish.size*(.36/.74)*finish.scaleY-finish.tableY)<1e-8)
+    assert.equal(finish.deskScale,1)
     for(const t of [0,.04,.08,.15,.34,.37,.40,.59,.60,.64,.68,.70,.76,.78,.80,.82,.86,.87,.90,.91,.96,.98,1]){
       const p=LIBRARY_START+t*(LIBRARY_END-LIBRARY_START)
       const a=publicationMotion(p-1e-8,w,h,anchor),b=publicationMotion(p+1e-8,w,h,anchor)
@@ -333,6 +334,7 @@ test('library fall is continuous, reversible, and keeps the medal aligned with i
 test('library distinguishes publication, submission and ongoing work and keeps public resource links',()=>{
   assert.match(publications[0].status,/Published/)
   assert.ok(publications[0].links.some(l=>l.url==='https://doi.org/10.1080/19475705.2026.2719295'))
+  assert.equal(publications[0].figure,'/art/sentinel-road-vulnerability-figure.png')
   assert.match(publications[1].status,/Submitted/);assert.match(publications[2].status,/Ongoing/)
   assert.equal(publications[1].links.length,0);assert.equal(publications[2].links.length,0)
 })

@@ -20,7 +20,7 @@ const LibraryJourney=forwardRef<LibraryHandle,{staticMode:boolean;onTravel(p:num
     s.setProperty('--fall-streaks',String(m.streaks));s.setProperty('--streak-offset',`${m.t*150}%`)
     blur.current?.setAttribute('stdDeviation',`0 ${m.blur}`)
     if(medal.current){medal.current.style.opacity=String(m.release);medal.current.style.width=`${m.size/.74}px`;medal.current.style.transform=`translate3d(${m.x}px,${m.y}px,0) translate(-50%,-55%) rotate(${m.spin}deg) scaleY(${m.scaleY})`}
-    if(shadow.current){shadow.current.style.opacity=String(m.shadow*.5);shadow.current.style.transform=`translate(${m.x}px,${m.floor}px) translate(-50%,-50%) scale(${m.size/100})`}
+    if(shadow.current){shadow.current.style.opacity=String(m.shadow*.5);shadow.current.style.transform=`translate(${m.x}px,${m.tableY}px) translate(-50%,-50%) scale(${m.size/100})`}
   }}),[staticMode])
   const record=publications[selected]
   return <section ref={root} id="library" className={`library-journey ${staticMode?'library-still':''}`} aria-label="The reading room — research and resources" aria-hidden={!reading}>
@@ -40,6 +40,7 @@ const LibraryJourney=forwardRef<LibraryHandle,{staticMode:boolean;onTravel(p:num
         <div className="library-paper-top"><span>{record.category}</span><span>{record.status}</span></div>
         <h3>{record.title}</h3><p className="library-summary">{record.summary}</p>
         <p className="library-venue">{record.venue}</p><p className="library-authors">{record.authors}</p>
+        {record.figure&&<figure className="library-figure"><img src={record.figure} alt={record.figureAlt}/><figcaption>{record.figureCaption}</figcaption></figure>}
         <div className="library-tags">{record.tags.map(tag=><span key={tag}>{tag}</span>)}</div>
         <details><summary>Research notes</summary><p>{record.detail}</p></details>
         <div className="library-paper-links">{record.links.length?record.links.map(link=><a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>):<span>{record.id==='graphs'?'Manuscript not publicly available yet.':'Updates will follow as the work develops.'}</span>}</div>

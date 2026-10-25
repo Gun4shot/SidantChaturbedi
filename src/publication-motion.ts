@@ -10,20 +10,23 @@ export function publicationMotion(p:number,w:number,h:number,anchor:MedalAnchor)
   const landing=smooth(.59,.80,t),pullback=smooth(.86,1,t)
   const flightSize=Math.min(w*.32,310),finalSize=w<700?64:88
   const size=mix(mix(anchor.size,flightSize,catchup),finalSize,landing)
-  const floor=h*.89
-  const x=mix(mix(anchor.x,w*.53,catchup),w*.24,landing)
+  // The camera stays put once the library enters frame.  The medal lands on
+  // the illustrated desk surface rather than dropping through to the floor.
+  const tableY=w<700?h*.75:h*.50
+  const tableX=w<700?w*.52:w*.40
+  const x=mix(mix(anchor.x,w*.53,catchup),tableX,landing)
   const bounce=t>.80&&t<.91?Math.sin((t-.80)/.11*Math.PI)*h*.055:0
   const flatten=smooth(.87,.98,t)
   const scaleY=mix(1,.30,flatten)
-  const y=mix(mix(anchor.y,h*.49,catchup),floor-size*(.36/.74)*scaleY,landing)-bounce
+  const y=mix(mix(anchor.y,h*.49,catchup),tableY-size*(.36/.74)*scaleY,landing)-bounce
   const spin=360*smooth(.09,.76,t)+22*Math.sin(Math.PI*smooth(.80,.98,t))
   const speed=smooth(.15,.37,t)*(1-smooth(.60,.78,t))
-  return {t,release,x,y,size,scaleY,spin,floor,bounce,
+  return {t,release,x,y,size,scaleY,spin,tableY,bounce,
     blend:smooth(.34,.68,t),ui:smooth(.90,1,t),pullback,
     blur:26*speed,streaks:.34*speed,
     groveY:-h*.85*smooth(.08,.70,t),groveScale:1+.12*catchup,
     backdropY:h*.32*(1-smooth(.45,.82,t)),backdropScale:mix(1.20,1,pullback),
-    deskScale:mix(1.5,1,pullback),deskOpacity:smooth(.82,.96,t),
+    deskScale:1,deskOpacity:smooth(.82,.96,t),
     shadow:smooth(.67,.80,t)*(1-bounce/(h*.12)),
   }
 }

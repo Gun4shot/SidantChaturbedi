@@ -21,13 +21,15 @@ export function honorsFlight(p: number, width: number, height: number) {
   // The scenery blends throughout the pass, without a covering paper overlay.
   const approach=smooth(0,peak,t),retreat=smooth(.40,1,t)
   const near=Math.exp(-Math.pow((t-peak)/.15,2))
-  const restSize=Math.max(60,layout.height*.15),closeSize=width*1.6
+  const restSize=Math.max(60,layout.height*.15),closeSize=width*2.05
   const size=Math.exp(mix(Math.log(mix(restSize,90,t)),Math.log(closeSize),near))
   const blend=smooth(.40,.82,t)
   const wing=Math.sin(t*Math.PI*12)*(1-near)*smooth(0,.07,t)
   return {
     lift:smooth(0,.25,t),approach,retreat,blend,x,y,size,
-    rotation:mix(-10,-150,smooth(0,.14,t))+mix(0,155,smooth(.14,.46,t))-18*Math.sin(t*Math.PI),
+    // Keep the crane facing its travel direction.  The wing can flutter, but
+    // the paper itself must not read as spinning as it passes the viewer.
+    rotation:mix(-9,7,smooth(.04,.40,t))+3*Math.sin(t*Math.PI*1.15),
     wing, craneOpacity:smooth(1.35,1.40,p),
     ui:smooth(GROVE_SETTLED-.09,GROVE_SETTLED,p),
     backgroundScale:mix(1.3,1,retreat),branchScale:mix(1.6,1,retreat),
