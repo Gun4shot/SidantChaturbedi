@@ -20,7 +20,10 @@ export function bookOpeningPose(open:number){
   return {
     x:bezier(-BOOK_WIDTH/2,-BOOK_WIDTH/2-.32,-.38,0),
     y:bezier(-2.1,-1.15,.64,0),z:bezier(0,.2,1.35,.7),
-    pitch:-1.12*(1-smooth(.06,.94,open)),
+    // The resting journal follows the shallow grassy bank instead of facing
+    // the lens like a hovering placard. Full-size reading framing is unchanged.
+    pitch:-1.37*(1-smooth(.06,.94,open)),
+    scale:.76+.24*t,
     yaw:Math.sin(t*Math.PI)*-.18,
     roll:-.085*(1-t)+settle*.045,
     cover:smooth(.16,.96,open),approach:smooth(.12,1,open),lift:t,

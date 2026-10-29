@@ -17,7 +17,7 @@ const image = (url: string) => new Promise<HTMLImageElement>((resolve, reject) =
 })
 
 export async function createProjectMeadow(host: HTMLElement, events: Events): Promise<MeadowEngine> {
-  const urls = [...new Set(['project-flowers-v2.png', 'project-butterfly-v2.png', 'journal-cover-v2.png', ...illustrations])]
+  const urls = [...new Set(['project-grass-v4.webp', 'project-butterfly-v2.png', 'journal-cover-v4.webp', ...illustrations])]
   const loaded = await Promise.all(urls.map(image))
   const images = Object.fromEntries(urls.map((url, i) => [url, loaded[i]]))
   await document.fonts.ready
@@ -32,9 +32,9 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
   const scenery = new THREE.Scene()
   const sceneryCamera = new THREE.PerspectiveCamera(48,1,.05,150)
   const camera = new THREE.PerspectiveCamera(48, 1, .05, 150)
-  scene.add(new THREE.AmbientLight('#ffffff', 1.3))
-  const sun = new THREE.DirectionalLight('#fffaf0', 1.4); sun.position.set(-5, 9, 12); scene.add(sun)
-  const fill = new THREE.DirectionalLight('#e4f1ff', .45); fill.position.set(6, 2, 6); scene.add(fill)
+  scene.add(new THREE.AmbientLight('#dce7dc', .85))
+  const sun = new THREE.DirectionalLight('#fff0cf', 1.65); sun.position.set(-5, 9, 12); scene.add(sun)
+  const fill = new THREE.DirectionalLight('#c8e4eb', .32); fill.position.set(6, 2, 6); scene.add(fill)
   const textures: THREE.Texture[] = []
   const texture = (source: HTMLImageElement | HTMLCanvasElement) => {
     const t = source instanceof HTMLCanvasElement ? new THREE.CanvasTexture(source) : new THREE.Texture(source)
@@ -70,7 +70,7 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
       let titleSize=80;c.font=`bold ${titleSize}px Georgia`;while(c.measureText(p.name).width>1180&&titleSize>40){titleSize-=2;c.font=`bold ${titleSize}px Georgia`}c.fillStyle='#243c30';c.fillText(p.name,125,320)
       const img=images[illustrations[index]], x=130,y=380,w=1180,h=610
       c.save();c.beginPath();c.rect(x,y,w,h);c.clip();c.fillStyle='#d9e5cb';c.fillRect(x,y,w,h)
-      const scale=Math.max(w/img.width,h/img.height);c.drawImage(img,x+(w-img.width*scale)/2,y+(h-img.height*scale)/2,img.width*scale,img.height*scale);c.restore()
+      const scale=Math.min(w/img.width,h/img.height);c.drawImage(img,x+(w-img.width*scale)/2,y+(h-img.height*scale)/2,img.width*scale,img.height*scale);c.restore()
       const summary=p.description.split(/(?<=[.!?])\s/)[0]
       c.font='52px "DM Sans", sans-serif';c.fillStyle='#3d4c3e';wrap(c,summary,130,1090,1180,68)
       c.fillStyle='#4e5d50';c.font='34px "DM Sans", sans-serif';c.fillText(p.stack.join('   /   '),130,1400)
@@ -92,13 +92,15 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
     for(const [index,map] of pageCache){if(!keep.includes(index)){map.dispose();pageCache.delete(index);const at=textures.indexOf(map);if(at>=0)textures.splice(at,1)}}
   }
   const coverCanvas=document.createElement('canvas');coverCanvas.width=1024;coverCanvas.height=1392
-  const cc=coverCanvas.getContext('2d')!;cc.drawImage(images['journal-cover-v2.png'],0,0,1024,1392)
-  cc.textAlign='center';cc.fillStyle='#e8d49a';cc.font='bold 66px Georgia';cc.fillText('FIELD NOTES',512,905)
+  const cc=coverCanvas.getContext('2d')!;cc.drawImage(images['journal-cover-v4.webp'],0,0,1024,1392)
+  cc.textAlign='center';cc.fillStyle='#f4e8bf';cc.font='bold 66px Georgia';cc.fillText('FIELD NOTES',512,905)
   cc.font='23px "DM Sans", sans-serif';cc.fillText('SIDANT CHATURBEDI',512,972);cc.fillText('IDEAS WORTH EXPLORING',512,1078)
   const coverMap=texture(coverCanvas)
   const book = new THREE.Group();scene.add(book)
-  const coverMaterial=new THREE.MeshStandardMaterial({map:coverMap,roughness:.94,metalness:0})
-  const coverEdge=new THREE.MeshStandardMaterial({color:'#526d53',roughness:1})
+  // Painted cels keep their authored palette; physically lit linen made the
+  // previous cover muddy beside the bright painted grass.
+  const coverMaterial=new THREE.MeshBasicMaterial({map:coverMap})
+  const coverEdge=new THREE.MeshBasicMaterial({color:'#345648'})
   const box=(w:number,h:number,d:number,material:THREE.Material|THREE.Material[])=>new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material)
   function roundedShape(w:number,h:number,r:number){
     const s=new THREE.Shape(),x=-w/2,y=-h/2
@@ -168,16 +170,36 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
       colors.needsUpdate=true
     }
   }
-  const shadowCanvas=document.createElement('canvas');shadowCanvas.width=256;shadowCanvas.height=128
-  const sc=shadowCanvas.getContext('2d')!,gradient=sc.createRadialGradient(128,64,4,128,64,120);gradient.addColorStop(0,'#30432899');gradient.addColorStop(1,'#30432800');sc.fillStyle=gradient;sc.fillRect(0,0,256,128)
+  const shadowCanvas=document.createElement('canvas');shadowCanvas.width=256;shadowCanvas.height=256
+  const sc=shadowCanvas.getContext('2d')!
+  // A soft rectangular contact footprint lies in the SAME plane as the back
+  // cover. The old upright ellipse was detached from the journal's underside.
+  sc.filter='blur(10px)';sc.fillStyle='#223d2d99';sc.beginPath();sc.roundRect(23,20,210,216,12);sc.fill()
   const shadowMap=texture(shadowCanvas)
-  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(4.7,1.3),new THREE.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false}));shadow.position.set(0,-2.65,.4);scene.add(shadow)
-  const fruitShadow=new THREE.Mesh(new THREE.PlaneGeometry(1.1,.28),new THREE.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false,opacity:.7}));fruitShadow.position.set(-3,-2.55,2.01);scene.add(fruitShadow)
-  const flowerMap=texture(images['project-flowers-v2.png'])
+  const rest=bookOpeningPose(0),restRotation=new THREE.Euler(rest.pitch,rest.yaw,rest.roll)
+  const shadow=new THREE.Mesh(new THREE.PlaneGeometry((W+1.25)*rest.scale,(H+1.25)*rest.scale),new THREE.MeshBasicMaterial({map:shadowMap,transparent:true,depthWrite:false}))
+  shadow.rotation.copy(restRotation)
+  shadow.position.copy(new THREE.Vector3(W/2,0,-.285).multiplyScalar(rest.scale).applyEuler(restRotation).add(new THREE.Vector3(rest.x*rest.scale,rest.y,rest.z)))
+  scene.add(shadow)
+  const fruitShadowCanvas=document.createElement('canvas');fruitShadowCanvas.width=128;fruitShadowCanvas.height=128
+  const fc=fruitShadowCanvas.getContext('2d')!,fruitGradient=fc.createRadialGradient(64,64,8,64,64,60)
+  fruitGradient.addColorStop(0,'#30432888');fruitGradient.addColorStop(1,'#30432800');fc.fillStyle=fruitGradient;fc.fillRect(0,0,128,128)
+  const fruitShadow=new THREE.Mesh(new THREE.PlaneGeometry(1.1,.28),new THREE.MeshBasicMaterial({map:texture(fruitShadowCanvas),transparent:true,depthWrite:false,opacity:.7}));fruitShadow.position.set(-3,-2.55,2.01);scene.add(fruitShadow)
+  const grassImage=images['project-grass-v4.webp'],flowerMap=texture(grassImage)
+  const grassHeight=grassImage.height/grassImage.width
   const flowers:THREE.Group[]=[]
   for(const [x,y,z,size] of [[-5,-3.5,2.4,3.1],[5.4,-3.7,3.2,3.6],[-3.8,-2.3,-.9,1.8],[3.9,-2.3,-1.8,1.5],[-6.8,-2.5,-3,2.1],[6.6,-2.8,-2.5,2.4],[-1.8,-3.5,3.8,1.4],[2.7,-3.5,4,1.6]]){
     const g=new THREE.Group();g.position.set(x,y,z);g.scale.setScalar(size)
-    const f=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:flowerMap,transparent:true,alphaTest:.015,depthWrite:false,side:THREE.DoubleSide}));f.position.y=.5;g.add(f);scenery.add(g);flowers.push(g)
+    const f=new THREE.Mesh(new THREE.PlaneGeometry(1,grassHeight),new THREE.MeshBasicMaterial({map:flowerMap,transparent:true,alphaTest:.015,depthWrite:false,side:THREE.DoubleSide}));f.position.y=grassHeight/2;g.add(f);scenery.add(g);flowers.push(g)
+  }
+  // A few short blades pass in front of the bottom cover at rest. They share
+  // its camera/depth buffer (not the decorative scenery camera), making the
+  // contact with the bank visible as the book lifts away from them.
+  for(const x of [.08*W,.91*W]){
+    const tuft=new THREE.Mesh(new THREE.PlaneGeometry(.6,.6*grassHeight),new THREE.MeshBasicMaterial({map:flowerMap,transparent:true,alphaTest:.03,depthWrite:false,side:THREE.DoubleSide}))
+    tuft.geometry.translate(0,.3*grassHeight,0)
+    tuft.position.copy(new THREE.Vector3(x,-H/2-.1,-.285).multiplyScalar(rest.scale).applyEuler(restRotation).add(new THREE.Vector3(rest.x*rest.scale,rest.y,rest.z)))
+    scene.add(tuft)
   }
   const butterflyMap=texture(images['project-butterfly-v2.png'])
   const butterflies: {g:THREE.Group; wings:THREE.Mesh[]}[]=[]
@@ -241,10 +263,10 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
     const pose=bookOpeningPose(opening),{lift,cover:unfold,approach:advance}=pose
     frontPivot.rotation.y=-Math.PI*unfold
     frontPivot.position.z=THREE.MathUtils.lerp(.19,-.22,unfold)
-    book.position.set(pose.x,pose.y,pose.z)
+    book.scale.setScalar(pose.scale)
+    book.position.set(pose.x*pose.scale,pose.y,pose.z)
     book.rotation.set(pose.pitch,pose.yaw,pose.roll)
-    if(!openTarget&&opening===0){book.position.y+=Math.sin(time*.65)*.025;book.rotation.z+=Math.sin(time*.4)*.006}
-    ;(shadow.material as THREE.MeshBasicMaterial).opacity=1-lift*.7;shadow.scale.setScalar(1+lift*.4)
+    ;(shadow.material as THREE.MeshBasicMaterial).opacity=(1-smooth(0,.8,lift))*.85;shadow.scale.setScalar(1+lift*.18)
     if(turn){
       turn.t=Math.min(1,turn.t+dt/1.15);const t=smooth(0,1,turn.t),phase=turn.direction>0?t:1-t;bend(phase)
       turningShade.position.x=(phase<.5?1:-1)*W/2;turningShade.position.z=.124

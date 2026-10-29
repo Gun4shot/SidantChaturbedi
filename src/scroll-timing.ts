@@ -1,7 +1,7 @@
 // Compress only the ground-to-tree camera move. Education/fall pacing stays intact.
 const PAN_START = .28, PAN_END = .355, PAN_WEIGHT = .55
 const SAVED = (PAN_END - PAN_START) * (1 - PAN_WEIGHT)
-export const JOURNEY_END = 2.78
+export const JOURNEY_END = 4.42
 export const SCROLL_TRAVEL = JOURNEY_END - SAVED
 export const SCROLL_HEIGHT = 100 + 1000 * SCROLL_TRAVEL
 export function journeyToScroll(p: number) {

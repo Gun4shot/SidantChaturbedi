@@ -29,7 +29,7 @@ export function honorsFlight(p: number, width: number, height: number) {
     lift:smooth(0,.25,t),approach,retreat,blend,x,y,size,
     // Keep the crane facing its travel direction.  The wing can flutter, but
     // the paper itself must not read as spinning as it passes the viewer.
-    rotation:mix(-9,7,smooth(.04,.40,t))+3*Math.sin(t*Math.PI*1.15),
+    rotation:0,
     wing, craneOpacity:smooth(1.35,1.40,p),
     ui:smooth(GROVE_SETTLED-.09,GROVE_SETTLED,p),
     backgroundScale:mix(1.3,1,retreat),branchScale:mix(1.6,1,retreat),

@@ -209,6 +209,9 @@ test('book opening follows a continuous reversible arc and settles with no drift
   const {bookOpeningPose,bookScroll}=await import('../src/book-motion.ts')
   const start=bookOpeningPose(0),end=bookOpeningPose(1)
   assert.equal(start.y,-2.1);assert.equal(start.cover,0)
+  assert.equal(start.scale,.76,'closed journal has a smaller physical footprint')
+  assert.equal(end.scale,1,'reading size is preserved')
+  assert.ok(start.pitch<-1.3,'closed journal lies along the bank instead of facing the lens')
   assert.equal(end.x,0);assert.equal(end.y,0);assert.equal(end.z,.7)
   assert.equal(end.cover,1);assert.equal(end.approach,1)
   let previous=start
@@ -312,29 +315,172 @@ test('bird passage stays sharp and crosses its close-up within a short scroll sp
 
 import { publicationMotion, LIBRARY_START, LIBRARY_END } from '../src/publication-motion.ts'
 import { publications } from '../src/publications.ts'
-test('library fall is continuous, reversible, and keeps the medal aligned with its desk surface',()=>{
-  for(const [w,h] of [[1280,720],[390,844]]){
-    const anchor={x:w*.55,y:h*.55,size:80}
-    const start=publicationMotion(LIBRARY_START,w,h,anchor)
-    assert.equal(start.x,anchor.x);assert.equal(start.y,anchor.y);assert.equal(start.size,anchor.size)
-    assert.equal(start.release,0);assert.equal(start.blend,0)
-    const finish=publicationMotion(LIBRARY_END,w,h,anchor)
-    assert.equal(finish.blend,1);assert.equal(finish.ui,1);assert.equal(finish.blur,0)
-    assert.ok(Math.abs(finish.y+finish.size*(.36/.74)*finish.scaleY-finish.tableY)<1e-8)
-    assert.equal(finish.deskScale,1)
-    for(const t of [0,.04,.08,.15,.34,.37,.40,.59,.60,.64,.68,.70,.76,.78,.80,.82,.86,.87,.90,.91,.96,.98,1]){
+test('scene snapping captures nearby compositions without trapping departure or interrupting transitions',async()=>{
+  const {nearbyScene,SCENE_STOPS}=await import('../src/scene-snap.ts')
+  for(const stop of SCENE_STOPS){
+    assert.equal(nearbyScene(stop+.01),stop)
+    assert.equal(nearbyScene(Math.max(0,stop-.01)),stop)
+    assert.equal(nearbyScene(stop+.025,stop),null,'a new gesture can leave the settled scene')
+  }
+  for(const p of [.13,.34,.98,1.64,1.74,2.3,2.48])assert.equal(nearbyScene(p),null,'transition remains free')
+})
+test('laurel passage is continuous and reversible; scenery changes under opaque leaf coverage',()=>{
+  for(const [w,h] of [[1280,720],[390,844],[2560,1080],[844,390]]){
+    const start=publicationMotion(LIBRARY_START,w,h),finish=publicationMotion(LIBRARY_END,w,h)
+    assert.equal(start.blend,0);assert.equal(start.paperOpen,0)
+    assert.equal(finish.blend,1);assert.equal(finish.ui,1);assert.equal(finish.paperOpen,1)
+    assert.equal(finish.backdropScale,1);assert.equal(finish.backdropX,0);assert.ok(finish.backdropY===0)
+    for(let t=0;t<=1;t+=.001){
       const p=LIBRARY_START+t*(LIBRARY_END-LIBRARY_START)
-      const a=publicationMotion(p-1e-8,w,h,anchor),b=publicationMotion(p+1e-8,w,h,anchor)
+      const a=publicationMotion(p-1e-8,w,h),b=publicationMotion(p+1e-8,w,h)
       for(const key of Object.keys(a))assert.ok(Math.abs(a[key]-b[key])<.01,`${t}: ${key}`)
+      if(a.blend>0&&a.blend<1){
+        // Conservative fully opaque rectangle measured in the leaf PNG.
+        const height=a.leafSize*941/1672
+        assert.ok(a.leafX-a.leafSize*.17<0)
+        assert.ok(a.leafX+a.leafSize*.15>w)
+        assert.ok(a.leafY-height*.25<0)
+        assert.ok(a.leafY+height*.22>h)
+        assert.ok(b.leafX<a.leafX,'no pause during the concealed scenery change')
+        assert.equal(a.ui,0)
+      }
     }
     const positions=Array.from({length:100},(_,i)=>LIBRARY_START+i*.006)
-    assert.deepEqual(positions.map(p=>publicationMotion(p,w,h,anchor)),positions.toReversed().map(p=>publicationMotion(p,w,h,anchor)).toReversed())
+    assert.deepEqual(positions.map(p=>publicationMotion(p,w,h)),positions.toReversed().map(p=>publicationMotion(p,w,h)).toReversed())
   }
 })
+
 test('library distinguishes publication, submission and ongoing work and keeps public resource links',()=>{
   assert.match(publications[0].status,/Published/)
   assert.ok(publications[0].links.some(l=>l.url==='https://doi.org/10.1080/19475705.2026.2719295'))
   assert.equal(publications[0].figure,'/art/sentinel-road-vulnerability-figure.png')
   assert.match(publications[1].status,/Submitted/);assert.match(publications[2].status,/Ongoing/)
   assert.equal(publications[1].links.length,0);assert.equal(publications[2].links.length,0)
+})
+
+import { courtyardMotion, courtyardCamera, viewportLens, projectPoint, boardCorners, boardProjection, planeProjection, COURTYARD_START, COURTYARD_END, ARCH, LENS, ROOM, DOOR, OUT, FINAL_CAMERA } from '../src/courtyard-motion.ts'
+test('courtyard camera preserves painted framing with a fixed lens and continuous reversible motion',()=>{
+  for(const [w,h] of [[1440,900],[390,844],[768,1024],[2560,1080],[844,390]]){
+    const start=courtyardMotion(COURTYARD_START,w,h)
+    assert.equal(start.paperOpen,1);assert.equal(start.libraryUi,1);assert.equal(start.ui,0)
+    const lens=viewportLens(w,h)
+    for(const [u,v,depth] of [[440,680,ROOM.back],[1182,540,15],[100,150,30]]){
+      const point={x:(u-LENS.cx)*depth/LENS.focal,y:ROOM.eye+(LENS.cy-v)*depth/LENS.focal,z:-depth}
+      const screen=projectPoint(point,courtyardCamera(0),w,h)
+      assert.ok(Math.abs(screen.x-(w/2+(u-LENS.width/2)*lens.crop))<1e-8)
+      assert.ok(Math.abs(screen.y-(h/2+(v-LENS.height/2)*lens.crop))<1e-8)
+    }
+    let previous=courtyardCamera(0)
+    for(let i=1;i<=1000;i++){
+      const p=COURTYARD_START+(COURTYARD_END-COURTYARD_START)*i/1000
+      const pose=courtyardMotion(p,w,h)
+      const camera=courtyardCamera(i/1000)
+      assert.equal(camera.y,ROOM.eye,'eye height stays level across the threshold')
+      assert.ok(camera.z<=previous.z,'dolly keeps moving forwards')
+      assert.ok(Math.abs(camera.yaw-previous.yaw)<.005,'no abrupt camera pan')
+      assert.ok(Math.hypot(camera.x-previous.x,camera.z-previous.z)<.06,'no position jump')
+      for(const value of Object.values(pose))assert.ok(Number.isFinite(value))
+      const a=courtyardMotion(p-1e-8,w,h),b=courtyardMotion(p+1e-8,w,h)
+      for(const key of Object.keys(a))assert.ok(Math.abs(a[key]-b[key])<.01,`${p}: ${key}`)
+      previous=camera
+    }
+    const end=courtyardMotion(COURTYARD_END,w,h)
+    assert.equal(end.paperOpen,0);assert.equal(end.ui,1)
+    const positions=Array.from({length:201},(_,i)=>i/200)
+    assert.deepEqual(positions.map(courtyardCamera),positions.toReversed().map(courtyardCamera).toReversed())
+    assert.deepEqual(viewportLens(w,h),lens,'projection intrinsics are independent of camera progress')
+  }
+  for(const key of Object.keys(FINAL_CAMERA))assert.ok(Math.abs(courtyardCamera(1)[key]-FINAL_CAMERA[key])<1e-10)
+})
+test('camera crosses the actual doorway once, within the transparent aperture, without stopping',()=>{
+  let crossings=0,previous=-Infinity
+  for(let i=0;i<=10000;i++){
+    const t=i/10000,c=courtyardCamera(t)
+    const distance=(c.x-DOOR.x)*OUT.x+(c.z-DOOR.z)*OUT.z
+    if(distance>=0&&previous<0){
+      crossings++
+      const u=LENS.cx+c.x/-c.z*LENS.focal,v=LENS.cy+(ROOM.eye-c.y)/-c.z*LENS.focal
+      assert.ok(u>ARCH.left+10&&u<ARCH.right-10,'camera passes inside the door jambs')
+      assert.ok(v>ARCH.top+30&&v<ARCH.bottom-10,'camera clears the arch and sill')
+      const before=courtyardCamera(t-.001),after=courtyardCamera(t+.001)
+      assert.ok(Math.hypot(after.x-before.x,after.z-before.z)>.02,'no threshold pause')
+    }
+    previous=distance
+  }
+  assert.equal(crossings,1)
+})
+test('one camera produces depth parallax, not uniform image enlargement',()=>{
+  const initial={x:0,y:ROOM.eye,z:0,yaw:0},moved={...initial,x:1,z:-2}
+  const near={x:2,y:1,z:-10},far={x:20,y:-4.4,z:-100}
+  const a=projectPoint(near,initial,1440,900),b=projectPoint(far,initial,1440,900)
+  assert.ok(Math.abs(a.x-b.x)<1e-8)
+  const nearMotion=Math.abs(projectPoint(near,moved,1440,900).x-a.x)
+  const farMotion=Math.abs(projectPoint(far,moved,1440,900).x-b.x)
+  assert.ok(nearMotion>farMotion*5,'near geometry moves faster than the distant painting')
+})
+test('HTML board and painted board share the same projected corners at every camera pose',()=>{
+  for(const [w,h] of [[1440,900],[390,844],[844,390],[2560,1080]]){
+    const bounds={left:w*.4,top:h*.19,width:w*.59,height:w*.59*2/3}
+    const corners=boardCorners(w,h,bounds)
+    for(const t of [0,.25,.5,.65,.8,.95,1]){
+      const p=COURTYARD_START+t*(COURTYARD_END-COURTYARD_START)
+      const m=boardProjection(p,w,h,bounds).slice(9,-1).split(',').map(Number)
+      for(const [i,[x,y]] of [[0,0],[bounds.width,0],[bounds.width,bounds.height],[0,bounds.height]].entries()){
+        const divisor=m[3]*x+m[7]*y+m[15]
+        const actual={x:bounds.left+(m[0]*x+m[4]*y+m[12])/divisor,y:bounds.top+(m[1]*x+m[5]*y+m[13])/divisor}
+        const expected=projectPoint(corners[i],courtyardCamera(t),w,h)
+        assert.ok(Math.hypot(actual.x-expected.x,actual.y-expected.y)<1e-7)
+        if(t===1)assert.ok(Math.hypot(actual.x-bounds.left-x,actual.y-bounds.top-y)<1e-7,'settled board matches responsive HTML layout')
+      }
+    }
+  }
+})
+test('new courtyard snap leaves the arch passage free and preserves earlier scroll distances',async()=>{
+  const {nearbyScene}=await import('../src/scene-snap.ts')
+  const {journeyToScroll,SCROLL_TRAVEL}=await import('../src/scroll-timing.ts')
+  assert.equal(nearbyScene(3.51),3.53)
+  for(const p of [2.81,2.95,3.1,3.25,3.4])assert.equal(nearbyScene(p),null)
+  assert.ok(Math.abs((journeyToScroll(2.68)-journeyToScroll(1.41))*SCROLL_TRAVEL-(2.68-1.41))<1e-10)
+})
+
+import {contactCamera,journeyCamera,contactMotion,contactLayout,contactCorners,CONTACT_START,CONTACT_END,CONTACT_READING,CONTACT_FINAL} from '../src/contact-motion.ts'
+test('contact turn begins at the courtyard camera and remains continuous, level and reversible',()=>{
+  assert.deepEqual(contactCamera(0),FINAL_CAMERA)
+  for(const key of Object.keys(CONTACT_FINAL))assert.ok(Math.abs(contactCamera(1)[key]-CONTACT_FINAL[key])<1e-10)
+  for(const p of [2.8,3.02,3.26,3.48,3.53])assert.deepEqual(journeyCamera(p),courtyardCamera(Math.max(0,Math.min(1,(p-COURTYARD_START)/(COURTYARD_END-COURTYARD_START)))))
+  let previous=journeyCamera(CONTACT_START),distance=0
+  for(let i=1;i<=1000;i++){
+    const camera=journeyCamera(CONTACT_START+(CONTACT_END-CONTACT_START)*i/1000)
+    assert.equal(camera.y,ROOM.eye)
+    assert.ok(camera.yaw>=previous.yaw,'turn never reverses unexpectedly')
+    assert.ok(camera.yaw-previous.yaw<.004,'no yaw jump')
+    const step=Math.hypot(camera.x-previous.x,camera.z-previous.z)
+    assert.ok(step<.02,'no position jump');distance+=step;previous=camera
+  }
+  assert.ok(distance>5,'camera translates through space as well as rotating')
+  assert.ok(Math.abs(contactCamera(1).yaw-contactCamera(0).yaw-65*Math.PI/180)<1e-10)
+  const positions=Array.from({length:150},(_,i)=>CONTACT_START+i*.005)
+  assert.deepEqual(positions.map(journeyCamera),positions.toReversed().map(journeyCamera).toReversed())
+  assert.equal(contactMotion(CONTACT_START).letter,0);assert.equal(contactMotion(CONTACT_END).letter,1)
+})
+test('contact letter uses the same camera as the world and settles into its readable layout',()=>{
+  for(const [w,h] of [[1440,900],[390,844],[844,390],[2560,1080]]){
+    const bounds=contactLayout(w,h),corners=contactCorners(w,h,bounds)
+    assert.ok(bounds.left>=0&&bounds.left+bounds.width<=w)
+    assert.ok(bounds.top>=0&&bounds.top+bounds.height<h)
+    for(const t of [.35,.5,.7,.9,1]){
+      const camera=contactCamera(t),m=planeProjection(corners,camera,w,h,bounds).slice(9,-1).split(',').map(Number)
+      for(const [i,[x,y]] of [[0,0],[bounds.width,0],[bounds.width,bounds.height],[0,bounds.height]].entries()){
+        const q=m[3]*x+m[7]*y+m[15],expected=projectPoint(corners[i],camera,w,h)
+        const actual={x:bounds.left+(m[0]*x+m[4]*y+m[12])/q,y:bounds.top+(m[1]*x+m[5]*y+m[13])/q}
+        assert.ok(Math.hypot(actual.x-expected.x,actual.y-expected.y)<1e-7)
+        if(t===1)assert.ok(Math.hypot(actual.x-bounds.left-x,actual.y-bounds.top-y)<1e-7)
+      }
+    }
+  }
+})
+test('contact reading snaps without interrupting the camera turn',async()=>{
+  const {nearbyScene}=await import('../src/scene-snap.ts')
+  assert.equal(nearbyScene(CONTACT_READING+.01),CONTACT_READING)
+  for(const p of [3.65,3.8,3.95,4.1,4.2])assert.equal(nearbyScene(p),null)
 })

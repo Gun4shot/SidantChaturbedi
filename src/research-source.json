@@ -1,0 +1,24 @@
+{
+  "abstract": "Unpaved rural roads are critical lifelines in mountainous developing nations yet acutely vulnerable to monsoon-driven degradation, leaving infrastructure managers in data-sparse, cloud-prone regions without tools to identify vulnerable segments or detect pre-failure signals. This study presents a data-independent Sentinel-1 SAR time-series framework to characterise seasonal road surface vulnerability and identify hydrological anomalies preceding documented slope failures in Nepal, applied across four physiographically diverse sites over January 2020–January 2026. A seasonal hydrological sensitivity model classifies road segments into relative Low, Moderate, and High risk using monsoon–non-monsoon backscatter contrasts, while a complementary anomaly detection model identifies segments deviating abnormally from a site-specific pre-incident baseline. Monsoon-season VV backscatter peaks reach 1.7–2.0 dB above dry-season baselines across all six observed monsoon cycles, attributable to moisture-driven dielectric changes in road surface materials. The framework is validated against two independently documented geohazard events: the August 2020 Guthitar deep-seated road failure and multiple landslides along the Daklang–Listi corridor. The anomaly model localises pre-failure hydrological precursors four to six weeks before surface failure. The framework requires no field data, operates under all-weather conditions via Google Earth Engine, and is transferable to other data-sparse, monsoon-affected regions.",
+  "figures": [
+    {
+      "src": "/art/research/pipeline.png",
+      "caption": "Figure 2. End-to-end research pipeline.",
+      "width": 1024,
+      "height": 1013
+    },
+    {
+      "src": "/art/research/preprocessing.png",
+      "caption": "Figure 3. Sentinel-1 SAR preprocessing pipeline.",
+      "width": 1016,
+      "height": 1111
+    },
+    {
+      "src": "/art/research/study-area.png",
+      "caption": "Figure 1. Study areas across Nepal.",
+      "width": 1326,
+      "height": 939
+    }
+  ],
+  "source": "https://github.com/Gun4shot/Sentinal-1-SAR-framework/blob/main/paper/SAR_Road_Vulnerability_Nepal_final.docx"
+}

@@ -1,6 +1,4 @@
 export type Project = { name: string; kind: string; subtitle: string; description: string; stack: string[]; idea: string; slug: string; status: string; url?: string; demo?: string; linkLabel?: string; repo?: string; fork?: boolean }
-// Painted illustrations are atmosphere, not screenshots or research figures.
-const featuredArtwork = ['mountains.png','journal-cover-v2.png','valley-master.png','project-meadow-v2.png','riverside-arrival.png','sky.webp','leaf-lens-v1.png']
 const featuredProjects: Project[] = [
   { name: 'Sentinel-1 SAR', kind: 'REMOTE SENSING', subtitle: 'Reading the roads from orbit.', description: 'Satellite radar time series for road vulnerability and landslide precursor research in monsoon-affected Nepal.', stack: ['Python', 'Sentinel-1', 'QGIS'], idea: 'Research code and analysis notebooks.', repo: 'Sentinal-1-SAR-framework', slug: 'sentinel-1', status: 'RESEARCH · CODE AVAILABLE', url: 'https://github.com/Gun4shot/Sentinal-1-SAR-framework', linkLabel: 'Research code' },
   { name: 'SolveScript', kind: 'EDUCATION', subtitle: 'Less paper chasing. More practice.', description: 'A Cambridge A-Level practice studio with annotated PDFs, timed exams, marking-scheme feedback, and progress tracking.', stack: ['React', 'Express', 'MongoDB'], idea: 'Built to make past-paper practice easier.', demo: 'https://solvescript.onrender.com/', repo: 'SolveScript', slug: 'solvescript', status: 'OPEN-SOURCE APPLICATION', url: 'https://github.com/Gun4shot/SolveScript', linkLabel: 'View repository' },
@@ -454,4 +452,4 @@ export const projects: Project[] = journalOrder.map(slug => {
   if (!project) throw new Error(`Missing curated project: ${slug}`)
   return project
 })
-export const projectArtwork = projects.map(p => featuredArtwork[catalog.indexOf(p) % featuredArtwork.length])
+export const projectArtwork = projects.map(p => `projects/${p.slug}.jpg`)

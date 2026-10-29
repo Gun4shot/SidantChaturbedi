@@ -4,3 +4,5 @@ dist/
 .vite/
 docs/previews/
 docs/screenshots/
+artifacts/review/
+local-*-check.png

@@ -91,6 +91,423 @@
       "provenance": "Generated with OpenAI image generation on 2026-10-22; exact prompts in docs/meadow-book-v2-art.md",
       "license": "project-generated",
       "qa": "visually-inspected"
+    },
+    {
+      "id": "project-capture-solvescript",
+      "source": "https://solvescript.onrender.com/",
+      "export": "public/art/projects/solvescript.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "Live application captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-whitebook",
+      "source": "https://whitebook.onrender.com/",
+      "export": "public/art/projects/whitebook.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "Live application captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-khullamalpot",
+      "source": "https://khullamalpot.vercel.app",
+      "export": "public/art/projects/khullamalpot.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "Live application captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-ml-notes",
+      "source": "https://github.com/Gun4shot/ML_notebooks",
+      "export": "public/art/projects/ml-notes.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-nidaan",
+      "source": "https://github.com/Gun4shot/Nidaan",
+      "export": "public/art/projects/nidaan.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-meteormadness",
+      "source": "https://github.com/Gun4shot/Meteormadness",
+      "export": "public/art/projects/meteormadness.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-handtracker",
+      "source": "https://github.com/Gun4shot/handtracker",
+      "export": "public/art/projects/handtracker.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-schwarzschildfinal",
+      "source": "https://schwarzschildfinal.vercel.app",
+      "export": "public/art/projects/schwarzschildfinal.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "Live application captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-people_recognizer",
+      "source": "https://github.com/Gun4shot/people_recognizer",
+      "export": "public/art/projects/people_recognizer.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-frontnendalcctest",
+      "source": "https://github.com/Gun4shot/frontnendalcctest",
+      "export": "public/art/projects/frontnendalcctest.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-creditcardfraudml",
+      "source": "https://github.com/Gun4shot/CreditcardfraudML",
+      "export": "public/art/projects/creditcardfraudml.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-taptapbird",
+      "source": "https://github.com/Gun4shot/TapTapbird",
+      "export": "public/art/projects/taptapbird.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-snakegame",
+      "source": "https://github.com/Gun4shot/snakeGame",
+      "export": "public/art/projects/snakegame.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "project-capture-tictactoe",
+      "source": "https://github.com/Gun4shot/TicTacToe",
+      "export": "public/art/projects/tictactoe.jpg",
+      "kind": "website-screenshot",
+      "dimensions": [
+        1440,
+        900
+      ],
+      "provenance": "GitHub repository captured 27 October 2026; no generated imagery.",
+      "qa": "captured-and-integrated"
+    },
+    {
+      "id": "research-pipeline",
+      "source": "https://github.com/Gun4shot/Sentinal-1-SAR-framework/blob/main/paper/SAR_Road_Vulnerability_Nepal_final.docx",
+      "export": "public/art/research/pipeline.png",
+      "kind": "author-research-figure",
+      "dimensions": [
+        1024,
+        1013
+      ],
+      "provenance": "Figure 2. End-to-end research pipeline. Extracted unchanged from the author manuscript.",
+      "qa": "reviewed"
+    },
+    {
+      "id": "research-preprocessing",
+      "source": "https://github.com/Gun4shot/Sentinal-1-SAR-framework/blob/main/paper/SAR_Road_Vulnerability_Nepal_final.docx",
+      "export": "public/art/research/preprocessing.png",
+      "kind": "author-research-figure",
+      "dimensions": [
+        1016,
+        1111
+      ],
+      "provenance": "Figure 3. Sentinel-1 SAR preprocessing pipeline. Extracted unchanged from the author manuscript.",
+      "qa": "reviewed"
+    },
+    {
+      "id": "research-study-area",
+      "source": "https://github.com/Gun4shot/Sentinal-1-SAR-framework/blob/main/paper/SAR_Road_Vulnerability_Nepal_final.docx",
+      "export": "public/art/research/study-area.png",
+      "kind": "author-research-figure",
+      "dimensions": [
+        1326,
+        939
+      ],
+      "provenance": "Figure 1. Study areas across Nepal. Extracted unchanged from the author manuscript.",
+      "qa": "reviewed"
+    },
+    {
+      "id": "laurel-passage-v1",
+      "source": "OpenAI image generation, 27 October 2026",
+      "export": "public/art/laurel-passage-v1.png",
+      "kind": "generated-transparent-foreground",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "provenance": "Original broad laurel leaf sprite generated for a continuous camera passage; original PNG retained unchanged. CSS layers reinforce paint opacity.",
+      "qa": "Desktop/mobile screenshot review; conservative opaque rectangle verified against alpha channel and camera coverage tests."
+    },
+    {
+      "id": "library-arch-v1",
+      "source": "assets/source/library-arch-v1.png",
+      "export": "public/art/library-arch-v1.webp",
+      "kind": "generated-transparent-scene-layer",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in image generation. Full prompts: docs/learning-courtyard-prompts.md. Native PNG preserved; WebP quality 90, alpha quality 100, no resizing.",
+      "qa": "Desktop/mobile passage and reading review; transparent doorway coverage checked at five viewport sizes."
+    },
+    {
+      "id": "learning-courtyard-v1",
+      "source": "assets/source/learning-courtyard-v1.png",
+      "export": "public/art/learning-courtyard-v1.webp",
+      "kind": "generated-painterly-scene",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in image generation. Full prompts: docs/learning-courtyard-prompts.md. Native PNG preserved; WebP quality 90, alpha quality 100, no resizing.",
+      "qa": "Desktop/mobile passage and reading review; transparent doorway coverage checked at five viewport sizes."
+    },
+    {
+      "id": "teaching-board-v1",
+      "source": "assets/source/teaching-board-v1.png",
+      "export": "public/art/teaching-board-v1.webp",
+      "kind": "generated-transparent-scene-layer",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in image generation. Full prompts: docs/learning-courtyard-prompts.md. Native PNG preserved; WebP quality 90, alpha quality 100, no resizing.",
+      "qa": "Desktop/mobile passage and reading review; transparent doorway coverage checked at five viewport sizes."
+    },
+    {
+      "id": "contact-panorama-v1",
+      "source": "assets/source/contact-panorama-v1.png",
+      "export": "public/art/contact-panorama-v1.webp",
+      "kind": "generated-continuous-panorama",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "provenance": "Built-in image generation. Prompts: docs/contact-artwork-prompts.md. Native source preserved; WebP quality 95 (panorama 96), alpha quality 100, no resizing.",
+      "qa": "Desktop/mobile forward/reverse scene and contact interaction review."
+    },
+    {
+      "id": "contact-veranda-v1",
+      "source": "assets/source/contact-veranda-v1.png",
+      "export": "public/art/contact-veranda-v1.webp",
+      "kind": "generated-static-scene",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in image generation. Prompts: docs/contact-artwork-prompts.md. Native source preserved; WebP quality 95 (panorama 96), alpha quality 100, no resizing.",
+      "qa": "Desktop/mobile forward/reverse scene and contact interaction review."
+    },
+    {
+      "id": "letterbox-atlas-v1",
+      "source": "assets/source/letterbox-atlas-v1.png",
+      "export": "public/art/letterbox-atlas-v1.webp",
+      "kind": "generated-transparent-prop-atlas",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "provenance": "Built-in image generation. Prompts: docs/contact-artwork-prompts.md. Native source preserved; WebP quality 95 (panorama 96), alpha quality 100, no resizing.",
+      "qa": "Desktop/mobile forward/reverse scene and contact interaction review."
+    },
+    {
+      "id": "veranda-tree-v1",
+      "source": "assets/source/veranda-tree-v1.png",
+      "export": "public/art/veranda-tree-v1.webp",
+      "kind": "generated-transparent-foreground",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "provenance": "Built-in image generation. Prompts: docs/contact-artwork-prompts.md. Native source preserved; WebP quality 95 (panorama 96), alpha quality 100, no resizing.",
+      "qa": "Desktop/mobile forward/reverse scene and contact interaction review."
+    },
+    {
+      "id": "project-garden-v3",
+      "source": "assets/source/project-garden-v3.png",
+      "export": "public/art/project-garden-v3.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in OpenAI image generation, 2026-10-29; user-provided images used as style references. Prompts in docs/project-garden-artwork.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "project-garden-flora-v3",
+      "source": "assets/source/project-garden-flora-v3.png",
+      "export": "public/art/project-garden-flora-v3.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "provenance": "Built-in OpenAI image generation, 2026-10-29; user-provided images used as style references. Prompts in docs/project-garden-artwork.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "project-meadow-v4",
+      "source": "assets/source/project-meadow-v4.png",
+      "export": "public/art/project-meadow-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1672,
+        940
+      ],
+      "provenance": "Built-in OpenAI image generation, 2026-10-29. User anime reference; prompts and implementation in docs/project-meadow-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "journal-cover-v4",
+      "source": "assets/source/journal-cover-v4.png",
+      "export": "public/art/journal-cover-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "provenance": "Built-in OpenAI image generation, 2026-10-29. User anime reference; prompts and implementation in docs/project-meadow-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "project-grass-v4",
+      "source": "assets/source/project-grass-v4.png",
+      "export": "public/art/project-grass-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "provenance": "Built-in OpenAI image generation, 2026-10-29. User anime reference; prompts and implementation in docs/project-meadow-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "honors-grove-v4",
+      "source": "assets/source/honors-grove-v4.png",
+      "export": "public/art/honors-grove-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "provenance": "Built-in image generation, 2026-10-29; exact prompts in docs/honors-art-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-reviewed"
+    },
+    {
+      "id": "laurel-branch-v4",
+      "source": "assets/source/laurel-branch-v4.png",
+      "export": "public/art/laurel-branch-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "provenance": "Built-in image generation, 2026-10-29; exact prompts in docs/honors-art-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-reviewed"
+    },
+    {
+      "id": "laurel-passage-v4",
+      "source": "assets/source/laurel-passage-v4.png",
+      "export": "public/art/laurel-passage-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "provenance": "Built-in image generation, 2026-10-29; exact prompts in docs/honors-art-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-reviewed"
+    },
+    {
+      "id": "honor-ribbon-v4",
+      "source": "public/art/honor-ribbon-v4.svg",
+      "export": "public/art/honor-ribbon-v4.svg",
+      "kind": "original-vector-art",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "provenance": "Original hand-authored SVG cel-style keepsake, 2026-10-29.",
+      "license": "project-original",
+      "qa": "desktop-mobile-reviewed"
     }
   ]
 }

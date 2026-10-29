@@ -41,6 +41,13 @@ const BookJourney=forwardRef<BookHandle,Props>(function BookJourney({staticMode,
     el.style.setProperty('--book-leave',String(b.leave))
     el.style.setProperty('--flight-lift',String(f.lift))
     el.style.setProperty('--reading-ui',String(smooth(.90,1,b.open)*(1-smooth(0,.12,b.leave))))
+    // Use the journey's ambient clock, so the existing Pause control also
+    // stops canopy light. Only transform/opacity animate; no scene-wide blur.
+    if(p>=.94&&p<1.86){
+      el.style.setProperty('--garden-drift-x',`${Math.sin(time*.18)*12}px`)
+      el.style.setProperty('--garden-drift-y',`${Math.sin(time*.13+.8)*7}px`)
+      el.style.setProperty('--garden-light',String(.76+Math.sin(time*.24)*.10))
+    }
     setActive(old=>old===(p>=1.17&&p<1.70)?old:p>=1.17&&p<1.70)
     setArrived(old=>old===(p>=1.75)?old:p>=1.75)
     const apple=engine.current?.update(p,time)
@@ -68,7 +75,7 @@ const BookJourney=forwardRef<BookHandle,Props>(function BookJourney({staticMode,
   const choose=(i:number)=>{setIndexOpen(false);engine.current?.select(i)}
   return <section ref={root} id="projects" className={`book-journey ${active?'is-active':''} ${state.open?'is-reading':''} ${arrived?'has-left':''} ${fallback?'book-still':''} ${failed&&!staticMode?'book-failed':''}`} aria-label="The project journal">
     {!fallback&&<>
-      <div className="meadow-environment" aria-hidden="true"><div className="meadow-backdrop"/><div ref={host} className="meadow-canvas"/></div>
+      <div className="meadow-environment" aria-hidden="true"><div className="meadow-backdrop"/><div className="meadow-sunlight"/><div className="meadow-book-light"/><div ref={host} className="meadow-canvas"/></div>
       <div className="apple-project-title" aria-hidden="true"><span>AN IDEA CAN TAKE YOU ANYWHERE</span><h2>Let’s look at<br/><em>my projects.</em></h2></div>
       <div className="meadow-welcome" aria-hidden={!active||state.open}><span className="journal-eyebrow">A NEW CLEARING · A NEW CHAPTER</span><h2>Ideas, in full bloom.</h2><p>Keep scrolling. There’s a story inside.</p><div className="scroll-glyph">↓</div></div>
       <div className="reader-interface" inert={!state.open||!active} aria-hidden={!state.open||!active}>
@@ -84,10 +91,10 @@ const BookJourney=forwardRef<BookHandle,Props>(function BookJourney({staticMode,
         <label className="index-search"><Icon kind="grid"/><input type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a project, topic, or technology" aria-label="Search projects"/><span>{matches.length} projects</span></label>
         <div className="index-grid">{matches.map(({p,i})=><article key={p.slug} className={`index-card ${i===state.page?'is-current':''}`}><button className="index-open" onClick={()=>choose(i)} aria-label={`Open ${p.name} in journal`}><div className="index-card-image"><img src={`/art/${projectArtwork[i]}`} alt="" loading="lazy"/><span>{String(i+1).padStart(2,'0')}</span></div><div className="index-card-copy"><small>{p.kind}</small><h3>{p.name}<Icon kind="arrow"/></h3><p>{p.subtitle}</p><span>{i===state.page?'CURRENT PAGE':'OPEN THIS PAGE'}</span></div></button>{p.demo&&<a className="index-demo-link" href={p.demo} target="_blank" rel="noreferrer">Visit live site ↗</a>}{p.url?<a className="index-repo-link" href={p.url} target="_blank" rel="noreferrer" aria-label={`View ${p.repo??p.name} on GitHub`}>{p.fork?'View fork':'View code'} ↗ <span>{p.repo}</span></a>:<span className="index-repo-status">{p.status}</span>}</article>)}</div>
         {matches.length===0&&<p className="index-empty">No pages match that search. Try a project name or technology.</p>}
-        <div className="index-colophon"><span>PAINTED ILLUSTRATIONS · REAL PROJECTS</span><span>MADE WITH CURIOSITY ✳</span></div></div>
+        <div className="index-colophon"><span>LIVE APP & REPOSITORY CAPTURES</span><span>MADE WITH CURIOSITY ✳</span></div></div>
       </dialog>
     </>}
-    {fallback&&<div className="still-projects"><span className="journal-eyebrow">SIDANT CHATURBEDI · FIELD NOTES</span><h2>View my projects.</h2><p>Research, useful tools, and experiments.</p><div>{projects.map(p=><article key={p.slug}><span>{p.kind}</span><h3>{p.demo||p.url?<a href={p.demo||p.url} target="_blank" rel="noreferrer">{p.name} ↗</a>:p.name}</h3><p>{p.description}</p><small>{p.stack.join(' · ')}</small><p>{p.status}</p>{p.url && <a href={p.url} target="_blank" rel="noreferrer">{p.linkLabel} ↗</a>}</article>)}</div><button onClick={()=>onTravel(0)}>↑ Back to the sky</button></div>}
+    {fallback&&<div className="still-projects"><span className="journal-eyebrow">SIDANT CHATURBEDI · FIELD NOTES</span><h2>View my projects.</h2><p>Research, useful tools, and experiments.</p><div>{projects.map((p,i)=><article key={p.slug}><a href={p.demo||p.url} target="_blank" rel="noreferrer"><img className="still-project-capture" src={`/art/${projectArtwork[i]}`} alt={`${p.name} — application or repository screenshot`} loading="lazy"/></a><span>{p.kind}</span><h3>{p.demo||p.url?<a href={p.demo||p.url} target="_blank" rel="noreferrer">{p.name} ↗</a>:p.name}</h3><p>{p.description}</p><small>{p.stack.join(' · ')}</small><p>{p.status}</p>{p.url && <a href={p.url} target="_blank" rel="noreferrer">{p.linkLabel} ↗</a>}</article>)}</div><button onClick={()=>onTravel(0)}>↑ Back to the sky</button></div>}
   </section>
 })
 export default BookJourney

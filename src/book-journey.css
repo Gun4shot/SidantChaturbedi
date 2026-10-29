@@ -1,6 +1,15 @@
 .book-journey{--meadow-opacity:0;--project-title:0;--meadow-ready:0;--book-open:0;--book-leave:0;--reading-ui:0;position:static;pointer-events:none;color:#253f32;font-family:'DM Sans',sans-serif}
 .meadow-environment{position:fixed;inset:0;z-index:4;opacity:var(--meadow-opacity);filter:var(--meadow-filter,blur(90px));transform:scale(calc(1 + var(--flight-lift,0)*.14)) rotate(calc(var(--flight-lift,0)*-3deg));transform-origin:65% 48%}
-.meadow-backdrop{position:absolute;inset:0;background:url('/art/project-meadow-v2.png') center 53%/cover}
+.meadow-backdrop{position:absolute;inset:0;background:#0781ac url('/art/project-meadow-v4.webp') center 53%/cover}
+/* Portrait crops must retain grass behind the journal's far edge, rather
+   than putting that edge above the painted hill crest. */
+@media(max-width:699px){.meadow-backdrop{background-size:auto 118%;background-position:center bottom}}
+/* Keep the painted plate unfiltered and at its original framing. Light sits
+   behind the book, so printed pages and real project captures stay crisp. */
+.meadow-backdrop::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 70%,transparent 50%,#174e2d0a 100%);pointer-events:none}
+.meadow-sunlight{position:absolute;inset:-24px;pointer-events:none;opacity:var(--garden-light,.76);transform:translate3d(var(--garden-drift-x,0px),var(--garden-drift-y,0px),0);background:radial-gradient(ellipse 28% 12% at 7% 88%,#164b4520,transparent 90%),radial-gradient(ellipse 20% 8% at 89% 71%,#164b4518,transparent 90%)}
+.meadow-book-light{position:absolute;inset:0;pointer-events:none;opacity:var(--garden-light,.76);background:radial-gradient(ellipse 24% 12% at 50% 73%,#fff2c918,transparent 100%)}
+@media(prefers-reduced-motion:reduce){.meadow-sunlight{transform:none;opacity:.76}.meadow-book-light{opacity:.76}}
 .meadow-canvas{position:absolute;inset:0}.meadow-canvas canvas{display:block;width:100%;height:100%;touch-action:pan-y}.is-reading .meadow-canvas{pointer-events:auto;cursor:grab}.is-reading .meadow-canvas:active{cursor:grabbing}
 .apple-project-title{position:fixed;inset:15% 0 auto;text-align:center;z-index:9;opacity:var(--project-title);color:#fff9e6;text-shadow:0 3px 30px #471d1445;transform:translateY(calc((1 - var(--project-title))*18px))}.apple-project-title>span{font:500 10px 'DM Sans',sans-serif;letter-spacing:.25em}.apple-project-title h2{font:400 clamp(44px,6.6vw,94px)/.95 Georgia,serif;margin:22px 0}.apple-project-title em{font-weight:400}
 .journal-eyebrow{font:600 9px 'DM Sans',sans-serif;letter-spacing:.19em;color:#56674e}
@@ -22,3 +31,7 @@
 .index-open{display:block;width:100%;text-align:left;color:inherit}.index-repo-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;background:#eef0e3;border-top:1px solid #dce0ce;font-size:10px;color:#294b36}.index-repo-link span{font-size:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%;color:#56684a}.index-repo-link:hover{background:#e1e8d4;text-decoration:underline}.index-repo-status{display:block;font-size:8px;padding:13px 18px;background:#eef0e3;color:#56684a}.index-card-copy h3{overflow-wrap:anywhere}.reader-header{justify-content:flex-end}
 .book-project-link{position:absolute;display:block;touch-action:pan-y;cursor:pointer;color:#294b36}.book-project-link>span{position:absolute;right:8%;bottom:3%;font-size:10px;background:#fcfaf3;padding:5px 7px;border-bottom:1px solid #70806088}.book-project-link:hover>span{text-decoration:underline}.book-project-link:focus-visible{outline:2px solid #426947;outline-offset:-6px}.reader-footer .project-link{display:flex;gap:16px}.index-demo-link{display:block;padding:12px 18px;font-size:11px;background:#dfe8d4;color:#23462e}.index-demo-link:hover{text-decoration:underline}
 @media(max-width:699px){.book-project-link>span{font-size:9px}.reader-footer .project-link{gap:9px}}
+/* Warm lettering belongs to the shaded canopy; no panel over the artwork. */
+.book-journey .meadow-welcome{color:#fff7db;text-shadow:0 2px 3px #102f2a,0 3px 18px #102f2acc}
+.book-journey .meadow-welcome .journal-eyebrow{color:#fff4cc}
+.book-journey .meadow-welcome h2{-webkit-text-stroke:.3px #273e30}

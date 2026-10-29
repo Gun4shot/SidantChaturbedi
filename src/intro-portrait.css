@@ -1,0 +1,41 @@
+/* Paper layers keep the photograph tactile within the painted landscape. */
+.arrival .arrival-copy{left:9%;top:19%;width:43%;max-width:580px;margin:0;padding:30px 34px 28px;background:#fff7e6;color:#213e32;border:1px solid #e4d6b6;border-radius:3px 5px 42px 4px;box-shadow:8px 14px 0 #233d3020,0 22px 60px #153b3938;text-shadow:none}
+.arrival .arrival-copy::before{content:'';position:absolute;left:22px;right:22px;top:11px;border-top:1px solid #c5b99480}
+.arrival .arrival-eyebrow{color:#486044;letter-spacing:2px;font-weight:600}
+.arrival .small-star{color:#97762e}
+.arrival h2{font-size:clamp(58px,6.7vw,98px);font-weight:500;margin:20px 0}
+.arrival h2 em{color:#476349}
+.arrival .arrival-copy>p{color:#304b3b;font-weight:500;font-size:14px;margin-top:20px;line-height:1.75}
+.arrival .arrival-rule{background:#9eae87;margin:18px 0 13px}
+.arrival .arrival-footnote{color:#516248;font-size:16px;line-height:1.5}
+.portrait-stage{position:absolute;right:12%;top:19%;width:min(26vw,350px);perspective:1200px;pointer-events:auto;isolation:isolate}
+.portrait-reveal{opacity:0;transform:translate3d(45px,140px,-220px) rotateY(-65deg) rotateZ(15deg) scale(.65);transform-origin:20% 85%}
+.arrival-present .portrait-reveal{animation:portrait-unfold 1.45s cubic-bezier(.18,.7,.22,1) .12s both}
+.portrait-tilt{position:relative;transform:rotateX(var(--portrait-rx,0deg)) rotateY(var(--portrait-ry,0deg)) rotateZ(4deg);transition:transform .4s ease-out;transform-style:preserve-3d}
+.portrait-paper{background:#fff8e9;border:1px solid #e5d8bd;box-shadow:0 18px 35px #1d392a40}
+.portrait-paper-back{position:absolute;inset:4% -5% -2% 2%;background:repeating-linear-gradient(#e9ddbd 0 25px,#b2b39360 26px,#e9ddbd 27px);transform:translateZ(-18px) rotate(-9deg);border-radius:2px 4px 20px 3px}
+.portrait-photo{position:relative;margin:0;padding:12px 12px 16px;border-radius:2px 3px 5px 2px;transform:translateZ(10px)}
+.portrait-window{position:relative;overflow:hidden;aspect-ratio:1/1.16;background:#ede9df}
+.portrait-window img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
+.portrait-photo figcaption{padding:15px 3px 0;color:#354c39;font:italic 20px/1.15 'Cormorant Garamond',Georgia,serif}
+.portrait-photo small{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font:500 7px 'DM Sans',sans-serif;letter-spacing:2px;color:#647052}
+.portrait-photo small i{font-size:17px;color:#9d7c38;font-style:normal}
+.portrait-tape{position:absolute;z-index:2;top:-13px;left:32%;width:37%;height:29px;background:#d6b874b8;transform:rotate(-6deg);clip-path:polygon(2% 0,98% 4%,100% 91%,0 100%);box-shadow:0 2px 4px #76603a30}
+.portrait-stamp{position:absolute;bottom:-22px;right:-26px;display:grid;place-content:center;width:75px;height:75px;background:#355b48;border:3px double #d9dfbe;border-radius:50%;color:#fff2cd;font:500 9px/1.6 'DM Sans',sans-serif;letter-spacing:1px;text-align:center;transform:translateZ(30px) rotate(-15deg);box-shadow:0 5px 10px #173e3738}
+.portrait-glint{position:absolute;inset:-50%;background:linear-gradient(110deg,transparent 40%,#fff9dc70 49%,transparent 58%);transform:translateX(-90%);pointer-events:none}
+.arrival-present .portrait-glint{animation:portrait-light 1.5s ease-out .7s both}
+.portrait-orbit{position:absolute;inset:-30px -35px;pointer-events:none;color:#ffecb0;text-shadow:0 2px 6px #27482f}
+.portrait-orbit span{position:absolute;font-size:35px;left:-15px;top:25%;opacity:0}
+.portrait-orbit span+span{left:auto;right:-8px;top:13%;font-size:21px}
+.portrait-orbit svg{position:absolute;left:-20px;bottom:18%;width:30px;height:38px;opacity:0;transform:rotate(-25deg)}
+.arrival-present .portrait-orbit>*{animation:portrait-spark 1.3s ease-out .5s both}
+.arrival-present .portrait-orbit span+span{animation-delay:.7s}
+.arrival-present .portrait-orbit svg{animation-delay:.85s}
+@keyframes portrait-unfold{0%{opacity:0;transform:translate3d(45px,140px,-220px) rotateY(-65deg) rotateZ(15deg) scale(.65)}55%{opacity:1;transform:translate3d(-7px,-15px,35px) rotateY(9deg) rotateZ(-3deg) scale(1.04)}78%{transform:translate3d(3px,5px,0) rotateY(-3deg) rotateZ(1deg) scale(.99)}100%{opacity:1;transform:translate3d(0,0,0) rotateY(0) rotateZ(0) scale(1)}}
+@keyframes portrait-light{to{transform:translateX(95%)}}
+@keyframes portrait-spark{0%{opacity:0;translate:0 24px;scale:.4}60%{opacity:1;scale:1.15}100%{opacity:1;translate:0 0;scale:1}}
+.static-mode .portrait-reveal{opacity:1;transform:none;animation:none}
+@media(max-width:700px){.arrival .arrival-copy{left:7%;top:15%;width:86%;max-width:none;padding:23px 24px 21px;border-radius:3px 3px 30px 3px}.arrival h2{font-size:clamp(42px,10vw,62px);margin:13px 0}.arrival h2>span{font-size:21px;margin-bottom:11px}.arrival .arrival-copy>p{font-size:12px;margin-top:13px}.arrival .arrival-eyebrow{font-size:7px;letter-spacing:1.5px}.arrival .arrival-footnote{font-size:12px;display:block;max-width:57%}.arrival .arrival-rule{margin:12px 0}.portrait-stage{top:53%;right:13%;width:min(41vw,205px)}.portrait-photo{padding:8px 8px 11px}.portrait-photo figcaption{font-size:15px;padding-top:10px}.portrait-photo small{font-size:5px;letter-spacing:1px;margin-top:7px}.portrait-stamp{width:53px;height:53px;font-size:7px;right:-17px;bottom:-15px}.portrait-tape{height:22px;top:-10px}.portrait-orbit span{font-size:25px}.static-mode .arrival .arrival-copy{top:12%}}
+@media(max-height:650px) and (min-width:701px){.arrival .arrival-copy{top:18%;padding:22px 28px}.arrival h2{font-size:61px;margin:14px 0}.arrival h2>span{font-size:22px;margin-bottom:12px}.arrival .arrival-copy>p{font-size:12px;margin-top:14px}.arrival .arrival-footnote{font-size:13px}.portrait-stage{top:19%;width:min(24vw,270px)}}
+@media(max-width:700px) and (max-height:700px){.arrival .arrival-copy{top:14%;padding:19px 20px}.arrival h2{font-size:42px}.portrait-stage{top:52%;width:31vw}.arrival .arrival-footnote{max-width:65%}.portrait-photo figcaption{font-size:12px}.portrait-photo small{font-size:4px}.portrait-stamp{width:43px;height:43px;font-size:6px}}
+@media(prefers-reduced-motion:reduce){.portrait-reveal{opacity:1;transform:none}.portrait-orbit>*{opacity:1}.portrait-tilt{transform:rotate(4deg);transition:none}.portrait-glint{display:none}}

@@ -6,6 +6,7 @@ import BookJourney, { type BookHandle } from './BookJourney'
 import HonorsJourney, { type HonorsHandle } from './HonorsJourney'
 import LibraryJourney, { type LibraryHandle } from './LibraryJourney'
 import { meadowHandoff } from './book-motion'
+import { installSceneSnap } from './scene-snap'
 
 const chapters = ['Above it all', 'Down to earth', 'In the canopy', 'Grade 10', 'A-Levels', 'Research ahead', 'Newton’s apple', 'A new perspective', 'The clearing', 'Project journal']
 const chapterStops = [0, .26, .435, .59, .673, .755, .825, .98, 1.20, 1.41]
@@ -66,8 +67,8 @@ export default function App() {
         if (disposed) return
         const handoff = meadowHandoff(value)
         journey.current?.style.setProperty('--overworld-opacity', String(1-handoff.blend))
-        const medalAnchor=honors.current?.update(value, time)
-        if(medalAnchor)library.current?.update(value,time,medalAnchor)
+        honors.current?.update(value, time)
+        library.current?.update(value,time)
         const apple = book.current?.update(value, time)
         collage.current?.update(value, apple ? { ...projection, apple } : projection, time)
       },
@@ -90,6 +91,10 @@ export default function App() {
   }, [loaded])
 
   const staticMode = reduced || failed
+  useEffect(() => {
+    if (!loaded || staticMode) return
+    return installSceneSnap()
+  }, [loaded, staticMode])
   useEffect(() => {
     if (!staticMode) return
     const update = () => {
@@ -136,7 +141,7 @@ export default function App() {
 
     <div className="travel-caption" aria-hidden="true" style={{ display: inFlight ? undefined : 'none' }}><span className="caption-line" />A change of perspective.</div>
 
-    <section id="meadow" className="arrival" aria-label="About Sidant Chaturbedi" aria-hidden={!staticMode && chapter !== 1}>
+    <section id="meadow" className={`arrival ${chapter === 1 || staticMode ? 'arrival-present' : ''}`} aria-label="About Sidant Chaturbedi" aria-hidden={!staticMode && chapter !== 1} inert={!staticMode && chapter !== 1}>
       <div className="arrival-copy">
         <span className="eyebrow arrival-eyebrow"><span className="small-star">✳</span> NICE TO MEET YOU</span>
         <h2><span>Hi, I am</span>Sidant<br /><em>Chaturbedi.</em></h2>
@@ -144,7 +149,18 @@ export default function App() {
         <div className="arrival-rule" />
         <span className="arrival-footnote">Satellite research · Thoughtful tools · AI education</span>
       </div>
-      <div className="meadow-note"><span>Stay a little.</span><span>There’s no hurry here.</span><Leaf /></div>
+      <div className="portrait-stage" onPointerMove={e=>{if(reduced||e.pointerType==='touch')return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--portrait-ry',`${((e.clientX-r.left)/r.width-.5)*12}deg`);e.currentTarget.style.setProperty('--portrait-rx',`${-((e.clientY-r.top)/r.height-.5)*9}deg`)}} onPointerLeave={e=>{e.currentTarget.style.setProperty('--portrait-ry','0deg');e.currentTarget.style.setProperty('--portrait-rx','0deg')}}>
+        <div className="portrait-orbit" aria-hidden="true"><span>✧</span><span>✦</span><Leaf /></div>
+        <div className="portrait-reveal"><div className="portrait-tilt">
+          <div className="portrait-paper portrait-paper-back" aria-hidden="true" />
+          <figure className="portrait-paper portrait-photo">
+            <span className="portrait-tape" aria-hidden="true" />
+            <div className="portrait-window"><img src="/art/sidant-portrait.jpg" alt="Sidant Chaturbedi wearing a dark suit and tie" width="1172" height="1342"/><span className="portrait-glint" aria-hidden="true" /></div>
+            <figcaption><span>A face behind the curiosity.</span><small>KATHMANDU, NEPAL <i>✳</i></small></figcaption>
+          </figure>
+          <span className="portrait-stamp" aria-hidden="true">HELLO<br/>THERE ↗</span>
+        </div></div>
+      </div>
     </section>
 
     <AppleJourney ref={collage} chapter={chapter} staticMode={staticMode} />

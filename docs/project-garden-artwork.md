@@ -1,0 +1,28 @@
+# Project garden visual refresh — 2026-10-29
+
+## Scope and art direction
+
+Only the project clearing changes. Existing book geometry, framing, page turning, project links, apple reveal, bird flight and scroll timing are preserved. Forest/apple scenes and all later chapters are untouched.
+
+The user's two reference images informed the blue-green shade, sage foliage, warm terracotta details and finely inked silhouettes. Official research references: [Arrietty](https://www.ghibli.jp/works/karigurashi/) and [Totoro](https://www.ghibli.jp/works/totoro/); additional background-art reference found at [Deho Gallery](https://dehogallery.co.jp/). The palette/composition choices are our visual interpretation, not a claim of an official studio recipe. No online film still is shipped as website artwork.
+
+## Assets and quality
+
+Created using the built-in image-generation tool. Original PNGs retained; WebP exports use quality 97 and alpha quality 100, no resizing. The generator returned a **1536×1024** background despite the larger requested size, and a separate **1254×1254** transparent foreground. This improves drawn detail and foreground pixel density, but is not a native 4K background and cannot guarantee sharpness at arbitrary zoom. No artificial upscale is presented as additional detail.
+
+- `assets/source/project-garden-v3.png` → `public/art/project-garden-v3.webp`
+- `assets/source/project-garden-flora-v3.png` → `public/art/project-garden-flora-v3.webp`
+
+Background framing remains center 53% / cover, with no steady-state blur. The existing short apple handoff defocus remains unchanged. Fine foliage replaces the former large pink flowers on the same meshes, at the same positions and with the same sway. Sun patches and faint shafts move using the existing ambient clock, respecting Pause. CSS reduced-motion rules freeze decorative light. Lighting is behind the book so text and real screenshots remain sharp. Warm key light and cooler fill affect the book cover and page edges; existing printed pages retain their readability.
+
+## Exact background prompt
+
+Create a finished premium hand-drawn anime background for an interactive portfolio PROJECT JOURNAL scene, inspired by Studio Ghibli environmental painting, closely matching the supplied two STYLE references (not reproducing their composition). LANDSCAPE 3:2, request 3072x2048 pixels or highest available NATIVE resolution. Exceptionally crisp fine near-black ink outlines, precise leaf silhouettes, textured opaque gouache color fields, natural organic asymmetry, intricate tiny botanical detail, absolutely NO blur, NO depth of field, NO soft smeared digital oil painting, NO photorealism, NO 3D render. A secret summer garden clearing underneath massive old trees: deep desaturated blue-green/teal canopy shadows at both edges, sage and olive leaves picked out by warm late-afternoon sunlight, a small partly ivy-covered weathered cream cottage with terracotta tiles tucked into the far LEFT middle-distance (only 15% of canvas), distant cool green trees, tiny patches of pale turquoise sky between overhead branches. A winding narrow ochre footpath through mossy grass, fine ferns, delicate white and pale yellow flowers, gnarled roots and scattered stones. Composition: broad quiet unobstructed grassy clearing across CENTER and LOWER CENTER where a separate 3D book will be composited later. Ground plane begins about 48% canvas height, with a gentle sunlit oval at center 68% height. No object in that oval. Frame with shaded vegetation at left and right edges, canopy along top, avoid any branches crossing central book area. Lighting MUST be dramatically uneven and believable: shaded foreground corners, dark layered foliage, a few warm sunlit patches, beautifully luminous quiet central clearing for the book like a natural spotlight filtered through leaves. Calm intimate beautiful cinematic scene, rich restrained colors as in reference cottage image. No book, no people, no lettering, no watermarks, no artificial bokeh or sparkles. Fully opaque background.
+
+## Exact transparent foreground prompt
+
+Create a transparent foreground botanical sprite for the attached anime garden. Attached scene is a STYLE and palette reference only. Square 1:1 canvas, maximum native crisp detail. One naturally growing low spreading clump of fern fronds, ivy-like leaves, delicate grasses, small white daisies and sparse tiny pale yellow flowers. True transparent background through all gaps, no soil rectangle, no floor, no vase, no scenery. Plant rooted along bottom 90% width, irregular asymmetric leafy silhouette rising to upper middle, occupies 90% width and 85% height. Dense deep desaturated teal-green shaded leaves below, sage/olive leaves above with selective warm sunlight along upper-left edges. Flowers SMALL compared to leaves, no huge pink flowers. Fine near-black hand-inked outlines around every leaf and petal, opaque painted gouache cel-shading matching Studio Ghibli hand-drawn background art, detailed botanical veins, beautifully drawn natural asymmetry. NOT photorealistic, NOT rendered 3D, no blur, no painterly smearing, no outlines around the whole rectangular canvas, no cast shadow. Will be displayed around lower edges of the garden scene, so match its shaded foreground foliage exactly.
+
+## Review
+
+`node --experimental-strip-types scripts/verify-project-garden.mjs after` captures desktop/mobile arrival, clearing, book opening, reading, bird departure and reverse scrolling. It checks project links, forward/back page turns, index dialog and lighting Pause behavior. Existing camera-path tests and production build must pass. Before/after captures are in ignored `artifacts/review/`.

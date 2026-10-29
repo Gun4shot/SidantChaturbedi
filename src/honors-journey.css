@@ -18,4 +18,26 @@
 .grove-keepsake{height:auto;aspect-ratio:2/3;width:34%}.grove-keepsake img{object-fit:contain}.keepsake-0{left:-3%}.keepsake-1{left:23%;width:30%}.keepsake-2{left:47%}.keepsake-3{left:73%;width:28%}.journey-crane img{transform:perspective(900px) rotateX(var(--wing-fold,0deg));transform-origin:45% 58%;backface-visibility:hidden}
 @media(max-width:699px){.grove-keepsake{width:36%}.keepsake-0{left:-5%}.keepsake-1{left:21%;width:32%}.keepsake-2{left:45%}.keepsake-3{left:72%;width:30%}}
 @media(max-width:699px) and (min-height:721px){.grove-mobile{top:32%}}
+.grove-keepsake{width:26%}.keepsake-0{left:1%}.keepsake-1{left:27%;width:23%}.keepsake-2{left:51%}.keepsake-3{left:77%;width:22%}
+@media(max-width:699px){.grove-keepsake{width:28%}.keepsake-0{left:0%}.keepsake-1{left:26%;width:25%}.keepsake-2{left:50%}.keepsake-3{left:76%;width:23%}}
+
+/* Same summer palette as the project meadow, with cool shade beneath the tree. */
+.grove-backdrop{background-image:url('/art/honors-grove-v4.webp')}
+.grove-sunlight{inset:-24px;background:radial-gradient(ellipse 28% 19% at 25% 72%,#fff1b925,transparent 90%),radial-gradient(ellipse 27% 30% at 84% 66%,#174b3b24,transparent 90%);opacity:var(--honors-light,.64);transform:translate3d(var(--honors-light-x,0px),var(--honors-light-y,0px),0);pointer-events:none}
+.grove-shade{position:absolute;inset:0;background:linear-gradient(0deg,#153f3a8c,transparent 23%),linear-gradient(90deg,#fff3d511,transparent 40%,#133f3b0a);pointer-events:none}
+.grove-introduction{text-shadow:0 1px 2px #fff8dbb3,0 1px 16px #fff6dc66;color:#203e38}
+.grove-introduction em{color:#355947}
+.grove-branch{filter:drop-shadow(3px 7px 4px #21463822)}
+.grove-near-leaves{opacity:.92}
+.grove-keepsake{filter:drop-shadow(3px 7px 4px #173c3b35)}
+.grove-keepsake::before{content:'';position:absolute;left:50%;bottom:98.5%;width:1px;height:50px;background:#c7b77c;box-shadow:1px 0 #50634766;pointer-events:none}
+.grove-keepsake[aria-pressed=true]{filter:drop-shadow(3px 9px 5px #173c3b50)}
+.keepsake-light{position:absolute;left:26%;top:65.5%;width:48%;aspect-ratio:1;border-radius:50%;overflow:hidden;pointer-events:none;opacity:.32;z-index:1}
+.keepsake-light::after{content:'';position:absolute;inset:-80%;background:linear-gradient(120deg,transparent 40%,#fff5cc00 44%,#fff5cc80 49%,#fff5cc00 54%,transparent 60%);transform:translateX(var(--metal-light-x,0%))}
+.keepsake-symbol,.keepsake-label{z-index:2}
+.keepsake-label{background:#fff7e6f5;box-shadow:2px 4px 8px #1e423429}
+.grove-story{background:linear-gradient(120deg,#fff9ecfa,#f8f0dfee);box-shadow:3px 9px 24px #1c473726;border-color:#f9f2d9}
+.grove-dust{transform:translateY(var(--honors-float,0px))}
+.grove-dust i{width:2px;height:2px;opacity:.5;box-shadow:none;background:#fff5d9}
+@media(prefers-reduced-motion:reduce){.grove-sunlight,.grove-dust{transform:none}.keepsake-light::after{transform:none}}
 
