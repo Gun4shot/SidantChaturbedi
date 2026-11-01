@@ -272,3 +272,8 @@ Contact now leads through painted clouds to the exact opening landscape and a th
 ## 9. Maintain this handoff
 
 After a release, update the dated deployment snapshot, active art versions, significant decisions and validation evidence. Put detailed prompts and technical findings in scene documents and link them here. Distinguish deployed, local, proposed and rejected work. Never claim a live update solely because the local preview changed.
+
+
+## SEO and identity — 1 November 2026
+
+The SEO release adds build-time HTML for the homepage, a permanent JavaScript-free `/profile` reading page, canonical metadata, Person/ProfilePage/WebSite JSON-LD, social sharing metadata, `/robots.txt`, and a two-URL `/sitemap.xml`. Both reading views derive from the canonical content files; no crawler-specific rendering or fabricated search claims. The generated botanical S logo supplies the header and favicon sizes. Google verification uses the public meta tag in `index.html`; keep it in place. See [SEO and brand notes](docs/seo-and-brand.md). Production build, all 34 motion/content tests, and `node scripts/verify-seo.mjs` passed before publication. Search Console submission is a separate post-deployment step; do not equate submission with indexing or ranking.

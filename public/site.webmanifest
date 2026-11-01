@@ -1,0 +1,12 @@
+{
+  "name": "Sidant Chaturbedi — A Painted Journey",
+  "short_name": "Sidant",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#fff5dd",
+  "theme_color": "#243f35",
+  "icons": [
+    {"src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/brand/logo-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

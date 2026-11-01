@@ -727,6 +727,19 @@
       "provenance": "Built-in image generation; new garden composition and separate registered architectural detail. Prompts and limitations in docs/reading-garden-v8.md.",
       "license": "project-generated",
       "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "sidant-botanical-logo-v1",
+      "source": "assets/source/sidant-botanical-logo-v1.png",
+      "export": "public/brand/logo-512.png",
+      "kind": "generated-brand-art",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "provenance": "Built-in image generation, 1 November 2026. Prompt and export details in docs/seo-and-brand.md.",
+      "license": "project-generated",
+      "qa": "Header and reading-page reviewed; square favicon derivatives exported."
     }
   ]
 }

@@ -136,7 +136,7 @@ export default function App() {
     </div>}
 
     <header className="site-header" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>
-      <a className="identity" href="#sky" onClick={(e) => { e.preventDefault(); scrollTo(0) }} aria-label="Sidant Chaturbedi, back to the sky"><Leaf /><span>SIDANT<span className="identity-sub">CHATURBEDI</span></span></a>
+      <a className="identity" href="#sky" onClick={(e) => { e.preventDefault(); scrollTo(0) }} aria-label="Sidant Chaturbedi, back to the sky"><img className="identity-logo" src="/brand/favicon-96.png" width="36" height="36" alt=""/><span>SIDANT<span className="identity-sub">CHATURBEDI</span></span></a>
       <span className="header-note"><span className="status-dot" /> A WORLD OF MY OWN</span>
       <button className="skip-link" onClick={() => scrollTo(chapter === 9 || (staticMode && chapter === 6) ? 0 : staticMode ? Math.min(1, (chapter + 1) / 6) : chapterStops[chapter + 1])}>{staticMode && chapter === 6 ? 'Back to the sky' : ['Meet me below', 'Find my story', 'Follow an apple', 'Keep growing', 'What’s next', 'Meet Newton', 'Look closer', 'A new clearing', 'Open the journal', 'Back to the sky'][chapter]}<span aria-hidden="true">↗</span></button>
     </header>
@@ -144,8 +144,9 @@ export default function App() {
     <section id="sky" className="opening" aria-label="Welcome" aria-hidden={!staticMode && chapter !== 0} inert={!staticMode && (chapter !== 0||!skyControlsReady)}>
       <div className="opening-copy">
         <p className="eyebrow">A MOMENT TO LOOK UP</p>
-        <h1>Hello<span className="hello-dot">.</span></h1>
-        <p className="opening-subtitle">Welcome to my little corner of the world.</p>
+        <h1>Hello<span className="hello-dot">.</span><span className="sr-only"> I’m Sidant Chaturbedi.</span></h1>
+        <p className="opening-subtitle">I’m Sidant Chaturbedi. Welcome to my little world.</p>
+        <a className="profile-reading-link" href="/profile">Read my profile <span aria-hidden="true">↗</span></a>
         <span className="tiny-flourish" aria-hidden="true">✧</span>
       </div>
       <button className="scroll-invitation" onClick={() => scrollTo(staticMode ? 1 / 6 : .18)}><span className="scroll-line" /><span>SCROLL TO WANDER</span><Arrow /></button>
