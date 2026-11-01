@@ -17,9 +17,9 @@ Last reviewed: **1 November 2026**. This is the central handoff for the portfoli
 | Stack | React, TypeScript, Vite, Three.js |
 | Build / output | `npm run build` / `dist` |
 
-**Verified on 31 October 2026:** local HEAD and GitHub `main` were `708ebe320f5e8e1400f607acde44e394cf40bcad` (`708ebe3`, “Complete portfolio journey and refresh meadow and honors artwork”). GitHub's combined deployment status was `success`; the live homepage returned HTTP 200. This is a dated snapshot, not a claim about future deployments.
+**Verified on 1 November 2026:** release `552b4ee7fb947eadd82bb0926c28dd8b103855f9` was pushed to GitHub `main`; Vercel reported successful deployment. The production homepage served the matching `index-Bg9nkhkk.js` bundle. Live browser checks at 1440px and 390px confirmed the closing sky and restart, with no page errors or failed HTTP responses. Deployment: https://vercel.com/sidants-projects/sidant-chaturbedi/Dsh728Vf6koTaCqixZSHU6b8agAw . This is a dated snapshot; this follow-up documentation commit does not change the site implementation.
 
-**1 November release batch:** v8 reading garden and registered detail, v7 library, animated Hello Garden stationery, illustrated community folio, and a closing sky scene that loops into the original opening. The user requested publication to GitHub. This commit records the reviewed release; verify its GitHub/Vercel status before treating it as deployed. Historical source artwork is retained, while unused experimental runtime exports are omitted (marked in the asset manifest).
+**1 November release batch:** v8 reading garden and registered detail, v7 library, animated Hello Garden stationery, illustrated community folio, and a closing sky scene that loops into the original opening. Published at the user's request and verified on production as recorded above. Historical source artwork is retained, while unused experimental runtime exports are omitted (marked in the asset manifest).
 
 The deployed website runs independently of the local computer and dev server. Vercel does not require a terminal to remain open. No provider can guarantee that a site will never go offline; service incidents, account limits, or configuration problems can affect availability.
 
