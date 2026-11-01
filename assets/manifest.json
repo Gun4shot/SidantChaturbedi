@@ -508,6 +508,225 @@
       "provenance": "Original hand-authored SVG cel-style keepsake, 2026-10-29.",
       "license": "project-original",
       "qa": "desktop-mobile-reviewed"
+    },
+    {
+      "id": "library-arch-v4",
+      "source": "assets/source/library-arch-v4.png",
+      "export": "public/art/library-arch-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in image generation, 2026-10-29; exact prompts and native-resolution limits in docs/library-outdoor-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "contact-panorama-v4",
+      "source": "assets/source/contact-panorama-v4.png",
+      "export": "public/art/contact-panorama-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "provenance": "Built-in image generation, 2026-10-29; exact prompts and native-resolution limits in docs/library-outdoor-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "veranda-tree-v4",
+      "source": "assets/source/veranda-tree-v4.png",
+      "export": "public/art/veranda-tree-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "provenance": "Built-in image generation, 2026-10-29; exact prompts and native-resolution limits in docs/library-outdoor-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "teaching-board-v4",
+      "source": "assets/source/teaching-board-v4.png",
+      "export": "public/art/teaching-board-v4.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in image generation, 2026-10-29; exact prompts and native-resolution limits in docs/library-outdoor-v4.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "contact-panorama-v5-4096",
+      "source": "assets/source/contact-panorama-v5.svg",
+      "export": "public/art/contact-panorama-v5-4096.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        4096,
+        1365
+      ],
+      "provenance": "VTracer curves derived from project-generated contact-panorama-v4; rendered at target size, not bitmap upscaled. Settings and limits in docs/vector-panorama-v5.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "contact-panorama-v5-8192",
+      "source": "assets/source/contact-panorama-v5.svg",
+      "export": "public/art/contact-panorama-v5-8192.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        8192,
+        2731
+      ],
+      "provenance": "VTracer curves derived from project-generated contact-panorama-v4; rendered at target size, not bitmap upscaled. Settings and limits in docs/vector-panorama-v5.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "contact-panorama-v6-4096",
+      "source": "assets/source/contact-panorama-v6.svg",
+      "export": "public/art/contact-panorama-v6-4096.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        4096,
+        1365
+      ],
+      "provenance": "Project-generated v4 artwork traced to curves; panorama includes original vector embellishments. See docs/detailed-scenes-v6.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "contact-panorama-v6-8192",
+      "source": "assets/source/contact-panorama-v6.svg",
+      "export": "public/art/contact-panorama-v6-8192.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        8192,
+        2731
+      ],
+      "provenance": "Project-generated v4 artwork traced to curves; panorama includes original vector embellishments. See docs/detailed-scenes-v6.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "library-arch-v6-2048",
+      "source": "assets/source/library-arch-v6.svg",
+      "export": "public/art/library-arch-v6-2048.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        2048,
+        1365
+      ],
+      "provenance": "Project-generated v4 artwork traced to curves; panorama includes original vector embellishments. See docs/detailed-scenes-v6.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "library-arch-v6-4096",
+      "source": "assets/source/library-arch-v6.svg",
+      "export": "public/art/library-arch-v6-4096.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        4096,
+        2731
+      ],
+      "provenance": "Project-generated v4 artwork traced to curves; panorama includes original vector embellishments. See docs/detailed-scenes-v6.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "veranda-tree-v6-1024",
+      "source": "assets/source/veranda-tree-v6.svg",
+      "export": "public/art/veranda-tree-v6-1024.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "provenance": "Project-generated v4 artwork traced to curves; panorama includes original vector embellishments. See docs/detailed-scenes-v6.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "veranda-tree-v6-2048",
+      "source": "assets/source/veranda-tree-v6.svg",
+      "export": "public/art/veranda-tree-v6-2048.webp",
+      "kind": "vector-derived-painting",
+      "dimensions": [
+        2048,
+        3072
+      ],
+      "provenance": "Project-generated v4 artwork traced to curves; panorama includes original vector embellishments. See docs/detailed-scenes-v6.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "library-arch-v7",
+      "source": "assets/source/library-arch-v7.png",
+      "export": "public/art/library-arch-v7.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "provenance": "Built-in image generation, repaint guided by user anime reference and accepted meadow; preserved geometry. Prompts and limitations: docs/painted-scenes-v7.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed"
+    },
+    {
+      "id": "contact-panorama-v7",
+      "source": "assets/source/contact-panorama-v7.png",
+      "export": "public/art/contact-panorama-v7.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        2171,
+        724
+      ],
+      "provenance": "Built-in image generation, repaint guided by user anime reference and accepted meadow; preserved geometry. Prompts and limitations: docs/painted-scenes-v7.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-forward-reverse-reviewed",
+      "distribution": "Historical experiment: source retained; unused runtime export omitted from the release. Rebuild with the corresponding encoding script if needed."
+    },
+    {
+      "id": "garden-panorama-v8",
+      "source": "assets/source/garden-panorama-v8.png",
+      "export": "public/art/garden-panorama-v8.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "provenance": "Built-in image generation; new garden composition and separate registered architectural detail. Prompts and limitations in docs/reading-garden-v8.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
+    },
+    {
+      "id": "garden-detail-v8",
+      "source": "assets/source/garden-detail-v8.png",
+      "export": "public/art/garden-detail-v8.webp",
+      "kind": "generated-key-art",
+      "dimensions": [
+        1619,
+        971
+      ],
+      "provenance": "Built-in image generation; new garden composition and separate registered architectural detail. Prompts and limitations in docs/reading-garden-v8.md.",
+      "license": "project-generated",
+      "qa": "desktop-mobile-review"
     }
   ]
 }

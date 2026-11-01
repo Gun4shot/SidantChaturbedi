@@ -1,0 +1,11 @@
+# Community field guide — 31 October 2026
+
+The Leadership & Community courtyard now uses a projected illustrated folio, replacing the framed chalkboard and cream intro panel. The headline is integrated into the painted garden. Four original schematic illustrations represent AION (network), Club (interlocking construction), Tutoring (atom/open book), and Service (growing plant). They are decorative conceptual drawings, not institutional logos or project screenshots. All source facts and external links still come from community.ts.
+
+The folio uses the existing world-to-screen board projection. The obsolete chalkboard mesh and texture request were removed from courtyard-projection.ts; the shared panorama, detail registration, ground, tree, doorway and contact camera paths remain unchanged. The old artwork files are retained.
+
+A bounded arrival follows the existing courtyard arrival target using the shared ambient clock: intro copy lifts, the folio unfolds in perspective, and four paper selectors arrive in sequence. Choosing a story closes the sheet before replacing its content, then redraws the illustration as the new sheet opens. Rapid choices use the existing paper replay state machine; the content is inert while folding. Decorative illustration transforms and stroke reveal follow the same fold value. There is no endless motion while reading.
+
+Typography, paper edges, palette changes, a gutter and pressed-ink illustrations replace the generic classroom presentation. Phone layouts retain a narrow illustration column and readable story area. Four static viewport checks (1440x900, 390x844, 390x667, 844x390) verify selection and horizontal fit; portrait checks confirm no internal story scrolling. Short landscape permits story scrolling if necessary. Reduced motion shows the settled layout and switches immediately.
+
+Validation: 33 existing motion/content tests passed; production build checked. verify-courtyard.mjs passed forward/reverse doorway travel, stories, library replay, continuation and static fallback on desktop/phone. verify-community-folio.mjs checks all four stories, keyboard selection, canonical AION link and text fit. Live story captures and rapid-switch/contact round-trip checks are in verify-community-motion.mjs. Captures remain in ignored artifacts/review. No deployment.

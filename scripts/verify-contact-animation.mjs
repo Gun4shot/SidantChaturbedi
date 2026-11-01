@@ -1,0 +1,51 @@
+import {createRequire} from 'node:module'
+import assert from 'node:assert/strict'
+import {journeyToScroll} from '../src/scroll-timing.ts'
+const require=createRequire('C:/Users/Lenovo/AppData/Local/Temp/portfolio-capture/package.json')
+const {chromium}=require('playwright')
+const browser=await chromium.launch({executablePath:'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',headless:true,args:['--enable-unsafe-swiftshader']})
+try{
+ for(const [width,height] of [[1440,900],[390,844]]){
+ const page=await browser.newPage({viewport:{width,height}})
+ const errors=[];page.on('pageerror',e=>errors.push(e.message))
+ await page.goto('http://127.0.0.1:5175/',{waitUntil:'networkidle'})
+ await page.waitForSelector('.is-ready',{timeout:60000})
+ const travel=async p=>page.evaluate(f=>scrollTo({top:f*(document.documentElement.scrollHeight-innerHeight),behavior:'instant'}),journeyToScroll(p))
+ await travel(4.29)
+ await page.waitForSelector('#contact',{state:'attached',timeout:60000})
+ await page.waitForFunction(()=>parseFloat(document.querySelector('#contact').style.getPropertyValue('--entrance'))>.2)
+ await page.screenshot({path:`artifacts/review/contact-entrance-${width}-early.png`})
+ if(width===1440){
+ await page.getByRole('button',{name:'Pause ambient animation',exact:true}).evaluate(el=>el.click())
+ await page.waitForTimeout(150)
+ const held=await page.locator('#contact').evaluate(el=>el.style.getPropertyValue('--entrance'))
+ await page.waitForTimeout(250)
+ assert.equal(await page.locator('#contact').evaluate(el=>el.style.getPropertyValue('--entrance')),held)
+ await page.getByRole('button',{name:'Resume ambient animation',exact:true}).evaluate(el=>el.click())
+ }
+ await page.waitForFunction(()=>parseFloat(document.querySelector('#contact').style.getPropertyValue('--entrance'))>.76)
+ await page.screenshot({path:`artifacts/review/contact-entrance-${width}-fold.png`})
+ await page.waitForSelector('#contact:not([inert])',{timeout:30000})
+ assert.equal(await page.locator('.contact-letter').evaluate(el=>getComputedStyle(el).opacity),'1')
+ await page.getByRole('textbox',{name:/Your note/}).fill('Keep this note')
+ await page.getByRole('button',{name:'GitHub',exact:true}).click()
+ await page.waitForTimeout(100)
+ assert.equal(await page.locator('.postcard-action').getAttribute('href').then(v=>v.startsWith('mailto:')),true,'content remains until the sheet closes')
+ await page.getByRole('button',{name:'LinkedIn',exact:true}).click()
+ await page.waitForFunction(()=>document.querySelector('.contact-parcel').dataset.channel==='linkedin')
+ await page.waitForTimeout(800)
+ assert.match(await page.locator('.postcard-action').getAttribute('href'),/linkedin/)
+ await page.getByRole('button',{name:'Email',exact:true}).click()
+ await page.waitForFunction(()=>document.querySelector('.contact-parcel').dataset.channel==='letter')
+ await page.waitForTimeout(800)
+ assert.equal(await page.getByRole('textbox',{name:/Your note/}).inputValue(),'Keep this note')
+ await page.screenshot({path:`artifacts/review/contact-entrance-${width}-settled.png`})
+ await travel(3.53)
+ await page.waitForFunction(()=>parseFloat(document.querySelector('#contact').style.getPropertyValue('--entrance'))===0)
+ await travel(4.29)
+ await page.waitForSelector('#contact:not([inert])',{timeout:30000})
+ assert.deepEqual(errors,[])
+ await page.close()
+ }
+ console.log('Entrance, pause/resume, concealed selection, rapid selection, retained draft and reverse/re-entry passed.')
+}finally{await browser.close()}

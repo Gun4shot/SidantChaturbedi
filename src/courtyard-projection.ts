@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { LENS, ROOM, DOOR, OUT, RIGHT, facadePoint, FINAL_CAMERA, viewportLens, boardCorners, type BoardBounds, type CameraPose } from './courtyard-motion'
+import { LENS, ROOM, DOOR, OUT, RIGHT, facadePoint, FINAL_CAMERA, viewportLens, type BoardBounds, type CameraPose } from './courtyard-motion'
 import { journeyCamera } from './contact-motion'
 
 export type CourtyardProjection={update(p:number,w:number,h:number,board:BoardBounds):void;dispose():void}
@@ -19,19 +19,19 @@ function sourceCamera(pose:CameraPose){
   place(c,pose)
   return new THREE.Matrix4().multiplyMatrices(c.projectionMatrix,c.matrixWorldInverse)
 }
-function painting(texture:THREE.Texture,source:THREE.Matrix4,overscan=false){
+function painting(texture:THREE.Texture,source:THREE.Matrix4,aperture:THREE.Texture,overscan=false){
   return new THREE.ShaderMaterial({
-    uniforms:{painting:{value:texture},sourceCamera:{value:source},overscan:{value:overscan}},side:THREE.DoubleSide,
+    uniforms:{painting:{value:texture},aperture:{value:aperture},sourceCamera:{value:source},overscan:{value:overscan}},side:THREE.DoubleSide,
     vertexShader:`uniform mat4 sourceCamera; varying vec4 paintedPosition;
       void main(){vec4 world=modelMatrix*vec4(position,1.0);paintedPosition=sourceCamera*world;
         gl_Position=projectionMatrix*viewMatrix*world;}`,
-    fragmentShader:`uniform sampler2D painting; uniform bool overscan; varying vec4 paintedPosition;
+    fragmentShader:`uniform sampler2D painting,aperture; uniform bool overscan; varying vec4 paintedPosition;
       void main(){
         if(paintedPosition.w<=0.0)discard;
         vec2 uv=paintedPosition.xy/paintedPosition.w*.5+.5;
         if(!overscan&&(any(lessThan(uv,vec2(0.0)))||any(greaterThan(uv,vec2(1.0)))))discard;
         vec4 color=texture2D(painting,clamp(uv,vec2(0.0),vec2(1.0)));
-        if(color.a<.12)discard;
+        if(texture2D(aperture,clamp(uv,vec2(0.0),vec2(1.0))).a<.12)discard;
         gl_FragColor=vec4(color.rgb,1.0);
         #include <colorspace_fragment>
       }`,
@@ -43,16 +43,34 @@ function quad(points:number[][]){
   g.setIndex([0,1,2,0,2,3]);return g
 }
 
-function panoramaMaterial(texture:THREE.Texture,origin:{x:number;z:number}){
+function panoramaMaterial(texture:THREE.Texture,origin:{x:number;z:number},detail?:THREE.Texture){
   return new THREE.ShaderMaterial({
     side:THREE.DoubleSide,
-    uniforms:{painting:{value:texture},origin:{value:new THREE.Vector2(origin.x,origin.z)},outward:{value:new THREE.Vector2(OUT.x,OUT.z)},rightward:{value:new THREE.Vector2(RIGHT.x,RIGHT.z)},groundUV:{value:false}},
+    uniforms:{painting:{value:texture},detailPainting:{value:detail??texture},hasDetail:{value:!!detail},origin:{value:new THREE.Vector2(origin.x,origin.z)},outward:{value:new THREE.Vector2(OUT.x,OUT.z)},rightward:{value:new THREE.Vector2(RIGHT.x,RIGHT.z)},groundUV:{value:false}},
     vertexShader:`varying vec3 worldPoint;varying vec2 paintUV;void main(){vec4 world=modelMatrix*vec4(position,1.0);worldPoint=world.xyz;paintUV=uv;gl_Position=projectionMatrix*viewMatrix*world;}`,
-    fragmentShader:`uniform sampler2D painting;uniform vec2 origin,outward,rightward;uniform bool groundUV;varying vec3 worldPoint;varying vec2 paintUV;
+    fragmentShader:`uniform sampler2D painting,detailPainting;uniform vec2 origin,outward,rightward;uniform bool groundUV,hasDetail;varying vec3 worldPoint;varying vec2 paintUV;
       void main(){vec2 delta=worldPoint.xz-origin;float radius=max(length(delta),0.01);
         float angle=atan(dot(delta,rightward),dot(delta,outward));
-        vec2 uv=groundUV?vec2((angle+radians(35.0))/radians(140.0),1.0-(735.0+3520.0*(1.0/radius-1.0/56.0))/1024.0):paintUV;
-        gl_FragColor=vec4(texture2D(painting,clamp(uv,vec2(0.001),vec2(0.999))).rgb,1.0);
+        vec2 uv=groundUV?vec2((angle+radians(35.0))/radians(140.0),1.0-(855.0+3520.0*(1.0/radius-1.0/56.0))/1024.0):paintUV;
+        // Extend only the painted paving beyond the source image; clamping the last
+        // row stretched it into radial streaks while looking through the threshold.
+        if(groundUV&&uv.y<0.0)uv.y=.16-abs(mod(uv.y,.32)-.16);
+        vec3 color=texture2D(painting,clamp(uv,vec2(0.001),vec2(0.999))).rgb;
+        if(hasDetail&&!groundUV){
+          // Fixed registration of the separately painted close-up; no scroll-time swap.
+          vec2 px=vec2(uv.x*2172.0,(1.0-uv.y)*724.0);
+          float q=.00014174939*px.x-.000002564264*px.y+1.0;
+          vec2 d=vec2(2.116849568*px.x+.01918255*px.y-740.312964,
+            .075502297*px.x+2.20912216*px.y-396.678588)/q/vec2(1619.0,971.0);
+          vec2 edge=smoothstep(vec2(0.0),vec2(.15),d)*(1.0-smoothstep(vec2(.85),vec2(1.0),d));
+          // Registration is reliable around the conservatory, not the repainted
+          // distant hills. Keep the latter entirely from the continuous panorama.
+          float zone=smoothstep(.15,.19,uv.x)*(1.0-smoothstep(.36,.42,uv.x))
+            *smoothstep(.27,.35,1.0-uv.y)*(1.0-smoothstep(.74,.82,1.0-uv.y));
+          float weight=edge.x*edge.y*zone;
+          color=mix(color,texture2D(detailPainting,clamp(vec2(d.x,1.0-d.y),vec2(.001),vec2(.999))).rgb,weight);
+        }
+        gl_FragColor=vec4(color,1.0);
         #include <colorspace_fragment>
       }`,
   })
@@ -72,14 +90,26 @@ export async function createCourtyardProjection(host:HTMLElement):Promise<Courty
   }
   try{
     const loader=new THREE.TextureLoader()
-    await Promise.all(['/art/library-arch-v1.webp','/art/contact-panorama-v1.webp','/art/teaching-board-v1.webp','/art/veranda-tree-v1.webp'].map(async(url,i)=>{
-      const texture=await loader.loadAsync(url);textures[i]=texture
-      texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy())
+    // Keep the original painted color transitions. Vector tracing flattened the
+    // brushwork into disconnected patches, particularly during the doorway dolly.
+    const fallback=['/art/library-arch-v4.webp','/art/garden-panorama-v8.webp','/art/veranda-tree-v4.webp','/art/library-arch-v1.webp']
+    await Promise.all(['/art/library-arch-v7.webp','/art/garden-panorama-v8.webp','/art/veranda-tree-v4.webp','/art/library-arch-v1.webp'].map(async(url,i)=>{
+      const texture=await loader.loadAsync(url).catch(error=>{
+        if(url!==fallback[i])return loader.loadAsync(fallback[i])
+        throw error
+      });textures[i]=texture
+      texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy())
     }))
-    const indoor=painting(textures[0],sourceCamera({x:0,y:ROOM.eye,z:0,yaw:0}))
+    const gardenDetail=await loader.loadAsync('/art/garden-detail-v8.webp').catch(()=>undefined)
+    if(gardenDetail){gardenDetail.colorSpace=THREE.SRGBColorSpace;gardenDetail.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());textures.push(gardenDetail)}
+    const panoramaImage=textures[1].image as HTMLImageElement
+    renderer.domElement.dataset.panoramaSize=`${panoramaImage.width}x${panoramaImage.height}`
+    renderer.domElement.dataset.artSizes=JSON.stringify([0,1,2].map(i=>{const img=textures[i].image as HTMLImageElement;return [img.width,img.height]}))
+    // Keep the calibrated doorway silhouette independent of the new painted color plate.
+    const indoor=painting(textures[0],sourceCamera({x:0,y:ROOM.eye,z:0,yaw:0}),textures[3])
     // The exterior has its own fixed capture camera, never an independently animated camera.
     const outsideOrigin={x:DOOR.x-OUT.x*1.4,z:DOOR.z-OUT.z*1.4}
-    const outdoor=panoramaMaterial(textures[1],outsideOrigin)
+    const outdoor=panoramaMaterial(textures[1],outsideOrigin,gardenDetail)
     materials.push(indoor,outdoor)
     const add=(geometry:THREE.BufferGeometry,material:THREE.Material)=>{geometries.push(geometry);scene.add(new THREE.Mesh(geometry,material))}
     const {left:l,ceiling:top,back}=ROOM,front=2,z=-back
@@ -96,14 +126,14 @@ export async function createCourtyardProjection(host:HTMLElement):Promise<Courty
     }
     // One continuous cylindrical matte covers both courtyard and veranda.
     // A shared horizontal floor meets it at a single ring; there is no image seam.
-    const join=735,groundDepth=56
+    const join=855,groundDepth=56
     const point=(radius:number,angle:number,y:number)=>[outsideOrigin.x+(OUT.x*Math.cos(angle)+RIGHT.x*Math.sin(angle))*radius,y,outsideOrigin.z+(OUT.z*Math.cos(angle)+RIGHT.z*Math.sin(angle))*radius]
     const cols=160,rows=12,positions:number[]=[],indices:number[]=[],uvs:number[]=[]
     for(let j=0;j<=rows;j++)for(let i=0;i<=cols;i++){
       const angle=(-55+i/cols*180)*Math.PI/180,u=(angle+35*Math.PI/180)/(140*Math.PI/180),v=-260+j/rows*(join+260)
       // A continuous cylindrical matte must not fold between inferred depths:
       // lateral travel would expose those folds as stretched strips of paint.
-      // Foreground depth comes from the separate tree, board and letterbox.
+      // Foreground depth comes from the separate tree; the folio uses projected HTML.
       positions.push(...point(groundDepth,angle,(join-v)*groundDepth/LENS.focal))
       uvs.push(u,1-v/1024)
       if(i<cols&&j<rows){const a=j*(cols+1)+i;indices.push(a,a+1,a+cols+2,a,a+cols+2,a+cols+1)}
@@ -118,29 +148,23 @@ export async function createCourtyardProjection(host:HTMLElement):Promise<Courty
     // Keep the previous floor-overlap fix when the exterior extends under the library.
     const groundMaterial=outdoor.clone();groundMaterial.uniforms.groundUV.value=true;groundMaterial.polygonOffset=true;groundMaterial.polygonOffsetFactor=1;groundMaterial.polygonOffsetUnits=4;materials.push(groundMaterial)
     const ground=new THREE.BufferGeometry();ground.setAttribute('position',new THREE.Float32BufferAttribute(floorPositions,3));ground.setIndex(floorIndices);add(ground,groundMaterial)
-    const treeMaterial=new THREE.MeshBasicMaterial({map:textures[3],side:THREE.DoubleSide,alphaTest:.25})
+    const treeMaterial=new THREE.MeshBasicMaterial({map:textures[2],side:THREE.DoubleSide,alphaTest:.25})
     materials.push(treeMaterial)
     const treeX=FINAL_CAMERA.x+RIGHT.x*4.8+OUT.x*5.2,treeZ=FINAL_CAMERA.z+RIGHT.z*4.8+OUT.z*5.2,treeYaw=FINAL_CAMERA.yaw+32*Math.PI/180
     const treeRight={x:Math.cos(treeYaw),z:Math.sin(treeYaw)},treeHalf=1.4
     const treeGeometry=quad([[treeX-treeRight.x*treeHalf,0,treeZ-treeRight.z*treeHalf],[treeX+treeRight.x*treeHalf,0,treeZ+treeRight.z*treeHalf],[treeX+treeRight.x*treeHalf,6.8,treeZ+treeRight.z*treeHalf],[treeX-treeRight.x*treeHalf,6.8,treeZ-treeRight.z*treeHalf]])
     treeGeometry.setAttribute('uv',new THREE.Float32BufferAttribute([0,0,1,0,1,1,0,1],2));add(treeGeometry,treeMaterial)
-    const boardMaterial=new THREE.MeshBasicMaterial({map:textures[2],side:THREE.DoubleSide,transparent:true,alphaTest:.1})
-    materials.push(boardMaterial)
-    const boardGeometry=new THREE.BufferGeometry()
-    boardGeometry.setIndex([0,1,2,0,2,3]);boardGeometry.setAttribute('uv',new THREE.Float32BufferAttribute([0,1,1,1,1,0,0,0],2))
-    add(boardGeometry,boardMaterial)
     host.append(renderer.domElement)
     let width=0,height=0,lastT=-1
-    return {update(p,w,h,board){
+    return {update(p,w,h,_board){
       if(disposed)return
       if(width===w&&height===h&&Math.abs(lastT-p)<1e-7)return
       if(width!==w||height!==h){
-        width=w;height=h;renderer.setSize(w,h,false)
+        // Supersample paint edges, bounded to a 4K-sized framebuffer for large displays.
+        width=w;height=h;renderer.setPixelRatio(Math.min(2,Math.sqrt(3840*2160/(w*h))));renderer.setSize(w,h,false)
         const lens=viewportLens(w,h)
         camera.projectionMatrix.copy(lensMatrix(lens.focal,lens.cx,lens.cy,w,h))
         camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert()
-        boardGeometry.setAttribute('position',new THREE.Float32BufferAttribute(boardCorners(w,h,board).flatMap(p=>[p.x,p.y,p.z]),3))
-        boardGeometry.computeBoundingSphere()
       }
       place(camera,journeyCamera(p));renderer.render(scene,camera);lastT=p
       renderer.domElement.dataset.camera=JSON.stringify({...journeyCamera(p),focal:viewportLens(w,h).focal,finalX:FINAL_CAMERA.x})

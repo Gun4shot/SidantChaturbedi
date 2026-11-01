@@ -28,7 +28,7 @@ for(const [name,width,height] of [['desktop',1440,900],['mobile',390,844]]){
  console.log(name,'layout',await page.locator('.chalk-story').evaluate(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,height:el.clientHeight,scrollHeight:el.scrollHeight})))
  for(const tab of ['Club','Tutoring','Service','AION']){
   await page.getByRole('button',{name:new RegExp(tab)}).click()
-  await page.waitForTimeout(450)
+  await page.waitForSelector('.community-folio:not([inert])')
   console.log(name,tab,await page.locator('.chalk-story h3').textContent())
  }
  await page.screenshot({path:`artifacts/review/${name}-court-final.png`})

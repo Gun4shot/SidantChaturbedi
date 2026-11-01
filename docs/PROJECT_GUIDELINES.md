@@ -1,40 +1,13 @@
 # Project guidelines
 
-## Visual language
+Current guidelines, history, architecture, and deployment instructions are consolidated in [PROJECT_HANDBOOK.md](../PROJECT_HANDBOOK.md). Read that document first; latest user instructions take precedence.
 
-The work uses hand-painted watercolor and gouache textures, gentle ink contours, atmospheric depth, saturated natural color, and paper-like overlays. Animation should resemble layered cels or a multiplane camera. Avoid glossy game assets, generic glass UI, hard sci-fi styling, and primitive-model scenery.
+- Public name: **Sidant Chaturbedi**, as recorded in `src/profile.ts`.
+- Hand-painted anime scenery, coherent color shapes, intentional lighting, crisp composition, and restrained dark contours.
+- Continuous reversible camera movement, readable concise text, accessible interactions, Pause and reduced-motion support.
+- Preserve camera mechanics during art-only changes. Avoid noisy detail, generic 3D scenery, and traced/posterized backgrounds.
+- Curate projects; use actual screenshots and clickable verified destinations. Keep publication statuses accurate.
+- Preserve versioned art sources and provenance; report actual dimensions honestly.
+- Work locally and verify. Push a completed reviewed batch when publishing is requested.
 
-## Palette
-
-- Ink: `#183B3C`
-- Mist: `#B9DEDD`
-- Paper: `#FFF7DC`
-- Sun: `#F5B94C`
-- Coral: `#EE8063`
-- Forest: `#275B4B`
-
-## Type
-
-- Display: Yomogi, with a handwritten system fallback.
-- Body: DM Sans, with a system sans-serif fallback.
-- Keep titles short, large, and embedded in the composition.
-
-## Image delivery
-
-- Preserve original generated PNGs under `assets/source/`.
-- Place compressed WebP exports under `public/art/`.
-- Record provenance and review status in `assets/manifest.json`.
-- Do not call temporary character art final or represent it as Siddhant.
-
-## Motion
-
-- Scroll progress drives one continuous shot.
-- Use scale, translation, opacity, and layered cloud masks.
-- Keep motion transforms on composite-friendly properties.
-- Respect `prefers-reduced-motion` with a short crossfade and static decoration.
-
-## Content
-
-- Use the public name “Siddhant Chaturvedi” for this direction.
-- Treat résumé and repository claims as source material to review.
-- Publish only curated public contact details.
+The former contents described an early concept, including an incorrect name spelling. The handbook supersedes those instructions; Git history preserves the earlier document.

@@ -6,6 +6,8 @@ import BookJourney, { type BookHandle } from './BookJourney'
 import HonorsJourney, { type HonorsHandle } from './HonorsJourney'
 import LibraryJourney, { type LibraryHandle } from './LibraryJourney'
 import { meadowHandoff } from './book-motion'
+import EndingJourney, {type EndingHandle} from './EndingJourney'
+import {endingMotion} from './ending-motion'
 import { installSceneSnap } from './scene-snap'
 
 const chapters = ['Above it all', 'Down to earth', 'In the canopy', 'Grade 10', 'A-Levels', 'Research ahead', 'Newton’s apple', 'A new perspective', 'The clearing', 'Project journal']
@@ -20,6 +22,7 @@ function Arrow({ up = false }: { up?: boolean }) {
 }
 
 export default function App() {
+  const ending=useRef<EndingHandle>(null)
   const host = useRef<HTMLDivElement>(null)
   const journey = useRef<HTMLElement>(null)
   const engine = useRef<Landscape | null>(null)
@@ -27,6 +30,7 @@ export default function App() {
   const book = useRef<BookHandle>(null)
   const honors = useRef<HonorsHandle>(null)
   const library = useRef<LibraryHandle>(null)
+  const [skyControlsReady,setSkyControlsReady]=useState(true)
   const [inFlight, setInFlight] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [loadProgress, setLoadProgress] = useState(0)
@@ -55,22 +59,30 @@ export default function App() {
       onLoad: (value) => { if (!disposed) setLoadProgress(value) },
       onProgress: (value) => {
         if (disposed || !journey.current) return
+        const finale=endingMotion(value)
+        journey.current.dataset.returnSky=String(finale.sky)
+        journey.current.dataset.ending=String(finale.active)
+        journey.current.style.setProperty('--loop-hello',String(finale.hello))
+        setSkyControlsReady(!finale.sky||finale.hello>.99)
+        const uiValue=finale.sky?0:value
         journey.current.style.setProperty('--journey', String(value / JOURNEY_END))
-        journey.current.style.setProperty('--intro-y', `${-Math.min(1, value / .105) * 150}vh`)
+        journey.current.style.setProperty('--intro-y', `${-Math.min(1, uiValue / .105) * 150}vh`)
         const slide = (start: number, end: number, leave: number, gone: number) =>
           Math.max(0, Math.min(1, (end - value) / (end - start))) * 120 - Math.max(0, Math.min(1, (value - leave) / (gone - leave))) * 130
         journey.current.style.setProperty('--arrival-y', `${slide(.21, .24, .277, .31)}vh`)
-        setChapter(value < .21 ? 0 : value < .355 ? 1 : value < .54 ? 2 : value < .632 ? 3 : value < .712 ? 4 : value < .798 ? 5 : value < .90 ? 6 : value < 1.07 ? 7 : value < 1.20 ? 8 : 9)
-        setInFlight(value > .10 && value < .24)
+        setChapter(uiValue < .21 ? 0 : value < .355 ? 1 : value < .54 ? 2 : value < .632 ? 3 : value < .712 ? 4 : value < .798 ? 5 : value < .90 ? 6 : value < 1.07 ? 7 : value < 1.20 ? 8 : 9)
+        setInFlight(uiValue > .10 && value < .24)
       },
       onCollageFrame: (value, projection, time) => {
         if (disposed) return
         const handoff = meadowHandoff(value)
-        journey.current?.style.setProperty('--overworld-opacity', String(1-handoff.blend))
+        const returnedSky=endingMotion(value).sky
+        journey.current?.style.setProperty('--overworld-opacity', String(returnedSky?1:1-handoff.blend))
+        ending.current?.update(value)
         honors.current?.update(value, time)
         library.current?.update(value,time)
         const apple = book.current?.update(value, time)
-        collage.current?.update(value, apple ? { ...projection, apple } : projection, time)
+        collage.current?.update(returnedSky?0:value, returnedSky?projection:apple ? { ...projection, apple } : projection, time)
       },
       onError: () => { if (!disposed) { setFailed(true); setLoaded(true) } },
     })).then((landscape) => {
@@ -123,13 +135,13 @@ export default function App() {
       <span className="loading-percent">{Math.round(loadProgress * 100)}%</span>
     </div>}
 
-    <header className="site-header" inert={!staticMode && chapter >= 8}>
+    <header className="site-header" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>
       <a className="identity" href="#sky" onClick={(e) => { e.preventDefault(); scrollTo(0) }} aria-label="Sidant Chaturbedi, back to the sky"><Leaf /><span>SIDANT<span className="identity-sub">CHATURBEDI</span></span></a>
       <span className="header-note"><span className="status-dot" /> A WORLD OF MY OWN</span>
       <button className="skip-link" onClick={() => scrollTo(chapter === 9 || (staticMode && chapter === 6) ? 0 : staticMode ? Math.min(1, (chapter + 1) / 6) : chapterStops[chapter + 1])}>{staticMode && chapter === 6 ? 'Back to the sky' : ['Meet me below', 'Find my story', 'Follow an apple', 'Keep growing', 'What’s next', 'Meet Newton', 'Look closer', 'A new clearing', 'Open the journal', 'Back to the sky'][chapter]}<span aria-hidden="true">↗</span></button>
     </header>
 
-    <section id="sky" className="opening" aria-label="Welcome" aria-hidden={!staticMode && chapter !== 0} inert={!staticMode && chapter !== 0}>
+    <section id="sky" className="opening" aria-label="Welcome" aria-hidden={!staticMode && chapter !== 0} inert={!staticMode && (chapter !== 0||!skyControlsReady)}>
       <div className="opening-copy">
         <p className="eyebrow">A MOMENT TO LOOK UP</p>
         <h1>Hello<span className="hello-dot">.</span></h1>
@@ -169,11 +181,13 @@ export default function App() {
     <HonorsJourney ref={honors} staticMode={staticMode} onTravel={scrollTo} />
     <LibraryJourney ref={library} staticMode={staticMode} onTravel={scrollTo} />
 
-    <nav className="chapter-nav" aria-label="Journey chapters" inert={!staticMode && chapter >= 8}>
+    <EndingJourney ref={ending} staticMode={staticMode} onRestart={()=>{if(staticMode)window.scrollTo({top:0,behavior:'instant'});else engine.current?.restart()}}/>
+
+    <nav className="chapter-nav" aria-label="Journey chapters" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>
       {chapters.map((name, index) => <button key={name} className={chapter === index ? 'active' : ''} onClick={() => scrollTo(staticMode ? Math.min(1, index / 6) : chapterStops[index])} aria-label={name} aria-current={chapter === index ? 'step' : undefined}><span className="chapter-label">{name}</span><span className="chapter-tick" /></button>)}
     </nav>
 
-    <footer className="world-footer" inert={!staticMode && chapter >= 8}>
+    <footer className="world-footer" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>
       <div className="coordinates"><span className="compass" aria-hidden="true">✧</span><span><span className="chapter-number">0{chapter + 1}</span> / {chapters[chapter]}</span></div>
       <span className="footer-center">TAKE THE SCENIC ROUTE</span>
       <div className="scene-controls">

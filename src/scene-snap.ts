@@ -1,7 +1,9 @@
 import { journeyToScroll, scrollToJourney } from './scroll-timing.ts'
 
+import {ENDING_READING} from './ending-motion.ts'
+
 // Resting compositions only: never capture a bird pass, leaf pass or doorway.
-export const SCENE_STOPS = [0, .26, .435, .59, .673, .755, .825, 1.20, 1.41, 2.03, 2.68, 3.53, 4.29]
+export const SCENE_STOPS = [0, .26, .435, .59, .673, .755, .825, 1.20, 1.41, 2.03, 2.68, 3.53, 4.29, ENDING_READING]
 export const SNAP_RADIUS = .055
 export function nearbyScene(progress:number, released:number|null=null) {
   if(released!==null && Math.abs(progress-released)<SNAP_RADIUS*1.6)return null
@@ -37,6 +39,8 @@ export function installSceneSnap() {
   const down=()=>{held=true;clear()}
   const up=()=>{held=false;onScroll()}
   const key=(event:KeyboardEvent)=>{if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key))interrupt()}
+  const onLoop=()=>{clear();released=null}
+  window.addEventListener('journey-loop',onLoop)
   window.addEventListener('scroll',onScroll,{passive:true})
   window.addEventListener('wheel',interrupt,{passive:true})
   window.addEventListener('touchstart',down,{passive:true})
@@ -48,6 +52,7 @@ export function installSceneSnap() {
   window.addEventListener('resize',clear)
   return ()=>{
     clear()
+    window.removeEventListener('journey-loop',onLoop)
     window.removeEventListener('scroll',onScroll)
     window.removeEventListener('wheel',interrupt)
     window.removeEventListener('touchstart',down)

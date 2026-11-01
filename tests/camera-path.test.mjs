@@ -484,3 +484,41 @@ test('contact reading snaps without interrupting the camera turn',async()=>{
   assert.equal(nearbyScene(CONTACT_READING+.01),CONTACT_READING)
   for(const p of [3.65,3.8,3.95,4.1,4.2])assert.equal(nearbyScene(p),null)
 })
+
+test('contact entrance stages objects, bounds fast jumps and respects a stopped clock',async()=>{
+ const {advanceContactReveal,contactRevealTarget,contactObjectPose,contactNoteReveal}=await import('../src/contact-reveal.ts')
+ assert.equal(contactRevealTarget(0),0);assert.equal(contactRevealTarget(1),1)
+ assert.equal(advanceContactReveal(.4,1,0),.4)
+ assert.ok(advanceContactReveal(0,1,10)<.04,'a resumed tab cannot skip the entire reveal')
+ assert.ok(contactObjectPose(.2,0).opacity>contactObjectPose(.2,2).opacity,'objects arrive in order')
+ assert.equal(contactNoteReveal(.6),0,'note waits for the objects')
+ for(let i=0;i<3;i++){
+  assert.equal(contactObjectPose(0,i).opacity,0)
+  const settled=contactObjectPose(1,i)
+  assert.equal(settled.opacity,1)
+  for(const key of ['y','z','rx','ry','rz'])assert.ok(Math.abs(settled[key])<1e-9)
+ }
+ let reveal=0
+ for(let i=0;i<110;i++)reveal=advanceContactReveal(reveal,1,1/60)
+ assert.equal(reveal,1)
+ for(let i=0;i<110;i++)reveal=advanceContactReveal(reveal,0,1/60)
+ assert.equal(reveal,0)
+})
+
+test('ending uses the exact opening camera and conceals the scene exchange',async()=>{
+ const {endingMotion,endingCameraProgress,ENDING_SKY,ENDING_READING,LOOP_END,canWrapJourney}=await import('../src/ending-motion.ts')
+ assert.equal(endingMotion(ENDING_SKY).cloud,1)
+ assert.equal(endingMotion(ENDING_READING).thanks,1)
+ assert.equal(endingMotion(LOOP_END).hello,1)
+ assert.equal(endingMotion(LOOP_END).cloud,0)
+ for(const compact of [false,true]){
+  assert.deepEqual(cameraPosition(endingCameraProgress(LOOP_END),compact),cameraPosition(0,compact))
+  assert.deepEqual(cameraTarget(endingCameraProgress(LOOP_END),compact),cameraTarget(0,compact))
+ }
+ assert.equal(canWrapJourney(LOOP_END-.01,LOOP_END),false)
+ assert.equal(canWrapJourney(LOOP_END,LOOP_END-.01),false)
+ assert.equal(canWrapJourney(LOOP_END,LOOP_END),true)
+ const {nearbyScene}=await import('../src/scene-snap.ts')
+ assert.equal(nearbyScene(ENDING_READING),ENDING_READING)
+ assert.equal(nearbyScene(LOOP_END-.02),null)
+})

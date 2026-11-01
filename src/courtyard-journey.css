@@ -1,7 +1,7 @@
 .courtyard-journey{--court-ui:0;--court-arrival:0;--exterior-scale:1.12;--exterior-x:7vw;--exterior-y:3.5vh;--board-x:42vw;--board-y:16vh;--board-scale:.68;--board-turn:-24deg;--canopy-y:-42vh;position:absolute;inset:0;overflow:hidden;background:#c6c9a4;color:#264134}
-.courtyard-exterior{position:absolute;inset:-3%;background:url('/art/learning-courtyard-v1.webp') center/cover;transform:translate3d(var(--exterior-x),var(--exterior-y),0) scale(var(--exterior-scale));will-change:transform}
-.library-architecture{position:absolute;left:0;top:0;width:1536px;height:1024px;transform-origin:0 0;background:url('/art/library-arch-v1.webp') 0 0/100% 100% no-repeat,url('/art/library-arch-v1.webp') 0 0/100% 100% no-repeat;z-index:3;will-change:transform;pointer-events:none}
-.courtyard-journey:not(.courtyard-ready)::after{content:'';position:absolute;inset:-4%;background:url('/art/publications-library-v1.png') center/cover;z-index:5;pointer-events:none}
+.courtyard-exterior{position:absolute;inset:-3%;background:url('/art/garden-panorama-v8.webp') left center/auto 100%;transform:translate3d(var(--exterior-x),var(--exterior-y),0) scale(var(--exterior-scale));will-change:transform}
+.library-architecture{position:absolute;left:0;top:0;width:1536px;height:1024px;transform-origin:0 0;background:url('/art/library-arch-v7.webp') 0 0/100% 100% no-repeat,url('/art/library-arch-v7.webp') 0 0/100% 100% no-repeat;z-index:3;will-change:transform;pointer-events:none}
+.courtyard-journey:not(.courtyard-ready)::after{content:'';position:absolute;inset:-4%;background:url('/art/library-arch-v7.webp') center/cover;z-index:5;pointer-events:none}
 .courtyard-projection,.courtyard-camera{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .courtyard-journey:not(.courtyard-still) .courtyard-content{perspective:none}
 .courtyard-journey:not(.courtyard-still) .courtyard-board{transform-origin:0 0;will-change:transform}

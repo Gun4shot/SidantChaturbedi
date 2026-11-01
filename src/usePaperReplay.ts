@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 /** Change the content only when the rolled sheet has completely concealed it. */
-export function usePaperReplay(staticMode:boolean) {
+export function usePaperReplay(staticMode:boolean,inertDuringReplay=false) {
   const sheet=useRef<HTMLDivElement>(null)
   const [selected,setSelected]=useState(0)
   const current=useRef(0),pending=useRef(0),frame=useRef(0),open=useRef(1)
@@ -14,6 +14,7 @@ export function usePaperReplay(staticMode:boolean) {
   function reset() {
     cancelAnimationFrame(frame.current)
     phase.current='idle';open.current=1
+    if(inertDuringReplay&&sheet.current)sheet.current.inert=false
     sheet.current?.style.removeProperty('--paper-open')
     sheet.current?.style.removeProperty('--paper-curl')
   }
@@ -33,6 +34,7 @@ export function usePaperReplay(staticMode:boolean) {
     }
     if(phase.current==='idle'&&index===current.current)return
     pending.current=index
+    if(inertDuringReplay&&sheet.current)sheet.current.inert=true
     if(phase.current==='closing')return
     cancelAnimationFrame(frame.current)
     phase.current='closing'

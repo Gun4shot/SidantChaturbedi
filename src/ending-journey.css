@@ -1,0 +1,22 @@
+.ending-journey{--ending-cloud:0;--ending-thanks:0;position:fixed;inset:0;z-index:20;pointer-events:none;visibility:hidden;color:#fff9e7;isolation:isolate}
+.ending-clouds{position:absolute;inset:-8%;background:#f0f2e5;opacity:var(--ending-cloud);pointer-events:none;overflow:hidden}
+.ending-clouds img{position:absolute;width:120%;height:70%;object-fit:fill;left:-10%;top:-10%;transform:translateY(calc((1 - var(--ending-cloud))*35vh));filter:drop-shadow(0 5px 20px #789aab25)}
+.ending-clouds img:nth-child(2){top:35%;left:-25%;width:150%;transform:translateY(calc((1 - var(--ending-cloud))*-35vh)) rotate(180deg)}
+.ending-clouds img:nth-child(3){top:12%;left:15%;width:100%;height:90%;transform:translateX(calc((1 - var(--ending-cloud))*50vw))}
+.ending-copy{position:absolute;inset:17% 6% 10%;display:flex;align-items:center;flex-direction:column;text-align:center;opacity:var(--ending-thanks);transform:translateY(var(--ending-drift,0px));text-shadow:0 2px 25px #244e6a30}
+.ending-copy h2{font:400 clamp(65px,8.3vw,125px)/.95 'Cormorant Garamond',Georgia,serif;letter-spacing:-.04em;margin:26px 0 22px}.ending-copy h2 em{font-weight:400;color:#fff0bf}.ending-copy p{font:20px/1.6 'Cormorant Garamond',Georgia,serif;margin:0}.ending-flourish{font-size:28px;margin:20px 0;color:#fff0bf}
+.ending-copy button{pointer-events:auto;font-size:12px;border-bottom:1px solid #fff8d980;padding:10px 6px;min-height:44px}.ending-copy button span{margin-left:20px;font-size:20px}.ending-copy small{font-size:7px;letter-spacing:.18em;margin-top:19px}.ending-copy button:focus-visible{outline:2px solid #fff4c9;outline-offset:6px}
+.journey[data-return-sky=true]>.world{opacity:1}
+.journey[data-return-sky=true]>.library-journey{visibility:hidden!important}
+.journey[data-return-sky=true]>.opening{transform:none;opacity:var(--loop-hello,0)}
+.journey[data-return-sky=true]>.site-header,.journey[data-return-sky=true]>.world-footer{transform:none;opacity:var(--loop-hello,0)}
+.journey[data-return-sky=true]>.chapter-nav{opacity:var(--loop-hello,0)}
+.journey[data-ending=true]>.journey-progress{opacity:0}
+.journey[data-return-sky=true]>.journey-progress{opacity:var(--loop-hello,0)}
+.journey[data-return-sky=true]>.journey-progress span{transform:scaleX(0)}
+.ending-still{position:relative;visibility:visible;min-height:100svh;--ending-thanks:1;background:url('/art/valley-master.png') center/cover no-repeat}
+.ending-still .ending-copy{position:relative;inset:auto;padding:100px 24px 80px;min-height:100svh;justify-content:center}
+@media(max-width:699px){.ending-copy{inset:22% 7% 8%}.ending-copy h2{font-size:66px;margin:24px 0}.ending-copy p{font-size:18px}.ending-copy small{font-size:6px;line-height:1.8;max-width:28ch}.ending-copy .eyebrow{font-size:6px;letter-spacing:.18em}}
+@media(max-height:600px) and (min-width:700px){.ending-copy{inset:13% 6% 4%}.ending-copy h2{font-size:65px;margin:14px 0}.ending-copy p{font-size:17px}.ending-flourish{display:none}.ending-copy button{margin-top:10px}.ending-copy small{margin-top:8px}}
+.journey[data-return-sky=true]>.library-journey{opacity:0;pointer-events:none}
+.journey[data-return-sky=true]>.book-journey,.journey[data-return-sky=true]>.honors-journey,.journey[data-return-sky=true]>.journey-crane,.journey[data-return-sky=true]>.arrival{opacity:0;pointer-events:none;visibility:hidden!important}

@@ -1,9 +1,11 @@
 import * as THREE from 'three'
+import {ENDING_START,canWrapJourney,endingCameraProgress} from './ending-motion'
 import { scrollToJourney } from './scroll-timing'
 import { cameraPosition, cameraTarget, groundHeight, HERO_TREE, riverCenter, riverWidth, smooth, APPLES, NEWTON, LANDING, HEAD, canopyAppleWorld, fallingAppleWorld, appleStemAnchor } from './journey-path'
 import type { CollageProjection } from './apple-motion'
 
 export interface Landscape {
+  restart(): void
   dispose(): void
   setPaused(paused: boolean): void
   setUltra(ultra: boolean): void
@@ -64,6 +66,15 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   }
   const onScroll = () => { targetProgress = scrollToJourney(clamp(scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight), 0, 1)) }
 
+  const restart = () => {
+    // The endpoint is the exact opening pose. Reset scroll and the damped clock together.
+    progress=0;targetProgress=0;emittedProgress=-1
+    renderer.domElement.dataset.loopCount=String(Number(renderer.domElement.dataset.loopCount??0)+1)
+    window.scrollTo({top:0,behavior:'instant'})
+    window.dispatchEvent(new Event('journey-loop'))
+    const focused=document.activeElement
+    if(focused instanceof HTMLElement&&focused!==document.body)focused.blur()
+  }
   const cleanup = () => {
     disposed = true
     renderer.setAnimationLoop(null)
@@ -379,11 +390,12 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
       const smoothing=1-Math.exp(-dt*7.5)
       progress += (targetProgress-progress)*smoothing
       if(Math.abs(targetProgress-progress)<.000015) progress=targetProgress
+      if(canWrapJourney(progress,targetProgress))restart()
       if(!paused) ambientTime+=dt
       timeUniform.value=ambientTime
-      camera.position.copy(cameraPosition(progress, mobile(), innerWidth/innerHeight))
+      camera.position.copy(cameraPosition(endingCameraProgress(progress), mobile(), innerWidth/innerHeight))
       // Look direction changes continuously with the same progress as position.
-      camera.lookAt(cameraTarget(progress, mobile(), innerWidth/innerHeight))
+      camera.lookAt(cameraTarget(endingCameraProgress(progress), mobile(), innerWidth/innerHeight))
       clouds.forEach(({mesh,x,phase,speed})=>{mesh.position.x=x+Math.sin(ambientTime*.024*speed+phase)*70})
       birds.forEach(({group,left,right,phase,radius,height})=>{
         const a=ambientTime*.075+phase
@@ -395,8 +407,8 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
       seeds.position.x=Math.sin(ambientTime*.06)*7
       seeds.position.y=Math.sin(ambientTime*.14)*.6
       // Both environments share the scroll clock during the defocused transition.
-      camera.updateMatrixWorld(); if (progress < 1.03) renderer.render(scene,camera)
-      options.onCollageFrame?.(progress, { apples: APPLES.map((_, index) => projectCutout(canopyAppleWorld(index, ambientTime))), apple: projectCutout(fallingAppleWorld(progress, ambientTime)), stem: projectCutout(appleStemAnchor(ambientTime)), head: projectCutout(HEAD), newton: projectCutout(NEWTON), landing: projectCutout(LANDING) }, ambientTime)
+      camera.updateMatrixWorld(); if (progress < 1.03 || progress>=ENDING_START) renderer.render(scene,camera)
+      options.onCollageFrame?.(progress, { apples: APPLES.map((_, index) => projectCutout(canopyAppleWorld(index, ambientTime))), apple: projectCutout(fallingAppleWorld(endingCameraProgress(progress), ambientTime)), stem: projectCutout(appleStemAnchor(ambientTime)), head: projectCutout(HEAD), newton: projectCutout(NEWTON), landing: projectCutout(LANDING) }, ambientTime)
       if(Math.abs(progress-emittedProgress)>.00015){options.onProgress(progress);emittedProgress=progress}
       if(import.meta.env.DEV){
         frames++;averageFrame=mix(averageFrame,dt*1000,.025)
@@ -409,13 +421,13 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
     renderer.domElement.addEventListener('webglcontextlost',onLost)
     resize()
     progress=targetProgress
-    camera.position.copy(cameraPosition(progress, mobile(), innerWidth/innerHeight))
-    camera.lookAt(cameraTarget(progress, mobile(), innerWidth/innerHeight))
+    camera.position.copy(cameraPosition(endingCameraProgress(progress), mobile(), innerWidth/innerHeight))
+    camera.lookAt(cameraTarget(endingCameraProgress(progress), mobile(), innerWidth/innerHeight))
     await renderer.compileAsync(scene,camera)
     frame(performance.now())
     options.onLoad(1)
     renderer.setAnimationLoop(frame)
-    return { dispose: cleanup, setPaused(value){paused=value},setUltra(value){ultra=value;resize()} }
+    return { restart, dispose: cleanup, setPaused(value){paused=value},setUltra(value){ultra=value;resize()} }
   } catch(error) {
     cleanup()
     throw error

@@ -1,5 +1,7 @@
 # Project plan
 
+> **Historical initial concept, superseded.** This plan predates the completed portfolio and uses an early incorrect name spelling. For the current name (Sidant Chaturbedi), implemented scenes, accepted design, local/deployed status, and publishing workflow, read [PROJECT_HANDBOOK.md](../PROJECT_HANDBOOK.md). Milestones below are history, not the current task list.
+
 ## Creative objective
 
 Build a vivid, hand-painted portfolio for Siddhant Chaturvedi that feels like travelling through an illustrated film. The site is a vertical journey rather than an open world. Generated key art carries the visual quality; browser animation adds depth, movement, and continuity.
