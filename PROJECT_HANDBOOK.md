@@ -1,6 +1,6 @@
 # Sidant Chaturbedi — project handbook
 
-Last reviewed: **1 November 2026**. This is the central handoff for the portfolio: guidelines, implementation, history, and publishing. Older documents in `docs/` record experiments and may be superseded. Current source code and the latest user instructions take precedence.
+Last reviewed: **2 November 2026**. This is the central handoff for the portfolio: guidelines, implementation, history, and publishing. Older documents in `docs/` record experiments and may be superseded. Current source code and the latest user instructions take precedence.
 
 ## 1. Project and hosting
 
@@ -277,3 +277,6 @@ After a release, update the dated deployment snapshot, active art versions, sign
 ## SEO and identity — 1 November 2026
 
 The SEO release adds build-time HTML for the homepage, a permanent JavaScript-free `/profile` reading page, canonical metadata, Person/ProfilePage/WebSite JSON-LD, social sharing metadata, `/robots.txt`, and a two-URL `/sitemap.xml`. Both reading views derive from the canonical content files; no crawler-specific rendering or fabricated search claims. The generated botanical S logo supplies the header and favicon sizes. Google verification uses the public meta tag in `index.html`; keep it in place. See [SEO and brand notes](docs/seo-and-brand.md). Production build, all 34 motion/content tests, and `node scripts/verify-seo.mjs` passed before publication. Search Console submission is a separate post-deployment step; do not equate submission with indexing or ranking.
+
+
+SEO publication status (2 November): `ec9ff13` is deployed. Google ownership is verified and the sitemap reports Success with 2 discovered pages. Both URLs remain discovered, not indexed. Manual requests are unconfirmed after Google submission/reCAPTCHA connectivity errors; retry later in Search Console. Production URLs are accessible and have no noindex restriction. Detailed evidence and limits are in [SEO notes](docs/seo-and-brand.md).

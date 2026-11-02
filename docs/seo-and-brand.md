@@ -24,3 +24,14 @@ Exact generation prompt:
 - [Favicons](https://developers.google.com/search/docs/appearance/favicon-in-search)
 - [ProfilePage structured data](https://developers.google.com/search/docs/appearance/structured-data/profile-page)
 - [URL inspection and indexing requests](https://support.google.com/webmasters/answer/9012289)
+
+
+## Production and Google verification — 2 November 2026
+
+- Implementation commit `ec9ff13` was pushed to GitHub main and deployed successfully to Vercel on 1 November. Deployment: https://vercel.com/sidants-projects/sidant-chaturbedi/5fzD6gFDq5cktDNi1N2FxKiFUTVj .
+- Ownership of the URL-prefix property `https://sidant-chaturbedi.vercel.app/` was verified with the HTML meta tag in the owner's existing Google account.
+- Sitemap submission succeeded on 1 November. Rechecked on 2 November: status **Success**, **2 discovered pages**. Evidence retained locally in `artifacts/review/google-sitemap-success.png` (ignored, not public).
+- URL inspection on 2 November reports **Discovered - currently not indexed** for both the homepage and `/profile`. Both are associated with the submitted sitemap. Discovery is not indexing.
+- Manual indexing requests and the homepage live test returned generic Google errors. The profile request additionally reported that the browser could not connect to the reCAPTCHA service. A normal reload and bounded retry produced no success confirmation. No CAPTCHA was solved, no browser protections were disabled, and no successful manual request is claimed. Leave these requests pending for a later Search Console retry once verification connectivity works.
+- Production HTTP checks on 2 November: homepage, profile, robots, sitemap all return 200; both pages have the intended canonical URLs, no noindex meta tag and no X-Robots-Tag restriction. The preceding release check also verified the favicon and a real 404 for a missing page.
+- The site is ready for crawling; Google controls whether/when it indexes or ranks the pages. Do not promise first place or describe the pages as already indexed.
