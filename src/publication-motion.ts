@@ -1,6 +1,6 @@
 import { clamp, smooth } from './book-motion.ts'
 
-export const LIBRARY_START = 2.14, LIBRARY_END = 2.64
+export const LIBRARY_START = 2.035, LIBRARY_END = 2.64
 
 // The leaf keeps moving while the scenery changes behind its opaque centre.
 // Scroll alone controls the shot, including the exact reverse journey.

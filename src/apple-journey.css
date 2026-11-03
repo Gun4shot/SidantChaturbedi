@@ -97,6 +97,10 @@ html{scrollbar-width:none}html::-webkit-scrollbar{display:none}
 
 .tree-note{visibility:hidden;will-change:transform}
 .tree-invitation{opacity:var(--canopy-open,0)}
+.tree-invitation button{display:block;margin:4px auto 0;padding:6px 12px;font:inherit;font-size:.78em;color:#fff0ba;text-decoration:underline;text-underline-offset:4px}
+.tree-invitation button:enabled{pointer-events:auto}
+.journey:has(.canopy-note[aria-hidden="false"]) .world-footer{pointer-events:none}
+.journey:has(.canopy-note[aria-hidden="false"]) .world-footer button{pointer-events:auto}
 .static-mode .tree-note{visibility:visible!important;transform:none!important}
 .static-mode .tree-invitation{opacity:1}
 .static-mode .apple-stem{display:none}

@@ -12,12 +12,12 @@ const introductions = [
   { label: '04 / MY APPROACH', title: 'Learn. Build. Grow.', body: 'Researching road vulnerability. Building study tools. Helping train Nepal’s AI Olympiad community.', apple: 6 },
 ]
 const education = [
-  { ...profile.education[0], number: '01', label: 'THE FIRST SEED', title: 'A strong', emphasis: 'beginning.', timing: [.54, .565, .62, .642] },
+  { ...profile.education[0], number: '01', label: 'THE FIRST SEED', title: 'A strong', emphasis: 'beginning.', timing: [.566, .594, .62, .642] },
   { ...profile.education[1], number: '02', label: 'REACHING FURTHER', title: 'Room to', emphasis: 'grow.', timing: [.632, .652, .70, .722] },
   { ...profile.education[2], number: '03', label: 'THE NEXT CHAPTER', title: 'Still', emphasis: 'becoming.', timing: [.712, .732, .79, .812] },
 ]
 
-const AppleJourney = forwardRef<AppleJourneyHandle, { chapter: number; staticMode: boolean }>(function AppleJourney({ chapter, staticMode }, ref) {
+const AppleJourney = forwardRef<AppleJourneyHandle, { chapter: number; staticMode: boolean; onFollow(): void }>(function AppleJourney({ chapter, staticMode, onFollow }, ref) {
   const root = useRef<HTMLDivElement>(null)
   const fruit = useRef<HTMLDivElement>(null)
   const stem = useRef<SVGSVGElement>(null)
@@ -78,7 +78,7 @@ const AppleJourney = forwardRef<AppleJourneyHandle, { chapter: number; staticMod
       newton.current.style.visibility = figure.visible ? 'visible' : 'hidden'
     }
     element.style.setProperty('--canopy-open', String(cardBloom(p, [.345, .385, .485, .517])))
-    element.style.setProperty('--landing-y', `${panelSlide(p, .798, .818, .845, .88)}vh`)
+    element.style.setProperty('--landing-y', `${panelSlide(p, .798, .818, .871, .90)}vh`)
     element.style.setProperty('--speed', String(pose.speed))
     element.style.setProperty('--streak-y', `${(p * 12000) % 180}px`)
     element.parentElement?.style.setProperty('--world-blur', `${pose.blur}px`)
@@ -156,7 +156,10 @@ const AppleJourney = forwardRef<AppleJourneyHandle, { chapter: number; staticMod
       {introductions.map((entry, i) => <article ref={el => { introCards.current[i] = el }} className={`tree-note tree-note-${i}`} key={entry.label}>
         <span className="tree-note-label">{entry.label}</span><h2>{entry.title}</h2><p>{entry.body}</p>
       </article>)}
-      <p className="tree-invitation">A little curiosity. A world of possibilities.<span>↓ Follow an apple through my story</span></p>
+      <p className="tree-invitation">A little curiosity. A world of possibilities.
+        {staticMode ? <span>↓ Follow an apple through my story</span> :
+          <button disabled={chapter !== 2} onClick={onFollow}>↓ Follow the falling apple</button>}
+      </p>
     </section>
     {education.map((entry, i) => <section key={entry.number} ref={el => { notes.current[i] = el }} className="education-scroll-note" aria-label={`Education stage ${i + 1}`} aria-hidden={!staticMode && chapter !== i + 3}>
       <article className="education-paper"><div className="education-kicker"><span>GROWING, ONE CHAPTER AT A TIME</span><span>{entry.number} / 03</span></div><p className="education-label">{entry.label}</p><h2>{entry.title}<br /><em>{entry.emphasis}</em></h2><p className="qualification">{entry.qualification}</p><h3>{entry.school}</h3><p className="education-detail">{entry.detail}</p><div className="education-result"><strong>{entry.result}</strong><span>{entry.resultLabel}</span></div><div className="education-progress" aria-hidden="true">{[0, 1, 2].map(n => <span className={i === n ? 'current' : ''} key={n} />)}</div></article>

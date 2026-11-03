@@ -13,9 +13,9 @@ function place(camera:THREE.Camera,pose:CameraPose){
   camera.lookAt(pose.x+Math.sin(pose.yaw),pose.y,pose.z-Math.cos(pose.yaw))
   camera.updateMatrixWorld(true)
 }
-function sourceCamera(pose:CameraPose){
+function sourceCamera(pose:CameraPose, lens=lensMatrix(LENS.focal,LENS.cx,LENS.cy,LENS.width,LENS.height)){
   const c=new THREE.Camera()
-  c.projectionMatrix.copy(lensMatrix(LENS.focal,LENS.cx,LENS.cy,LENS.width,LENS.height))
+  c.projectionMatrix.copy(lens)
   place(c,pose)
   return new THREE.Matrix4().multiplyMatrices(c.projectionMatrix,c.matrixWorldInverse)
 }
@@ -44,11 +44,14 @@ function quad(points:number[][]){
 }
 
 function panoramaMaterial(texture:THREE.Texture,origin:{x:number;z:number},detail?:THREE.Texture){
+  // Project the entire conservatory painting from the courtyard reading position.
+  // It stays fixed on the same walls and paving as the camera leaves for the veranda.
+  const courtyardPlate = sourceCamera(FINAL_CAMERA, lensMatrix(1040,809.5,556,1619,971))
   return new THREE.ShaderMaterial({
     side:THREE.DoubleSide,
-    uniforms:{painting:{value:texture},detailPainting:{value:detail??texture},hasDetail:{value:!!detail},origin:{value:new THREE.Vector2(origin.x,origin.z)},outward:{value:new THREE.Vector2(OUT.x,OUT.z)},rightward:{value:new THREE.Vector2(RIGHT.x,RIGHT.z)},groundUV:{value:false}},
+    uniforms:{courtPlate:{value:courtyardPlate},painting:{value:texture},detailPainting:{value:detail??texture},hasDetail:{value:!!detail},origin:{value:new THREE.Vector2(origin.x,origin.z)},outward:{value:new THREE.Vector2(OUT.x,OUT.z)},rightward:{value:new THREE.Vector2(RIGHT.x,RIGHT.z)},groundUV:{value:false}},
     vertexShader:`varying vec3 worldPoint;varying vec2 paintUV;void main(){vec4 world=modelMatrix*vec4(position,1.0);worldPoint=world.xyz;paintUV=uv;gl_Position=projectionMatrix*viewMatrix*world;}`,
-    fragmentShader:`uniform sampler2D painting,detailPainting;uniform vec2 origin,outward,rightward;uniform bool groundUV,hasDetail;varying vec3 worldPoint;varying vec2 paintUV;
+    fragmentShader:`uniform sampler2D painting,detailPainting;uniform mat4 courtPlate;uniform vec2 origin,outward,rightward;uniform bool groundUV,hasDetail;varying vec3 worldPoint;varying vec2 paintUV;
       void main(){vec2 delta=worldPoint.xz-origin;float radius=max(length(delta),0.01);
         float angle=atan(dot(delta,rightward),dot(delta,outward));
         vec2 uv=groundUV?vec2((angle+radians(35.0))/radians(140.0),1.0-(855.0+3520.0*(1.0/radius-1.0/56.0))/1024.0):paintUV;
@@ -56,19 +59,11 @@ function panoramaMaterial(texture:THREE.Texture,origin:{x:number;z:number},detai
         // row stretched it into radial streaks while looking through the threshold.
         if(groundUV&&uv.y<0.0)uv.y=.16-abs(mod(uv.y,.32)-.16);
         vec3 color=texture2D(painting,clamp(uv,vec2(0.001),vec2(0.999))).rgb;
-        if(hasDetail&&!groundUV){
-          // Fixed registration of the separately painted close-up; no scroll-time swap.
-          vec2 px=vec2(uv.x*2172.0,(1.0-uv.y)*724.0);
-          float q=.00014174939*px.x-.000002564264*px.y+1.0;
-          vec2 d=vec2(2.116849568*px.x+.01918255*px.y-740.312964,
-            .075502297*px.x+2.20912216*px.y-396.678588)/q/vec2(1619.0,971.0);
-          vec2 edge=smoothstep(vec2(0.0),vec2(.15),d)*(1.0-smoothstep(vec2(.85),vec2(1.0),d));
-          // Registration is reliable around the conservatory, not the repainted
-          // distant hills. Keep the latter entirely from the continuous panorama.
-          float zone=smoothstep(.15,.19,uv.x)*(1.0-smoothstep(.36,.42,uv.x))
-            *smoothstep(.27,.35,1.0-uv.y)*(1.0-smoothstep(.74,.82,1.0-uv.y));
-          float weight=edge.x*edge.y*zone;
-          color=mix(color,texture2D(detailPainting,clamp(vec2(d.x,1.0-d.y),vec2(.001),vec2(.999))).rgb,weight);
+        vec4 capture=courtPlate*vec4(worldPoint,1.0);
+        if(hasDetail&&capture.w>0.0){
+          vec2 d=capture.xy/capture.w*.5+.5;
+          vec2 edge=smoothstep(vec2(0.0),vec2(.065),min(d,1.0-d));
+          color=mix(color,texture2D(detailPainting,clamp(d,0.0,1.0)).rgb,edge.x*edge.y);
         }
         gl_FragColor=vec4(color,1.0);
         #include <colorspace_fragment>

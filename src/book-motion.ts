@@ -1,6 +1,6 @@
 export const clamp = (v: number) => Math.max(0, Math.min(1, v))
 export const smooth = (a: number, b: number, p: number) => { const t = clamp((p-a)/(b-a)); return t*t*t*(t*(t*6-15)+10) }
-export const CLOSE_START = .842, CLOSE_END = .94, REVEAL_START = 1.035, REVEAL_END = 1.20
+export const CLOSE_START = .87, CLOSE_END = .94, REVEAL_START = 1.035, REVEAL_END = 1.20
 export const BOOK_OPEN_START=1.21, BOOK_OPEN_END=1.36, BOOK_LEAVE_START=1.48, BOOK_LEAVE_END=1.60
 export function bookScroll(p:number){return {open:smooth(BOOK_OPEN_START,BOOK_OPEN_END,p),leave:smooth(BOOK_LEAVE_START,BOOK_LEAVE_END,p)}}
 export const BOOK_WIDTH=3.6, BOOK_HEIGHT=4
@@ -47,7 +47,7 @@ export function closeFraming(aspect: number) {
 }
 export function meadowHandoff(p: number) {
   return { blend: smooth(.975, 1.025, p), reveal: smooth(REVEAL_START, REVEAL_END, p),
-    blur: 90 * smooth(.85, .94, p) * (1-smooth(REVEAL_START, 1.18, p)),
+    blur: 90 * smooth(CLOSE_START, CLOSE_END, p) * (1-smooth(REVEAL_START, 1.18, p)),
     title: smooth(.90, .945, p) * (1-smooth(1.055, 1.105, p)), ready: smooth(1.17, 1.21, p) }
 }
 // A lifted corner leads the turn; the lower edge follows with a short paper lag.

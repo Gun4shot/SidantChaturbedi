@@ -1,10 +1,15 @@
 import * as THREE from 'three'
 import {ENDING_START,canWrapJourney,endingCameraProgress} from './ending-motion'
-import { scrollToJourney } from './scroll-timing'
+import { journeyToScroll, scrollToJourney } from './scroll-timing'
+import { nextBeat, passageDuration, READING_ROOM } from './scene-snap'
 import { cameraPosition, cameraTarget, groundHeight, HERO_TREE, riverCenter, riverWidth, smooth, APPLES, NEWTON, LANDING, HEAD, canopyAppleWorld, fallingAppleWorld, appleStemAnchor } from './journey-path'
 import type { CollageProjection } from './apple-motion'
 
 export interface Landscape {
+  step(direction: number): void
+  travelTo(progress: number): void
+  isPlaying(): boolean
+  readingArrival(): number
   restart(): void
   dispose(): void
   setPaused(paused: boolean): void
@@ -45,6 +50,9 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   let ultra = false
   let targetProgress = 0
   let progress = 0
+  let passage: { from: number; to: number; duration: number; elapsed: number } | null = null
+  let pendingStep = 0
+  let readingArrival = -Infinity
   let ambientTime = 0
   let lastTime = performance.now()
   let emittedProgress = -1
@@ -66,7 +74,47 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   }
   const onScroll = () => { targetProgress = scrollToJourney(clamp(scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight), 0, 1)) }
 
+  const settleAt = (destination: number) => {
+    if (destination === READING_ROOM) {
+      pendingStep = 0
+      readingArrival = performance.now()
+    }
+    passage = null
+    progress = targetProgress = destination
+    window.scrollTo({ top: journeyToScroll(destination) * (document.documentElement.scrollHeight - innerHeight), behavior: 'instant' })
+  }
+  const travelTo = (destination: number) => {
+    pendingStep = 0
+    if (passage?.to === destination) return
+    const duration = passageDuration(progress, destination)
+    if (duration) {
+      passage = { from: progress, to: destination, duration, elapsed: 0 }
+    } else {
+      settleAt(destination)
+    }
+  }
+  const step = (direction: number) => {
+    if (!passage) {
+      travelTo(nextBeat(progress, direction))
+      return
+    }
+    if (direction === Math.sign(passage.to - passage.from)) {
+      pendingStep = direction
+      return
+    }
+    // Retrace from the frame on screen, including a second change of direction.
+    pendingStep = 0
+    const endpoint = passage.to
+    const destination = nextBeat(endpoint, direction)
+    const fraction = Math.min(1, Math.abs((progress - destination) / (endpoint - destination)))
+    const duration = passageDuration(endpoint, destination) * fraction
+    if (duration < 16) settleAt(destination)
+    else passage = { from: progress, to: destination, duration, elapsed: 0 }
+  }
+
   const restart = () => {
+    passage = null
+    pendingStep = 0
     // The endpoint is the exact opening pose. Reset scroll and the damped clock together.
     progress=0;targetProgress=0;emittedProgress=-1
     renderer.domElement.dataset.loopCount=String(Number(renderer.domElement.dataset.loopCount??0)+1)
@@ -104,8 +152,7 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
     const loader = new THREE.TextureLoader()
     let loaded = 0
     const urls = ['mountains.png', 'cloud.png', 'meadow-grasses.png', 'tree.png', 'ground-texture.png']
-    // All assets load before the first scene frame. No mid-flight texture swaps.
-    const collageReady = Promise.all(['apple-collage.png', 'newton-collage.png', 'project-meadow-v2.png'].map(url => new Promise<void>((resolve, reject) => {
+    const collageReady = Promise.all(['apple-collage.png', 'newton-collage.png'].map(url => new Promise<void>((resolve, reject) => {
       const image = new Image(); image.onload = () => image.decode().then(resolve, reject); image.onerror = reject; image.src = `/art/${url}`
     })))
     const maps = await Promise.all(urls.map(async (url) => {
@@ -384,12 +431,22 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
     }
     function frame(now: number) {
       if (disposed || document.hidden) { lastTime = now; return }
-      const dt = Math.min((now-lastTime)/1000,.06)
+      const frameMs = Math.max(0, now - lastTime)
+      const dt = Math.min(frameMs / 1000, .06)
       lastTime=now
-      // Frame-rate independent damping, including wheel, touch and reversed scrolling.
-      const smoothing=1-Math.exp(-dt*7.5)
-      progress += (targetProgress-progress)*smoothing
-      if(Math.abs(targetProgress-progress)<.000015) progress=targetProgress
+      if (passage) {
+        // Keep the story on time on lower frame rate devices. Visibility changes reset lastTime.
+        passage.elapsed += frameMs
+        const t = Math.min(1, passage.elapsed / passage.duration)
+        progress = mix(passage.from, passage.to, .35 * t + .65 * t * t * (3 - 2 * t))
+        if (t === 1) {
+          settleAt(passage.to)
+          if (pendingStep && !canWrapJourney(progress, targetProgress)) step(pendingStep)
+        }
+      } else {
+        progress += (targetProgress - progress) * (1 - Math.exp(-dt * 7.5))
+        if (Math.abs(targetProgress - progress) < .000015) progress = targetProgress
+      }
       if(canWrapJourney(progress,targetProgress))restart()
       if(!paused) ambientTime+=dt
       timeUniform.value=ambientTime
@@ -427,7 +484,7 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
     frame(performance.now())
     options.onLoad(1)
     renderer.setAnimationLoop(frame)
-    return { restart, dispose: cleanup, setPaused(value){paused=value},setUltra(value){ultra=value;resize()} }
+    return { step, travelTo, isPlaying: () => passage !== null, readingArrival: () => readingArrival, restart, dispose: cleanup, setPaused(value){paused=value},setUltra(value){ultra=value;resize()} }
   } catch(error) {
     cleanup()
     throw error

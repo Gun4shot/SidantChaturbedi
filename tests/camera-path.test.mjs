@@ -55,7 +55,9 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
     assert.ok(Math.abs(impact.x - impact.headX) < 1e-8)
     assert.ok(Math.abs(impact.y + impact.size * .46 - impact.headY) < 1e-8)
     assert.ok(projection(HIT + .002, width, height).apple.y < impact.y)
-    assert.ok(appleWorld(.94).y > LANDING.y + APPLES[0].size, 'close-up happens in mid-air, before landing')
+    const grounded = projection(GROUND, width, height)
+    assert.ok(Math.abs(grounded.apple.y + grounded.apple.size * .46 - grounded.landing.y) < 1e-8)
+    assert.ok(grounded.landing.y < height, 'landing must be visible in the wide shot')
     for (const boundary of [.49, .555, .755, HIT, GROUND, ZOOM, .978, .995]) {
       const a = applePose(boundary - 1e-8, projection(boundary - 1e-8, width, height), width, height)
       const b = applePose(boundary + 1e-8, projection(boundary + 1e-8, width, height), width, height)
@@ -68,14 +70,14 @@ for (const [width, height] of [[1280, 720], [390, 844]]) {
     assert.ok(Math.abs(end.x - width / 2) < 1e-6)
   })
 }
-test('constant physical size, straight fall, then slow descending bounce during close-up', () => {
+test('constant physical size, straight fall, then a grounded apple throughout the close-up', () => {
   for (let p = 0; p <= 1; p += .001) {
     const apple = appleWorld(p)
     assert.equal(apple.size, APPLES[0].size)
     if (p <= HIT) { assert.equal(apple.x, HEAD.x); assert.equal(apple.z, HEAD.z) }
     if (p > .556 && p < HIT) assert.ok(apple.y < appleWorld(p - .001).y)
-    if (p > .843 && p < .94) assert.ok(apple.y < appleWorld(p-.001).y, 'apple is descending during the approach')
-    if (p >= .94) assert.deepEqual(apple, appleWorld(.94))
+    if (p > .843 && p < GROUND) assert.ok(apple.y < appleWorld(p-.001).y, 'apple descends after the rebound')
+    if (p >= GROUND) assert.deepEqual(apple, appleWorld(GROUND))
   }
   const landed = appleWorld(.94), target = new THREE.Vector3(landed.x, landed.y, landed.z)
   assert.ok(cameraPosition(.97).distanceTo(target) < cameraPosition(ZOOM).distanceTo(target))
@@ -315,6 +317,20 @@ test('bird passage stays sharp and crosses its close-up within a short scroll sp
 
 import { publicationMotion, LIBRARY_START, LIBRARY_END } from '../src/publication-motion.ts'
 import { publications } from '../src/publications.ts'
+test('one forward gesture per education card, then a visible rebound; reversing retraces the stops',async()=>{
+  const {CANOPY, EDUCATION_STOPS, NEWTON_READING, APPLE_CLOSEUP, nextBeat, passageDuration}=await import('../src/scene-snap.ts')
+  const orchard=[CANOPY,...EDUCATION_STOPS,NEWTON_READING,APPLE_CLOSEUP,1.20]
+  for(let i=1;i<orchard.length;i++){
+    const from=orchard[i-1], to=orchard[i]
+    assert.equal(nextBeat(from,1),to)
+    assert.equal(nextBeat(to,-1),from)
+    assert.ok(passageDuration(from,to)>0 && passageDuration(from,to)<=1200)
+    assert.equal(passageDuration(from,to),passageDuration(to,from))
+  }
+  assert.equal(NEWTON_READING,GROUND)
+  assert.ok(appleWorld(NEWTON_READING).x>HEAD.x)
+})
+
 test('scene snapping captures nearby compositions without trapping departure or interrupting transitions',async()=>{
   const {nearbyScene,SCENE_STOPS}=await import('../src/scene-snap.ts')
   for(const stop of SCENE_STOPS){
@@ -322,7 +338,7 @@ test('scene snapping captures nearby compositions without trapping departure or 
     assert.equal(nearbyScene(Math.max(0,stop-.01)),stop)
     assert.equal(nearbyScene(stop+.025,stop),null,'a new gesture can leave the settled scene')
   }
-  for(const p of [.13,.34,.98,1.64,1.74,2.3,2.48])assert.equal(nearbyScene(p),null,'transition remains free')
+  for(const p of [.13,.34,.95,1.64,1.74,2.3,2.48])assert.equal(nearbyScene(p),null,'transition remains free')
 })
 test('laurel passage is continuous and reversible; scenery changes under opaque leaf coverage',()=>{
   for(const [w,h] of [[1280,720],[390,844],[2560,1080],[844,390]]){

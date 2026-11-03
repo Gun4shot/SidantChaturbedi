@@ -1,6 +1,6 @@
 import { clamp, smooth } from './book-motion.ts'
 
-export const COURTYARD_START=2.80, COURTYARD_END=3.48, COURTYARD_READING=3.53
+export const COURTYARD_START=2.685, COURTYARD_END=3.48, COURTYARD_READING=3.53
 export const ARCH={width:1536,height:1024,cx:1182,cy:540,left:1135,right:1225,top:430,bottom:650}
 // Approximate single-view calibration. Dimensions are world units, not CSS pixels.
 // The optical centre is shifted vertically to preserve the painting's horizon.

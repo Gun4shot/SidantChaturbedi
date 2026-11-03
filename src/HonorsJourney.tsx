@@ -56,7 +56,7 @@ const HonorsJourney = forwardRef<HonorsHandle, { staticMode: boolean; onTravel(p
         <span className="grove-hint">Four keepsakes. Four stories.<br/><i>Choose one to look closer.</i></span>
       </div>
       <article className="grove-story" aria-live="polite" aria-atomic="true"><span className="grove-eyebrow">0{selected+1} / {award.label}</span><h3>{award.title}</h3><p>{award.detail}</p><div><strong>{award.distinction}</strong><span>{award.year}</span></div></article>
-      <button className="grove-library-link" onClick={()=>staticMode?document.getElementById('library')?.scrollIntoView():onTravel(2.64)}>Follow a little further. The reading room awaits ↓</button>
+      <button className="grove-library-link" onClick={()=>staticMode?document.getElementById('library')?.scrollIntoView():onTravel(2.68)}>Follow a little further. The reading room awaits ↓</button>
       <footer className="grove-footer"><button onClick={()=>onTravel(0)}>↑ Back to the sky</button><span>THERE IS STILL SO MUCH TO EXPLORE.</span><div><a href={`mailto:${profile.email}`}>Say hello ↗</a><a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a></div></footer>
     </div>
     </div>

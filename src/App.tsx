@@ -1,17 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Landscape } from './landscape'
 import AppleJourney, { type AppleJourneyHandle } from './AppleJourney'
-import { journeyToScroll, SCROLL_HEIGHT, JOURNEY_END } from './scroll-timing'
+import { SCROLL_HEIGHT, JOURNEY_END } from './scroll-timing'
 import BookJourney, { type BookHandle } from './BookJourney'
 import HonorsJourney, { type HonorsHandle } from './HonorsJourney'
 import LibraryJourney, { type LibraryHandle } from './LibraryJourney'
 import { meadowHandoff } from './book-motion'
 import EndingJourney, {type EndingHandle} from './EndingJourney'
 import {endingMotion} from './ending-motion'
-import { installSceneSnap } from './scene-snap'
+import { installStoryInput } from './story-input'
+import { CANOPY, EDUCATION_STOPS, NEWTON_READING } from './scene-snap'
 
-const chapters = ['Above it all', 'Down to earth', 'In the canopy', 'Grade 10', 'A-Levels', 'Research ahead', 'Newton’s apple', 'A new perspective', 'The clearing', 'Project journal']
-const chapterStops = [0, .26, .435, .59, .673, .755, .825, .98, 1.20, 1.41]
+const chapters = ['Above it all', 'Down to earth', 'In the canopy', 'Grade 10', 'A-Levels', 'Research ahead', 'Newton’s apple', 'Project journal', 'Laurel grove', 'Reading room', 'Courtyard', 'Contact', 'Thank-you']
+const chapterStops = [0, .26, CANOPY, ...EDUCATION_STOPS, NEWTON_READING, 1.41, 2.03, 2.68, 3.53, 4.29, 5.04]
+const chapterStarts = [.21, .355, .566, .632, .712, .798, 1.17, 1.90, 2.14, 2.80, 3.62, 4.42]
 
 function Leaf({ className = '' }: { className?: string }) {
   return <svg className={className} width="26" height="32" viewBox="0 0 26 32" fill="none" aria-hidden="true"><path d="M21 3C5 4 1 12 7 21c8 6 17-2 14-18Z" stroke="currentColor" strokeWidth="1.2"/><path d="M4 29 18 8M10 19l-1-7m5 1 6-1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
@@ -70,7 +72,8 @@ export default function App() {
         const slide = (start: number, end: number, leave: number, gone: number) =>
           Math.max(0, Math.min(1, (end - value) / (end - start))) * 120 - Math.max(0, Math.min(1, (value - leave) / (gone - leave))) * 130
         journey.current.style.setProperty('--arrival-y', `${slide(.21, .24, .277, .31)}vh`)
-        setChapter(uiValue < .21 ? 0 : value < .355 ? 1 : value < .54 ? 2 : value < .632 ? 3 : value < .712 ? 4 : value < .798 ? 5 : value < .90 ? 6 : value < 1.07 ? 7 : value < 1.20 ? 8 : 9)
+        const nextChapter = chapterStarts.findIndex(start => uiValue < start)
+        setChapter(nextChapter === -1 ? chapters.length - 1 : nextChapter)
         setInFlight(uiValue > .10 && value < .24)
       },
       onCollageFrame: (value, projection, time) => {
@@ -104,8 +107,8 @@ export default function App() {
 
   const staticMode = reduced || failed
   useEffect(() => {
-    if (!loaded || staticMode) return
-    return installSceneSnap()
+    if (!loaded || staticMode || !engine.current) return
+    return installStoryInput(engine.current)
   }, [loaded, staticMode])
   useEffect(() => {
     if (!staticMode) return
@@ -119,9 +122,20 @@ export default function App() {
     return () => window.removeEventListener('scroll', update)
   }, [staticMode])
   const scrollTo = (progress: number) => {
+    if (!staticMode) {
+      engine.current?.travelTo(progress)
+      return
+    }
     const distance = Math.max(0, document.documentElement.scrollHeight - innerHeight)
-    window.scrollTo({ top: distance * (staticMode ? progress : journeyToScroll(progress)), behavior: reduced ? 'instant' : 'smooth' })
+    window.scrollTo({ top: distance * progress, behavior: 'instant' })
   }
+  const enterMeadow = () => {
+    if (staticMode) document.getElementById('meadow')?.scrollIntoView({ behavior: 'instant' })
+    else scrollTo(.26)
+  }
+  const nextChapter = chapter === chapters.length - 1 ? 0 : chapter + 1
+  const nextDestination = chapterStops[nextChapter]
+  const chapterPrompts = ['Meet me below', 'Find my story', 'Follow an apple', 'Keep growing', 'What’s next', 'Meet Newton', 'Look closer', 'Open the grove', 'Enter the reading room', 'Visit the courtyard', 'Write a note', 'Read the final note', 'Back to the sky']
 
   return <main ref={journey} className={`journey ${staticMode ? 'static-mode' : ''} ${readyToEnter ? 'is-ready' : ''}`}>
     <div className="world" ref={host} aria-hidden="true" />
@@ -135,10 +149,13 @@ export default function App() {
       <span className="loading-percent">{Math.round(loadProgress * 100)}%</span>
     </div>}
 
-    <header className="site-header" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>
+    <header className="site-header" inert={!staticMode && !skyControlsReady}>
       <a className="identity" href="#sky" onClick={(e) => { e.preventDefault(); scrollTo(0) }} aria-label="Sidant Chaturbedi, back to the sky"><img className="identity-logo" src="/brand/favicon-96.png" width="36" height="36" alt=""/><span>SIDANT<span className="identity-sub">CHATURBEDI</span></span></a>
       <span className="header-note"><span className="status-dot" /> A WORLD OF MY OWN</span>
-      <button className="skip-link" onClick={() => scrollTo(chapter === 9 || (staticMode && chapter === 6) ? 0 : staticMode ? Math.min(1, (chapter + 1) / 6) : chapterStops[chapter + 1])}>{staticMode && chapter === 6 ? 'Back to the sky' : ['Meet me below', 'Find my story', 'Follow an apple', 'Keep growing', 'What’s next', 'Meet Newton', 'Look closer', 'A new clearing', 'Open the journal', 'Back to the sky'][chapter]}<span aria-hidden="true">↗</span></button>
+      <button className="skip-link" onClick={() => {
+        if (!staticMode && chapter >= 2 && chapter <= 6) engine.current?.step(1)
+        else scrollTo(staticMode ? (chapter === 6 ? 0 : Math.min(1, (chapter + 1) / 6)) : nextDestination)
+      }}>{staticMode && chapter === 6 ? 'Back to the sky' : chapterPrompts[chapter]}<span aria-hidden="true">↗</span></button>
     </header>
 
     <section id="sky" className="opening" aria-label="Welcome" aria-hidden={!staticMode && chapter !== 0} inert={!staticMode && (chapter !== 0||!skyControlsReady)}>
@@ -146,10 +163,14 @@ export default function App() {
         <p className="eyebrow">A MOMENT TO LOOK UP</p>
         <h1>Hello<span className="hello-dot">.</span><span className="sr-only"> I’m Sidant Chaturbedi.</span></h1>
         <p className="opening-subtitle">I’m Sidant Chaturbedi. Welcome to my little world.</p>
-        <a className="profile-reading-link" href="/profile">Read my profile <span aria-hidden="true">↗</span></a>
+        <p className="opening-proof">Nepal’s first IOAI bronze medal · 2026</p>
+        <nav className="opening-quick-links" aria-label="Explore Sidant’s portfolio">
+          <a href="/profile#projects">See my work <span aria-hidden="true">↗</span></a>
+          <a href="/profile">Read my profile <span aria-hidden="true">↗</span></a>
+        </nav>
         <span className="tiny-flourish" aria-hidden="true">✧</span>
       </div>
-      <button className="scroll-invitation" onClick={() => scrollTo(staticMode ? 1 / 6 : .18)}><span className="scroll-line" /><span>SCROLL TO WANDER</span><Arrow /></button>
+      <button className="scroll-invitation" onClick={enterMeadow}><span className="scroll-line" /><span>{staticMode ? 'MEET ME BELOW' : 'SCROLL ONCE TO BEGIN'}</span><Arrow /></button>
     </section>
 
     <div className="travel-caption" aria-hidden="true" style={{ display: inFlight ? undefined : 'none' }}><span className="caption-line" />A change of perspective.</div>
@@ -176,7 +197,7 @@ export default function App() {
       </div>
     </section>
 
-    <AppleJourney ref={collage} chapter={chapter} staticMode={staticMode} />
+    <AppleJourney ref={collage} chapter={chapter} staticMode={staticMode} onFollow={() => engine.current?.step(1)} />
     <BookJourney ref={book} staticMode={staticMode} onTravel={p => scrollTo(staticMode ? (p > 1 ? 1 : p) : p)} />
 
     <HonorsJourney ref={honors} staticMode={staticMode} onTravel={scrollTo} />
@@ -184,8 +205,8 @@ export default function App() {
 
     <EndingJourney ref={ending} staticMode={staticMode} onRestart={()=>{if(staticMode)window.scrollTo({top:0,behavior:'instant'});else engine.current?.restart()}}/>
 
-    <nav className="chapter-nav" aria-label="Journey chapters" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>
-      {chapters.map((name, index) => <button key={name} className={chapter === index ? 'active' : ''} onClick={() => scrollTo(staticMode ? Math.min(1, index / 6) : chapterStops[index])} aria-label={name} aria-current={chapter === index ? 'step' : undefined}><span className="chapter-label">{name}</span><span className="chapter-tick" /></button>)}
+    <nav className="chapter-nav" aria-label="Journey chapters" inert={!staticMode && !skyControlsReady}>
+      {chapters.map((name, index) => <button key={name} className={chapter === index ? 'active' : ''} onClick={() => scrollTo(staticMode ? Math.min(1, index / 6) : chapterStops[index])} aria-label={name} aria-current={chapter === index ? 'step' : undefined} title={name}><span className="chapter-label">{name}</span><span className="chapter-tick" /></button>)}
     </nav>
 
     <footer className="world-footer" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>

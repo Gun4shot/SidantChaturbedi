@@ -12,7 +12,7 @@ function Icon({kind}:{kind:'arrow'|'grid'|'close'}){return <svg width="18" heigh
 
 const BookJourney=forwardRef<BookHandle,Props>(function BookJourney({staticMode,onTravel},ref){
   const root=useRef<HTMLElement>(null),host=useRef<HTMLDivElement>(null),engine=useRef<MeadowEngine|null>(null)
-  const dialog=useRef<HTMLDialogElement>(null),indexButton=useRef<HTMLButtonElement>(null)
+  const dialog=useRef<HTMLDialogElement>(null),indexButton=useRef<HTMLButtonElement>(null),searchInput=useRef<HTMLInputElement>(null)
   const [active,setActive]=useState(false),[failed,setFailed]=useState(false),[arrived,setArrived]=useState(false)
   const [state,setState]=useState({open:false,page:0,busy:false}),[indexOpen,setIndexOpen]=useState(false),[query,setQuery]=useState('')
   const fallback=staticMode||failed
@@ -71,7 +71,12 @@ const BookJourney=forwardRef<BookHandle,Props>(function BookJourney({staticMode,
   },[indexOpen])
   useEffect(()=>{if(!state.open)setIndexOpen(false)},[state.open])
   const project=projects[state.page]
-  const matches=projects.map((p,i)=>({p,i})).filter(({p})=>`${p.name} ${p.repo??''} ${p.kind} ${p.status} ${p.stack.join(' ')}`.toLowerCase().includes(query.toLowerCase()))
+  const terms=query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  const matches=projects.map((p,i)=>({p,i})).filter(({p})=>{
+    const searchable=[p.name,p.repo,p.kind,p.status,p.subtitle,p.description,p.idea,...p.stack].join(' ').toLowerCase()
+    return terms.every(term=>searchable.includes(term))
+  })
+  const clearSearch=()=>{setQuery('');searchInput.current?.focus()}
   const choose=(i:number)=>{setIndexOpen(false);engine.current?.select(i)}
   return <section ref={root} id="projects" className={`book-journey ${active?'is-active':''} ${state.open?'is-reading':''} ${arrived?'has-left':''} ${fallback?'book-still':''} ${failed&&!staticMode?'book-failed':''}`} aria-label="The project journal">
     {!fallback&&<>
@@ -83,14 +88,14 @@ const BookJourney=forwardRef<BookHandle,Props>(function BookJourney({staticMode,
         {(project.demo||project.url)&&<a className="book-project-link" href={project.demo||project.url} target="_blank" rel="noreferrer" aria-label={`Open ${project.name}${project.demo?' live site':' on GitHub'}`} tabIndex={state.busy?-1:0} style={{left:viewport.width<700?(viewport.width-layout.width)/2:viewport.width/2,top:layout.top,width:pageWidth,height:layout.height,pointerEvents:state.busy?'none':undefined}} onPointerDown={e=>{pageGesture.current={x:e.clientX,y:e.clientY,dragged:false}}} onPointerUp={e=>{const dx=e.clientX-pageGesture.current.x,dy=e.clientY-pageGesture.current.y;pageGesture.current.dragged=Math.hypot(dx,dy)>12;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.3)engine.current?.turn(dx<0?1:-1)}} onClick={e=>{if(state.busy||pageGesture.current.dragged)e.preventDefault();pageGesture.current.dragged=false}}><span>{project.demo?'Visit live site':'View on GitHub'} ↗</span></a>}
         <nav className="reader-navigation" aria-label="Project pages"><button className="page-button previous" aria-keyshortcuts="ArrowLeft" onClick={()=>engine.current?.turn(-1)} disabled={state.page===0||state.busy}><Icon kind="arrow"/><span>Previous</span></button><div className="reader-count" aria-live="polite"><span>{String(state.page+1).padStart(2,'0')} <i>/</i> {String(projects.length).padStart(2,'0')}</span><small>{project.name}</small></div><button className="page-button next" aria-keyshortcuts="ArrowRight" onClick={()=>engine.current?.turn(1)} disabled={state.page===projects.length-1||state.busy}><span>Next project</span><Icon kind="arrow"/></button></nav>
         <footer className="reader-footer"><button onClick={()=>onTravel(1.20)}>↑ Back to the meadow</button><span>← → TURN PAGES · SCROLL TO CONTINUE ↓</span><span className="project-link">{project.demo&&<a href={project.demo} target="_blank" rel="noreferrer">Live site ↗</a>}{project.url ? <a href={project.url} target="_blank" rel="noreferrer">{project.linkLabel} ↗</a> : project.status}</span></footer>
-        <article className="sr-only" aria-live="polite"><h2>{state.page===0?'View my projects':projects[state.page-1].name}</h2><h3>{project.name}</h3><p>{project.description}</p><p>{project.stack.join(', ')}</p><p>{project.status}</p></article>
+        <article className="sr-only" aria-live="polite"><h2>Project journal</h2><h3>{project.name}</h3><p>{project.description}</p><p>{project.stack.join(', ')}</p><p>{project.status}</p></article>
       </div>
 
       <dialog ref={dialog} className="project-index" onCancel={()=>setIndexOpen(false)} onClick={e=>{if(e.target===e.currentTarget)setIndexOpen(false)}} aria-labelledby="index-title">
         <div className="index-inner"><header className="index-heading"><div><span className="journal-eyebrow">SELECTED WORK</span><h2 id="index-title">Find your next page.</h2><p>Useful tools, experiments, and games.</p></div><button className="index-close" onClick={()=>setIndexOpen(false)} aria-label="Close project index"><Icon kind="close"/></button></header>
-        <label className="index-search"><Icon kind="grid"/><input type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a project, topic, or technology" aria-label="Search projects"/><span>{matches.length} projects</span></label>
+        <label className="index-search"><Icon kind="grid"/><input ref={searchInput} type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Find a project, topic, or technology" aria-label="Search projects"/><span role="status" aria-live="polite">{matches.length} {matches.length===1?'project':'projects'}</span></label>
         <div className="index-grid">{matches.map(({p,i})=><article key={p.slug} className={`index-card ${i===state.page?'is-current':''}`}><button className="index-open" onClick={()=>choose(i)} aria-label={`Open ${p.name} in journal`}><div className="index-card-image"><img src={`/art/${projectArtwork[i]}`} alt="" loading="lazy"/><span>{String(i+1).padStart(2,'0')}</span></div><div className="index-card-copy"><small>{p.kind}</small><h3>{p.name}<Icon kind="arrow"/></h3><p>{p.subtitle}</p><span>{i===state.page?'CURRENT PAGE':'OPEN THIS PAGE'}</span></div></button>{p.demo&&<a className="index-demo-link" href={p.demo} target="_blank" rel="noreferrer">Visit live site ↗</a>}{p.url?<a className="index-repo-link" href={p.url} target="_blank" rel="noreferrer" aria-label={`View ${p.repo??p.name} on GitHub`}>{p.fork?'View fork':'View code'} ↗ <span>{p.repo}</span></a>:<span className="index-repo-status">{p.status}</span>}</article>)}</div>
-        {matches.length===0&&<p className="index-empty">No pages match that search. Try a project name or technology.</p>}
+        {matches.length===0&&<div className="index-empty" role="status"><p>No projects match “{query.trim()}”. Try another topic, or clear your search.</p><button type="button" onClick={clearSearch}>Clear search</button></div>}
         <div className="index-colophon"><span>LIVE APP & REPOSITORY CAPTURES</span><span>MADE WITH CURIOSITY ✳</span></div></div>
       </dialog>
     </>}

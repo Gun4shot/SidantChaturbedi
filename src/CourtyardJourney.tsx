@@ -60,18 +60,20 @@ const CourtyardJourney=forwardRef<CourtyardHandle,{staticMode:boolean;onTravel(p
     {staticMode&&<img className="courtyard-canopy" src="/art/laurel-branch-v2.png" alt="" aria-hidden="true"/>}
     <section id="community" className="courtyard-content" aria-label="Leadership and community — the learning courtyard" aria-hidden={!reading} inert={!reading}>
       <header className="courtyard-header"><span>THE LEARNING COURTYARD <i>/</i> LEADERSHIP & COMMUNITY</span><button onClick={()=>staticMode?document.getElementById('library')?.scrollIntoView():onTravel(2.68)}>↖ Back to the library</button></header>
-      <div className="courtyard-intro"><span className="courtyard-eyebrow">THE THINGS WE GROW TOGETHER</span><h2>A little<br/>{' '}knowledge.<br/><em>A wider circle.</em></h2><p>Ideas take root in good company.<br/>{' '}These are a few of my circles.</p><span className="courtyard-intro-mark" aria-hidden="true">✳ <small>FOUR STORIES OF SHARING</small></span></div>
       <div ref={board} className="courtyard-board" data-story={item.id}>
-        <div className="folio-heading"><span>FIELD NOTES / COMMUNITY</span><span>0{selected+1} — 04</span></div>
         <div className="community-folio" ref={sheet}>
           <div className="folio-binding" aria-hidden="true"/>
-          <div className="folio-illustration"><span className="folio-issue">FIELD STUDY / 0{selected+1}</span><CommunityIllustration index={selected}/><span className="folio-motto">{['Curiosity, multiplied.','Many minds. One spark.','A little clarity changes things.','What we give, grows.'][selected]}</span><span className="folio-specimen" aria-hidden="true">{['CONNECT · EXPLORE · DISCOVER','MAKE · SHARE · REPEAT','QUESTION · UNDERSTAND · GROW','LISTEN · TEACH · LEARN'][selected]}</span></div>
+          <div className="folio-illustration">
+            <span className="folio-issue">COURTYARD FIELD GUIDE</span>
+            <h2>A wider <em>circle.</em></h2>
+            <CommunityIllustration index={selected}/>
+            <span className="folio-caption">Notes on teaching<br/>and building together.</span>
+          </div>
           <article id="community-story" className="chalk-story" aria-live="polite" aria-atomic="true"><span className="chalk-eyebrow">{item.label}</span><h3>{item.role}</h3><p>{item.text}</p><div className="chalk-note">{item.note}</div>{item.link&&<a href={item.link} target="_blank" rel="noreferrer">{item.linkLabel} ↗</a>}<span className="folio-flourish" aria-hidden="true">✧</span></article>
         </div>
         <nav className="chalk-tabs" aria-label="Choose a leadership or teaching story">{community.map((story,i)=><button key={story.id} aria-label={story.tab} aria-pressed={i===selected} aria-controls="community-story" onClick={()=>select(i)}><span className="tab-symbol" aria-hidden="true">{['✳','⌘','✧','❋'][i]}</span><span><small>0{i+1}</small>{story.tab}</span></button>)}</nav>
-        <span className="folio-hint">Pick a circle. Open a story.</span>
       </div>
-      <footer className="courtyard-footer"><span>KNOWLEDGE IS BETTER SHARED.</span><button onClick={()=>staticMode?document.getElementById('contact')?.scrollIntoView({behavior:'instant'}):onTravel(CONTACT_READING)}>Let’s start a conversation ↗</button><button onClick={()=>onTravel(0)}>Back to the sky ↑</button></footer>
+      <footer className="courtyard-footer"><button onClick={()=>staticMode?document.getElementById('contact')?.scrollIntoView({behavior:'instant'}):onTravel(CONTACT_READING)}>Let’s start a conversation ↗</button><button onClick={()=>onTravel(0)}>Back to the sky ↑</button></footer>
     </section>
     {!staticMode&&<ContactJourney ref={contact} staticMode={false} onTravel={onTravel}/>}
   </div>{staticMode&&<ContactJourney staticMode onTravel={onTravel}/>}</>

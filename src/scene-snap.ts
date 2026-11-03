@@ -1,9 +1,15 @@
-import { journeyToScroll, scrollToJourney } from './scroll-timing.ts'
+import { JOURNEY_END } from './scroll-timing.ts'
 
 import {ENDING_READING} from './ending-motion.ts'
 
 // Resting compositions only: never capture a bird pass, leaf pass or doorway.
-export const SCENE_STOPS = [0, .26, .435, .59, .673, .755, .825, 1.20, 1.41, 2.03, 2.68, 3.53, 4.29, ENDING_READING]
+// The canopy is fully readable here; the cards start folding on the next frame.
+export const CANOPY = .485
+export const EDUCATION_STOPS = [.61, .673, .755] as const
+export const NEWTON_READING = .87
+export const APPLE_CLOSEUP = 1.025
+export const READING_ROOM = 2.68
+export const SCENE_STOPS = [0, .26, CANOPY, ...EDUCATION_STOPS, NEWTON_READING, APPLE_CLOSEUP, 1.20, 1.41, 2.03, READING_ROOM, 3.53, 4.29, ENDING_READING]
 export const SNAP_RADIUS = .055
 export function nearbyScene(progress:number, released:number|null=null) {
   if(released!==null && Math.abs(progress-released)<SNAP_RADIUS*1.6)return null
@@ -11,56 +17,23 @@ export function nearbyScene(progress:number, released:number|null=null) {
   return Math.abs(nearest-progress)<=SNAP_RADIUS ? nearest : null
 }
 
-export function installSceneSnap() {
-  let timer=0,frame=0,snapping=false,held=false,released:number|null=null
-  const position=()=>scrollToJourney(window.scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight))
-  const clear=()=>{window.clearTimeout(timer);cancelAnimationFrame(frame);snapping=false}
-  const settle=()=>{
-    if(held||document.hidden)return
-    const p=position()
-    if(released!==null&&Math.abs(p-released)>=SNAP_RADIUS*1.6)released=null
-    const stop=nearbyScene(p,released)
-    if(stop===null)return
-    released=stop
-    const from=window.scrollY,to=journeyToScroll(stop)*(document.documentElement.scrollHeight-innerHeight)
-    if(Math.abs(to-from)<2)return
-    snapping=true
-    const start=performance.now(),duration=440+Math.min(220,Math.abs(to-from)*.35)
-    const tick=(now:number)=>{
-      const t=Math.min(1,(now-start)/duration),ease=t*t*t*(t*(t*6-15)+10)
-      window.scrollTo({top:from+(to-from)*ease,behavior:'instant'})
-      if(t<1)frame=requestAnimationFrame(tick)
-      else{snapping=false;window.clearTimeout(timer)}
-    }
-    frame=requestAnimationFrame(tick)
-  }
-  const onScroll=()=>{if(snapping)return;window.clearTimeout(timer);timer=window.setTimeout(settle,180)}
-  const interrupt=()=>{clear()}
-  const down=()=>{held=true;clear()}
-  const up=()=>{held=false;onScroll()}
-  const key=(event:KeyboardEvent)=>{if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key))interrupt()}
-  const onLoop=()=>{clear();released=null}
-  window.addEventListener('journey-loop',onLoop)
-  window.addEventListener('scroll',onScroll,{passive:true})
-  window.addEventListener('wheel',interrupt,{passive:true})
-  window.addEventListener('touchstart',down,{passive:true})
-  window.addEventListener('touchend',up,{passive:true})
-  window.addEventListener('touchcancel',up,{passive:true})
-  window.addEventListener('pointerdown',down,{passive:true})
-  window.addEventListener('pointerup',up,{passive:true})
-  window.addEventListener('keydown',key)
-  window.addEventListener('resize',clear)
-  return ()=>{
-    clear()
-    window.removeEventListener('journey-loop',onLoop)
-    window.removeEventListener('scroll',onScroll)
-    window.removeEventListener('wheel',interrupt)
-    window.removeEventListener('touchstart',down)
-    window.removeEventListener('touchend',up)
-    window.removeEventListener('touchcancel',up)
-    window.removeEventListener('pointerdown',down)
-    window.removeEventListener('pointerup',up)
-    window.removeEventListener('keydown',key)
-    window.removeEventListener('resize',clear)
-  }
+// Each duration belongs to the passage leading into the corresponding stop.
+const stops = [...SCENE_STOPS, JOURNEY_END]
+const passageMs = [0, 2300, 2100, 1050, 680, 680, 1160, 950, 1050, 2100, 3100, 2000, 2600, 3600, 2900, 1700]
+
+function nearestStopIndex(progress: number) {
+  return stops.reduce((best, stop, i) =>
+    Math.abs(stop - progress) < Math.abs(stops[best] - progress) ? i : best, 0)
+}
+
+export function nextBeat(progress: number, direction: number) {
+  const current = nearestStopIndex(progress)
+  const index = Math.max(0, Math.min(stops.length - 1, current + direction))
+  return stops[index]
+}
+
+export function passageDuration(from: number, to: number) {
+  const start = nearestStopIndex(from)
+  const end = nearestStopIndex(to)
+  return Math.abs(start - end) === 1 ? passageMs[Math.max(start, end)] : 0
 }

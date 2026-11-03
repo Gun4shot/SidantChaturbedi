@@ -49,13 +49,10 @@ export function appleWorld(p: number) {
   const contactY = HEAD.y + apple.size * .46
   let x = apple.x, y = mix(apple.y, contactY, t * t), rotation = t * 720
   if (p >= HIT) {
-    // Slow time during the descending bounce. The fruit never reaches this ground.
-    const clock = p <= CLOSE_START ? p : CLOSE_START + .016 * (1 - Math.exp(-(Math.min(p, CLOSE_END)-CLOSE_START)/.016))
-    const b = THREE.MathUtils.clamp((clock - HIT) / (GROUND - HIT), 0, 1)
+    const b = THREE.MathUtils.clamp((p - HIT) / (GROUND - HIT), 0, 1)
     x = mix(apple.x, LANDING.x, smooth(0, 1, b))
     y = mix(contactY, LANDING.y + apple.size * .46, b * b) + Math.sin(b * Math.PI) * 1.8
     rotation = mix(720, 1080, smooth(0, 1, b))
-    rotation = mix(rotation, 1080, ease(CLOSE_START, CLOSE_END, p))
   }
   return { x, y, z: apple.z, size: apple.size, rotation }
 }
