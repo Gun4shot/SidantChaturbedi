@@ -52,7 +52,6 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   let targetProgress = 0
   let progress = 0
   let passage: { from: number; to: number; duration: number; elapsed: number } | null = null
-  let pendingStep = 0
   let readingArrival = -Infinity
   let ambientTime = 0
   let lastTime = performance.now()
@@ -84,7 +83,6 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   const settleAt = (destination: number) => {
     // Let the reader land before accepting another forward gesture.
     if (isMomentumStop(destination)) {
-      pendingStep = 0
       readingArrival = performance.now()
     }
     passage = null
@@ -92,7 +90,6 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
     window.scrollTo({ top: journeyToScroll(destination) * (document.documentElement.scrollHeight - innerHeight), behavior: 'instant' })
   }
   const travelTo = (destination: number) => {
-    pendingStep = 0
     if (passage?.to === destination) return
     const duration = passageDuration(progress, destination)
     if (duration) {
@@ -102,27 +99,14 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
     }
   }
   const step = (direction: number) => {
-    if (!passage) {
-      travelTo(nextBeat(progress, direction))
-      return
-    }
-    if (direction === Math.sign(passage.to - passage.from)) {
-      pendingStep = direction
-      return
-    }
-    // Retrace from the frame on screen, including a second change of direction.
-    pendingStep = 0
-    const endpoint = passage.to
-    const destination = nextBeat(endpoint, direction)
-    const fraction = Math.min(1, Math.abs((progress - destination) / (endpoint - destination)))
-    const duration = passageDuration(endpoint, destination) * fraction
-    if (duration < 16) settleAt(destination)
-    else passage = { from: progress, to: destination, duration, elapsed: 0 }
+    // A story beat is atomic. Do not queue or reverse it from momentum while
+    // it is on screen, otherwise one energetic gesture can skip the next beat.
+    if (passage) return
+    travelTo(nextBeat(progress, direction))
   }
 
   const restart = () => {
     passage = null
-    pendingStep = 0
     // The endpoint is the exact opening pose. Reset scroll and the damped clock together.
     progress=0;targetProgress=0;emittedProgress=-1
     renderer.domElement.dataset.loopCount=String(Number(renderer.domElement.dataset.loopCount??0)+1)
@@ -453,7 +437,6 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
         progress = mix(passage.from, passage.to, clock)
         if (t === 1) {
           settleAt(passage.to)
-          if (pendingStep && !canWrapJourney(progress, targetProgress)) step(pendingStep)
         }
       } else {
         progress += (targetProgress - progress) * (1 - Math.exp(-dt * 7.5))
