@@ -6,15 +6,15 @@ import './apple-journey.css'
 
 export type AppleJourneyHandle = { update(progress: number, projection: CollageProjection, time: number): void }
 const introductions = [
-  { label: '01 / HELLO THERE', title: 'Sidant Chaturbedi', body: 'AI researcher · Full-stack developer', apple: 2 },
-  { label: '02 / MY BACKGROUND', title: 'Rooted in curiosity.', body: 'From Birgunj and Butwal to Kathmandu. Researching AI and remote sensing.', apple: 8 },
-  { label: '03 / MY SKILLS', title: 'Patterns into possibilities.', body: 'Python · C++ · JavaScript · React · PyTorch · QGIS', apple: 4 },
-  { label: '04 / MY APPROACH', title: 'Learn. Build. Grow.', body: 'Researching road vulnerability. Building study tools. Helping train Nepal’s AI Olympiad community.', apple: 6 },
+  { label: '01 / PROFILE', title: 'Sidant Chaturbedi', body: 'AI researcher · Full-stack developer', apple: 2 },
+  { label: '02 / MY BACKGROUND', title: 'Growing up in Nepal', body: 'From Birgunj and Butwal to Kathmandu.', apple: 8 },
+  { label: '03 / MY SKILLS', title: 'Tools I use', body: 'Python · C++ · JavaScript · React · PyTorch · QGIS', apple: 4 },
+  { label: '04 / CURRENT WORK', title: 'Current projects', body: 'Road hazard research, study tools and AI Olympiad training.', apple: 6 },
 ]
 const education = [
-  { ...profile.education[0], number: '01', label: 'THE FIRST SEED', title: 'A strong', emphasis: 'beginning.', timing: [.566, .594, .62, .642] },
-  { ...profile.education[1], number: '02', label: 'REACHING FURTHER', title: 'Room to', emphasis: 'grow.', timing: [.632, .652, .70, .722] },
-  { ...profile.education[2], number: '03', label: 'THE NEXT CHAPTER', title: 'Still', emphasis: 'becoming.', timing: [.712, .732, .79, .812] },
+  { ...profile.education[0], number: '01', label: 'BUTWAL', title: 'Secondary', emphasis: 'school', timing: [.566, .594, .62, .642] },
+  { ...profile.education[1], number: '02', label: '2024–2026', title: 'Cambridge', emphasis: 'A-Levels', timing: [.632, .652, .70, .722] },
+  { ...profile.education[2], number: '03', label: 'CURRENT FOCUS', title: 'Independent', emphasis: 'research', timing: [.712, .732, .79, .812] },
 ]
 
 const AppleJourney = forwardRef<AppleJourneyHandle, { chapter: number; staticMode: boolean; onFollow(): void }>(function AppleJourney({ chapter, staticMode, onFollow }, ref) {
@@ -156,16 +156,16 @@ const AppleJourney = forwardRef<AppleJourneyHandle, { chapter: number; staticMod
       {introductions.map((entry, i) => <article ref={el => { introCards.current[i] = el }} className={`tree-note tree-note-${i}`} key={entry.label}>
         <span className="tree-note-label">{entry.label}</span><h2>{entry.title}</h2><p>{entry.body}</p>
       </article>)}
-      <p className="tree-invitation">A little curiosity. A world of possibilities.
+      <p className="tree-invitation">
         {staticMode ? <span>↓ Follow an apple through my story</span> :
-          <button disabled={chapter !== 2} onClick={onFollow}>↓ Follow the falling apple</button>}
+          <button disabled={chapter !== 2} onClick={onFollow}>↓ Follow the apple to my education</button>}
       </p>
     </section>
     {education.map((entry, i) => <section key={entry.number} ref={el => { notes.current[i] = el }} className="education-scroll-note" aria-label={`Education stage ${i + 1}`} aria-hidden={!staticMode && chapter !== i + 3}>
-      <article className="education-paper"><div className="education-kicker"><span>GROWING, ONE CHAPTER AT A TIME</span><span>{entry.number} / 03</span></div><p className="education-label">{entry.label}</p><h2>{entry.title}<br /><em>{entry.emphasis}</em></h2><p className="qualification">{entry.qualification}</p><h3>{entry.school}</h3><p className="education-detail">{entry.detail}</p><div className="education-result"><strong>{entry.result}</strong><span>{entry.resultLabel}</span></div><div className="education-progress" aria-hidden="true">{[0, 1, 2].map(n => <span className={i === n ? 'current' : ''} key={n} />)}</div></article>
+      <article className="education-paper"><div className="education-kicker"><span>EDUCATION</span><span>{entry.number} / 03</span></div><p className="education-label">{entry.label}</p><h2>{entry.title}<br /><em>{entry.emphasis}</em></h2>{i < 2 && <h3>{entry.school}</h3>}<p className="education-detail">{entry.detail}</p><div className="education-result"><strong>{entry.result}</strong><span>{entry.resultLabel}</span></div><div className="education-progress" aria-hidden="true">{[0, 1, 2].map(n => <span className={i === n ? 'current' : ''} key={n} />)}</div></article>
     </section>)}
     <section className="newton-note" aria-label="An apple meets Isaac Newton" aria-hidden={!staticMode && chapter !== 6}>
-      <span className="eyebrow">A SMALL ENCOUNTER WITH GRAVITY</span><h2>A little nudge.<br /><em>A new perspective.</em></h2><p>Even the simplest things<br />can change how we see the world.</p><span className="newton-name">Sir Isaac Newton · a playful imagining</span><p className="orchard-next"><span aria-hidden="true">↓</span> There’s more inside an idea.</p>
+      <div className="newton-caption"><span className="eyebrow">THE ORCHARD</span><h2>Newton’s <em>apple.</em></h2><p className="orchard-next"><span aria-hidden="true">↓</span> Follow the apple into my project journal.</p></div>
     </section>
     <svg className="apple-stem" ref={stem} aria-hidden="true">
       <path ref={stemLine} className="stem-tether" />
@@ -174,7 +174,7 @@ const AppleJourney = forwardRef<AppleJourneyHandle, { chapter: number; staticMod
     <div className="apple-frame" aria-hidden="true"><div className="hero-apple" ref={fruit}>
       <img className="apple-swing" src="/art/apple-collage.png" alt="" draggable="false" />
     </div></div>
-    {staticMode && <section className="still-finale"><img src="/art/newton-collage.png" alt="A hand-painted Isaac Newton sitting with a book" /><div><span className="eyebrow">A NEW PERSPECTIVE</span><h2>Every idea<br />starts <em>somewhere.</em></h2><img src="/art/apple-collage.png" alt="A painted red apple" /></div></section>}
+    {staticMode && <section className="still-finale"><img src="/art/newton-collage.png" alt="A hand-painted Isaac Newton sitting with a book" /><div><span className="eyebrow">UP NEXT</span><h2>My project <em>journal.</em></h2><img src="/art/apple-collage.png" alt="A painted red apple" /></div></section>}
   </div>
 })
 export default AppleJourney

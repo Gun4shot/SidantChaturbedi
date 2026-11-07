@@ -1,4 +1,5 @@
 import { clamp, smooth } from './book-motion.ts'
+import { fitCutout } from './cutout-framing.ts'
 
 export const LIBRARY_START = 2.035, LIBRARY_END = 2.64
 
@@ -7,11 +8,14 @@ export const LIBRARY_START = 2.035, LIBRARY_END = 2.64
 export function publicationMotion(p:number,w:number,h:number) {
   const t=clamp((p-LIBRARY_START)/(LIBRARY_END-LIBRARY_START))
   const approach=smooth(0,.44,t),exit=smooth(.56,.91,t)
-  const leafSize=w*.3+(Math.max(w*4.2,h*6)-w*.3)*approach
+  const fit=fitCutout('leaf',w,h)
+  const leafSize=w*.3+(fit.size*1.025-w*.3)*approach
+  const centerX=w*(1.2-.7*approach+.12*(.49-t)*approach)-(w*.60+leafSize*.60)*exit
+  const centerY=h*(-.15+.65*approach+.34*exit)
   return {
     t,release:smooth(0,.24,t),
-    leafX:w*(1.2-1.4*t)-leafSize*.70*exit,
-    leafY:h*(-.15+1.2*smooth(0,.8,t)),
+    leafX:centerX+(.5-fit.originX)*leafSize,
+    leafY:centerY+(.5-fit.originY)*leafSize*941/1672,
     leafSize,
     blend:smooth(.44,.54,t),
     ui:smooth(.74,.89,t),paperOpen:smooth(.77,1,t),

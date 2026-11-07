@@ -9,7 +9,7 @@
 .library-figure img{object-fit:contain;background:#fff}
 
 /* One opaque painted leaf passes close to the lens, above both scenery layers. */
-.library-passage-leaf{position:absolute;left:0;top:0;width:768px;max-width:none;height:auto;z-index:5;pointer-events:none;transform-origin:center;will-change:transform}
+.library-passage-leaf{position:absolute;left:0;top:0;width:1672px;max-width:none;height:auto;z-index:5;pointer-events:none;transform-origin:center;will-change:transform}
 
 /* Reinforce translucent paint pigment without changing the cutout silhouette. */
 .library-passage-leaf{background:url('/art/laurel-passage-v4.webp') center/100% 100% no-repeat,url('/art/laurel-passage-v4.webp') center/100% 100% no-repeat}

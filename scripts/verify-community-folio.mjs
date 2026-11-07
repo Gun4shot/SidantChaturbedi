@@ -8,7 +8,7 @@ try{
  const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'})
  await page.goto('http://127.0.0.1:5175/?view=still',{waitUntil:'networkidle'})
  await page.locator('#community').scrollIntoViewIfNeeded()
- for(const [label,title] of [['AION','Scientific & training lead'],['Club','Building, together.'],['Tutoring','Making ideas click.'],['Service','Learning goes both ways.']]){
+ for(const [label,title] of [['AION','Scientific & training lead'],['Club','Computer Club technical lead'],['Tutoring','A-Level science and maths tutor'],['Service','Volunteer teacher']]){
  await page.getByRole('button',{name:label,exact:true}).click()
  assert.equal(await page.locator('.chalk-story h3').textContent(),title)
  const fit=await page.locator('.chalk-story').evaluate(el=>({w:el.clientWidth,sw:el.scrollWidth,h:el.clientHeight,sh:el.scrollHeight}))

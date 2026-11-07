@@ -21,14 +21,15 @@ const ContactJourney=forwardRef<ContactHandle,{staticMode:boolean;onTravel(p:num
  const channel=channels[selected].id
  const reveal=useRef(0),lastTime=useRef<number|null>(null)
  const objects=useRef<(HTMLSpanElement|null)[]>([])
- const [note,setNote]=useState(''),[subject,setSubject]=useState('Just saying hello'),[breeze,setBreeze]=useState(0)
+ const [note,setNote]=useState(''),[subject,setSubject]=useState('Hello'),[breeze,setBreeze]=useState(0)
  const mailHref=`mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(note)}`
  const [reading,setReading]=useState(staticMode),[copyState,setCopyState]=useState('Copy address')
- useImperativeHandle(ref,()=>({update(p,time){
+ useImperativeHandle(ref,()=>({update(p){
   if(staticMode||!root.current||!parcel.current)return
   const m=contactMotion(p),layout=contactLayout(innerWidth,innerHeight),el=parcel.current
-  const dt=lastTime.current===null?0:time-lastTime.current
-  lastTime.current=time
+  const now=performance.now()/1000
+  const dt=lastTime.current===null?0:now-lastTime.current
+  lastTime.current=now
   reveal.current=advanceContactReveal(reveal.current,contactRevealTarget(m.t),dt)
   const r=reveal.current
   root.current.style.setProperty('--entrance',String(r))
@@ -56,32 +57,32 @@ const ContactJourney=forwardRef<ContactHandle,{staticMode:boolean;onTravel(p:num
  }
  const back=()=>staticMode?document.getElementById('community')?.scrollIntoView({behavior:'instant'}):onTravel(3.53)
  return <section ref={root} id="contact" className={`contact-journey ${staticMode?'contact-still':''}`} aria-label="The letter veranda — contact Sidant" aria-hidden={!reading} inert={!reading}>
-  <header className="contact-header"><span>THE HELLO GARDEN <i>/</i> LEAVE A LITTLE POSSIBILITY</span><button onClick={back}>↖ Back to the courtyard</button></header>
-  <div className="contact-caption"><span>THE END IS A BEGINNING</span><h2>Let’s make<br/>something<br/><em>good happen.</em></h2><p>A thought. A collaboration.<br/>A wonderfully unexpected hello.</p><button className="breeze-button" onClick={()=>setBreeze(v=>v+1)}>✧ Send a little breeze <span aria-hidden="true">↝</span></button><small>Go on. The paper likes to dance.</small></div>
+  <header className="contact-header"><span>THE VERANDA <i>/</i> CONTACT</span><button onClick={back}>↖ Back to the courtyard</button></header>
+  <div className="contact-caption"><h2>Get in <em>touch.</em></h2><p>Have a research question or a project in mind? Send me a note.</p><button className="breeze-button" onClick={()=>setBreeze(v=>v+1)}>✧ Fly the paper crane <span aria-hidden="true">↝</span></button></div>
   <div ref={parcel} className="contact-parcel" data-channel={channel}>
    <div className="hello-mobile">
     <div className="mobile-branch" aria-hidden="true"><img src="/art/laurel-branch-v4.webp" alt=""/></div>
     <div className="hanging-objects" role="group" aria-label="Choose a way to connect">
-     {channels.map((item,i)=><button className={`hanging-object object-${item.id}`} key={item.id} aria-label={item.label} aria-pressed={channel===item.id} onClick={()=>select(i)} aria-controls="contact-postcard"><span className="object-arrival" ref={el=>{objects.current[i]=el}}><span className="object-thread" aria-hidden="true"/><span key={breeze} className={`object-art ${breeze?'caught-breeze':''}`}><span className="object-cover" aria-hidden="true"/><span className="object-number">0{i+1}</span><span className="object-icon"><PlatformMark kind={item.id}/></span>{item.id==='letter'?<><span className="envelope-fold"/><span className="wax-seal">s</span></>:item.id==='github'?<><span className="code-scribble">&lt;hello world /&gt;<br/>+ a little curiosity</span><span className="repo-dots">● ● ●</span></>:<><span className="ticket-name">Sidant<br/><em>Let’s cross paths.</em></span><span className="ticket-perforation"/></>}<span className="object-label">{item.label}<b aria-hidden="true">↗</b></span></span></span></button>)}
+     {channels.map((item,i)=><button className={`hanging-object object-${item.id}`} key={item.id} aria-label={item.label} aria-pressed={channel===item.id} onClick={()=>select(i)} aria-controls="contact-postcard"><span className="object-arrival" ref={el=>{objects.current[i]=el}}><span className="object-thread" aria-hidden="true"/><span key={breeze} className={`object-art ${breeze?'caught-breeze':''}`}><span className="object-cover" aria-hidden="true"/><span className="object-number">0{i+1}</span><span className="object-icon"><PlatformMark kind={item.id}/></span>{item.id==='letter'?<><span className="envelope-fold"/><span className="wax-seal">s</span></>:item.id==='github'?<><span className="code-scribble">github.com<br/>/gun4shot</span><span className="repo-dots">● ● ●</span></>:<><span className="ticket-name">Sidant<br/><em>Chaturbedi</em></span><span className="ticket-perforation"/></>}<span className="object-label">{item.label}<b aria-hidden="true">↗</b></span></span></span></button>)}
     </div>
-    <p className="pick-caption">Three little doors. Pick yours. <span aria-hidden="true">⤴</span></p>
+    <p className="pick-caption">Choose a contact method. <span aria-hidden="true">⤴</span></p>
     <div className="flying-crane" key={`bird-${breeze}`} data-flying={breeze>0} aria-hidden="true"><img src="/art/paper-crane-v2.png" alt=""/></div>
-    <button className="mobile-breeze" onClick={()=>setBreeze(v=>v+1)} aria-label="Send a little breeze">✧</button>
+    <button className="mobile-breeze" onClick={()=>setBreeze(v=>v+1)} aria-label="Fly the paper crane">✧</button>
    </div>
    <div ref={sheet} className="contact-letter" id="contact-postcard" role="region" aria-label="Contact invitation">
-    <div className="stationery-margin" aria-hidden="true"><span>LETTERS FROM THE GARDEN</span><svg viewBox="0 0 45 135" fill="none"><path d="M22 129C12 98 33 61 21 9M21 104C5 103 4 88 6 80c11 4 15 10 15 24ZM23 82c17-3 19-18 15-25-11 5-16 12-15 25ZM24 60C8 55 8 40 12 34c10 7 14 15 12 26ZM24 38c13-2 16-13 13-20-8 3-12 10-13 20Z" stroke="currentColor" strokeWidth="1.1"/><circle cx="20" cy="9" r="4" fill="currentColor"/></svg></div>
+    <div className="stationery-margin" aria-hidden="true"><svg viewBox="0 0 45 135" fill="none"><path d="M22 129C12 98 33 61 21 9M21 104C5 103 4 88 6 80c11 4 15 10 15 24ZM23 82c17-3 19-18 15-25-11 5-16 12-15 25ZM24 60C8 55 8 40 12 34c10 7 14 15 12 26ZM24 38c13-2 16-13 13-20-8 3-12 10-13 20Z" stroke="currentColor" strokeWidth="1.1"/><circle cx="20" cy="9" r="4" fill="currentColor"/></svg></div>
     <div className="stationery-corner" aria-hidden="true"/>
     <div className="note-content">
-     <div className="note-topline"><span>{channel==='letter'?'01 / A NOTE BETWEEN US':channel==='github'?'02 / THE CURIOSITY WORKSHOP':'03 / A NEW CONNECTION'}</span><span className="stationery-postmark" aria-hidden="true">✳<small>WITH CURIOSITY</small></span></div>
-     <h3>{channel==='letter'?'Dear Sidant…':channel==='github'?'A peek behind the pixels.':'Good people. New possibilities.'}</h3>
-     {channel==='letter'?<><div className="conversation-starters" role="group" aria-label="Choose an email subject">{['Just saying hello','Let’s build something','A research idea'].map(text=><button key={text} aria-pressed={subject===text} onClick={()=>setSubject(text)}>{text}</button>)}</div><label className="note-input"><span>Your note <small>(optional)</small></span><textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="I’ve been thinking about…" rows={2} maxLength={1500}/></label><a className="postcard-action" href={mailHref}>Fold it into an email <span aria-hidden="true">↗</span></a><span className="mail-hint">Opens your mail app. Nothing is sent here.</span></>:<><p className="destination-description">{channel==='github'?'Experiments, small obsessions, and ideas becoming real. Wander through my repositories and find something to build on.':'Interesting conversations have a way of becoming interesting projects. Let’s find out where our paths might meet.'}</p><div className="destination-keepsake" aria-hidden="true"><PlatformMark kind={channel}/><span>{channel==='github'?'gun4shot':'Sidant Chaturbedi'}<small>{channel==='github'?'CODE · EXPERIMENTS · POSSIBILITIES':'RESEARCH · TECHNOLOGY · PEOPLE'}</small></span></div><a className="postcard-action" href={channel==='github'?profile.github:profile.linkedin} target="_blank" rel="noreferrer">{channel==='github'?'Wander through GitHub':'Meet me on LinkedIn'} <span aria-hidden="true">↗</span></a></>}
+     <div className="note-topline"><span>{channel==='letter'?'01 / EMAIL':channel==='github'?'02 / GITHUB':'03 / LINKEDIN'}</span><span className="stationery-postmark" aria-hidden="true">✳</span></div>
+     <h3>{channel==='letter'?'Dear Sidant…':channel==='github'?'Browse my code':'Connect on LinkedIn'}</h3>
+     {channel==='letter'?<><div className="conversation-starters" role="group" aria-label="Choose an email subject">{['Hello','Collaboration','Research idea'].map(text=><button key={text} aria-pressed={subject===text} onClick={()=>setSubject(text)}>{text}</button>)}</div><label className="note-input"><span>Your note <small>(optional)</small></span><textarea value={note} onChange={e=>setNote(e.target.value)} placeholder="I’ve been thinking about…" rows={2} maxLength={1500}/></label><a className="postcard-action" href={mailHref}>Open email draft <span aria-hidden="true">↗</span></a><span className="mail-hint">Review and send from your email app.</span></>:<><p className="destination-description">{channel==='github'?'Explore my satellite research notebooks, exam practice apps, and open-source projects.':'Find my professional profile or message me about research and collaboration.'}</p><div className="destination-keepsake" aria-hidden="true"><PlatformMark kind={channel}/><span>{channel==='github'?'gun4shot':'Sidant Chaturbedi'}</span></div><a className="postcard-action" href={channel==='github'?profile.github:profile.linkedin} target="_blank" rel="noreferrer">{channel==='github'?'View GitHub profile':'View LinkedIn profile'} <span aria-hidden="true">↗</span></a></>}
     </div>
     <div className="contact-address"><a className="contact-email" href={`mailto:${profile.email}`}>{profile.email}</a><button onClick={copy} aria-label="Copy email" title="Copy email">{copyState.includes('copied')?'✓':'⧉'}</button></div>
-    <div className="letter-links"><a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a><span>FROM NEPAL, WITH CURIOSITY</span></div>
+    <div className="letter-links"><a href={profile.github} target="_blank" rel="noreferrer">GitHub ↗</a><a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a></div>
     <span className="copy-feedback" role="status" aria-live="polite">{copyState==='Copy address'?'':copyState}</span>
    </div>
   </div>
-  <footer className="contact-footer"><span>A LITTLE WORLD, BUILT BY SIDANT.</span><button onClick={()=>staticMode?document.querySelector('.ending-journey')?.scrollIntoView({behavior:'instant'}):onTravel(ENDING_READING)}>One last look at the sky ↗</button></footer>
+  <footer className="contact-footer"><button onClick={()=>staticMode?document.querySelector('.ending-journey')?.scrollIntoView({behavior:'instant'}):onTravel(ENDING_READING)}>Continue to the closing note ↗</button></footer>
  </section>
 })
 export default ContactJourney

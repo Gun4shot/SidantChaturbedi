@@ -19,7 +19,7 @@ export function nearbyScene(progress:number, released:number|null=null) {
 
 // Each duration belongs to the passage leading into the corresponding stop.
 const stops = [...SCENE_STOPS, JOURNEY_END]
-const passageMs = [0, 2300, 2100, 1050, 680, 680, 1160, 950, 1050, 2100, 3100, 2000, 2600, 3600, 2900, 1700]
+const passageMs = [0, 2300, 2100, 1050, 680, 680, 1160, 950, 1050, 2100, 3100, 2000, 3200, 3600, 2900, 1700]
 
 function nearestStopIndex(progress: number) {
   return stops.reduce((best, stop, i) =>

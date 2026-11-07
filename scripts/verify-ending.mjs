@@ -31,7 +31,7 @@ try{
  let different=0
  for(let i=0;i<a.length;i+=3){if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]){different++;const x=(i/3)%width,y=Math.floor(i/3/width);assert.ok(x>=first.box.x-24&&x<=first.box.right+24&&y>=first.box.y-24&&y<=first.box.bottom+24,'sky matches exactly outside the rerasterized foreground cutout')}}
  assert.ok(different<width*height*.001,'less than 0.1% compositor antialiasing difference')
- await page.getByRole('button',{name:'Wander again',exact:false}).click()
+ await page.getByRole('button',{name:'Restart the portfolio',exact:false}).click()
  await page.waitForFunction(()=>scrollY<2)
  await page.waitForTimeout(200)
  assert.equal(await page.locator('.opening').getAttribute('inert'),null)
@@ -54,7 +54,7 @@ try{
  const still=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'})
  await still.goto('http://127.0.0.1:5175/?view=still',{waitUntil:'networkidle'})
  await still.locator('.ending-still').scrollIntoViewIfNeeded()
- await still.getByRole('button',{name:'Wander again',exact:false}).click()
+ await still.getByRole('button',{name:'Restart the portfolio',exact:false}).click()
  await still.waitForFunction(()=>scrollY<2)
  console.log('Matching sky and foreground geometry, thank-you, button restart, wheel/touch loop, continued scrolling, reverse and reduced motion passed.')
 }finally{await browser.close()}

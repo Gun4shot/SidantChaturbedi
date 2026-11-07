@@ -60,7 +60,7 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
     if(index<0){
       c.fillStyle='#b69b54';c.font='100px Georgia';c.fillText('✳',130,370)
       c.fillStyle='#243c30';c.font='bold 136px Georgia';c.fillText('View my',122,590);c.fillText('projects.',122,750)
-      c.fillStyle='#3c4b42';c.font='46px "DM Sans", sans-serif';wrap(c,'A collection of small experiments, thoughtful tools, and things made with curiosity.',130,890,1050,66)
+      c.fillStyle='#3c4b42';c.font='46px "DM Sans", sans-serif';wrap(c,'Study tools, satellite research and machine-learning experiments. Turn the pages or choose a project from the index.',130,890,1050,66)
       c.fillStyle='#b6a579';c.fillRect(130,1180,90,3)
       c.fillStyle='#293f31';c.font='500 40px "DM Sans", sans-serif';c.fillText('Sidant Chaturbedi',130,1295)
       c.fillStyle='#4e5d50';c.font='32px "DM Sans", sans-serif';c.fillText('COMPUTER SCIENCE & MACHINE LEARNING',130,1352)
@@ -76,7 +76,7 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
       c.fillStyle='#4e5d50';c.font='34px "DM Sans", sans-serif';c.fillText(p.stack.join('   /   '),130,1400)
       c.font='30px "DM Sans", sans-serif';c.fillText(p.status,130,1480)
     }
-    c.textAlign='right';c.font='28px "DM Sans", sans-serif';c.fillStyle='#8c917b';c.fillText(String(index+2).padStart(2,'0'),1310,1480)
+    c.textAlign='right';c.font='28px "DM Sans", sans-serif';c.fillStyle='#53624e';c.fillText(String(index+2).padStart(2,'0'),1310,1480)
     const map=texture(canvas)
     // Mip-level blending softened small text even when the page was stationary.
     map.generateMipmaps=false;map.minFilter=THREE.LinearFilter
@@ -94,7 +94,7 @@ export async function createProjectMeadow(host: HTMLElement, events: Events): Pr
   const coverCanvas=document.createElement('canvas');coverCanvas.width=1024;coverCanvas.height=1392
   const cc=coverCanvas.getContext('2d')!;cc.drawImage(images['journal-cover-v4.webp'],0,0,1024,1392)
   cc.textAlign='center';cc.fillStyle='#f4e8bf';cc.font='bold 66px Georgia';cc.fillText('FIELD NOTES',512,905)
-  cc.font='23px "DM Sans", sans-serif';cc.fillText('SIDANT CHATURBEDI',512,972);cc.fillText('IDEAS WORTH EXPLORING',512,1078)
+  cc.font='23px "DM Sans", sans-serif';cc.fillText('SIDANT CHATURBEDI',512,972);cc.fillText('RESEARCH AND SOFTWARE',512,1078)
   const coverMap=texture(coverCanvas)
   const book = new THREE.Group();scene.add(book)
   // Painted cels keep their authored palette; physically lit linen made the

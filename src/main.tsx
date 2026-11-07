@@ -4,6 +4,7 @@ import App from './App'
 import './style.css'
 import './intro-portrait.css'
 import './research-paper.css'
+import './reading-contrast.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

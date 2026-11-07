@@ -31,7 +31,7 @@ const LibraryJourney=forwardRef<LibraryHandle,{staticMode:boolean;onTravel(p:num
     s.setProperty('--library-x',`${m.backdropX}px`)
     s.setProperty('--library-y',`${m.backdropY}px`);s.setProperty('--library-scale',String(m.backdropScale))
     s.setProperty('--library-shade',String(1-c.arrival*.6))
-    if(leaf.current)leaf.current.style.transform=`translate3d(${m.leafX}px,${m.leafY}px,0) translate(-50%,-50%) scale(${m.leafSize/768})`
+    if(leaf.current)leaf.current.style.transform=`translate3d(${m.leafX}px,${m.leafY}px,0) translate(-50%,-50%) scale(${m.leafSize/1672})`
   }}))
   const record=publications[selected]
   return <><section ref={root} id="library" className={`library-journey ${staticMode?'library-still':''}`} aria-label="The reading room — research and resources" aria-hidden={!reading&&!inCourtyard}>
@@ -40,14 +40,14 @@ const LibraryJourney=forwardRef<LibraryHandle,{staticMode:boolean;onTravel(p:num
       {!staticMode&&<img ref={leaf} className="library-passage-leaf" src="/art/laurel-passage-v4.webp" alt="" aria-hidden="true"/>}
     </>}
     <div className="library-reading" inert={!reading}>
-      <header className="library-header"><span>THE READING ROOM <i>/</i> RESEARCH & RESOURCES</span><button onClick={()=>staticMode?document.getElementById('honors')?.scrollIntoView():onTravel(2.03)}>↖ Back to the grove</button></header>
+      <header className="library-header"><span>THE READING ROOM <i>/</i> RESEARCH</span><button onClick={()=>staticMode?document.getElementById('honors')?.scrollIntoView():onTravel(2.03)}>↖ Back to the grove</button></header>
       <nav className="library-shelf" aria-label="Choose a research record"><span className="shelf-label">RESEARCH INDEX</span>{publications.map((item,i)=><button key={item.id} aria-label={`0${i+1} ${item.short} — ${item.status}`} aria-pressed={selected===i} onClick={()=>select(i)}><span>0{i+1}</span><strong>{item.short}</strong><small>{item.status}</small></button>)}</nav>
       <div ref={sheet} className="research-scroll">
       <article className="library-paper" aria-live="polite" key={record.id} tabIndex={reading?0:-1} aria-label={`${record.short} — scroll to read`}>
         <div className="library-paper-top"><span>{record.category}</span><span>{record.status}</span></div>
         <h3>{record.title}</h3>
         <p className="library-venue">{record.venue}</p><p className="library-authors">{record.authors}</p>
-        <div className="library-paper-links">{record.links.length?record.links.map(link=><a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>):<span>{record.id==='graphs'?'Manuscript not publicly available yet.':'Updates will follow as the work develops.'}</span>}</div>
+        <div className="library-paper-links">{record.links.length?record.links.map(link=><a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} ↗</a>):record.id==='graphs' && <span>The submitted manuscript is not public.</span>}</div>
         <div className="paper-rule"/>
         <div className="paper-abstract"><div><h4>{record.id==='sentinel'?'Abstract':'Research overview'}</h4><p>{record.id==='sentinel'?research.abstract:record.summary}</p></div>
         {record.figure&&<figure className="library-figure"><a href={record.figure} target="_blank" rel="noreferrer" aria-label="Open Sindhuli research figure at full resolution"><img src={record.figure} alt={record.figureAlt}/></a><figcaption>{record.figureCaption}</figcaption></figure>}</div>
@@ -58,7 +58,7 @@ const LibraryJourney=forwardRef<LibraryHandle,{staticMode:boolean;onTravel(p:num
       </article>
       <div className="paper-curl" aria-hidden="true"/>
       </div>
-      <footer className="library-footer"><a href="https://github.com/Gun4shot/ML_notebooks" target="_blank" rel="noreferrer">Explore my ML notebooks ↗</a><a href={`mailto:${profile.email}`}>Let’s talk research ↗</a><button className="courtyard-continue" onClick={()=>staticMode?document.getElementById('community')?.scrollIntoView():onTravel(COURTYARD_READING)}>Into the courtyard ↗</button></footer>
+      <footer className="library-footer"><a href="https://github.com/Gun4shot/ML_notebooks" target="_blank" rel="noreferrer">Explore my ML notebooks ↗</a><a href={`mailto:${profile.email}`}>Email me about research ↗</a><button className="courtyard-continue" onClick={()=>staticMode?document.getElementById('community')?.scrollIntoView():onTravel(COURTYARD_READING)}>Into the courtyard ↗</button></footer>
     </div>
   </section>{staticMode&&<CourtyardJourney staticMode onTravel={onTravel}/>}</>
 })

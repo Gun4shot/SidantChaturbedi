@@ -19,7 +19,7 @@ export const publications = [
     title:'Himalayan glacial lakes & river disturbance',
     summary:'Collaborative remote-sensing research into glacial lake outburst floods and their effects on Himalayan rivers.',
     venue:'Research in progress',authors:'Collaborative work with three professors',
-    detail:'Exploring whether satellite observations reveal persistent river disturbance after glacial lake outburst floods. This work is ongoing; no predictive results or publication are claimed.',
+    detail:'We use satellite observations to investigate how long changes to Himalayan rivers persist after a glacial lake outburst flood.',
     tags:['Remote sensing','Glacial lakes','Hydrology'],links:[]},
 ]
 

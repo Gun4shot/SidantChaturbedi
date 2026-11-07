@@ -37,9 +37,9 @@ export function installStoryInput(story: Landscape) {
     const now = event.timeStamp
     // A trackpad can start another stroke before its previous momentum stops.
     const newStroke = previous < peak * .6 && magnitude >= Math.max(4, previous * 1.6)
-    const carriedIntoLibrary = strokeStart <= story.readingArrival() && lastWheel !== -Infinity
-    const fresh = now - lastWheel > (carriedIntoLibrary ? 220 : 110) ||
-      direction !== Math.sign(lastDelta) || (!carriedIntoLibrary && newStroke)
+    const carriedIntoReadingStop = strokeStart <= story.readingArrival() && lastWheel !== -Infinity
+    const fresh = now - lastWheel > (carriedIntoReadingStop ? 220 : 110) ||
+      direction !== Math.sign(lastDelta) || (!carriedIntoReadingStop && newStroke)
     if (fresh) {
       strokeStart = now
       readWithinStroke = false

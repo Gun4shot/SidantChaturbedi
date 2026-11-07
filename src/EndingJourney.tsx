@@ -14,15 +14,15 @@ const EndingJourney=forwardRef<EndingHandle,{staticMode:boolean;onRestart():void
   root.current.style.setProperty('--ending-drift',`${(1-m.thanks)*24}px`)
   setReading(old=>old===m.reading?old:m.reading)
  }}),[staticMode])
- return <section ref={root} className={`ending-journey ${staticMode?'ending-still':''}`} aria-label="Thank you for wandering" aria-hidden={!reading}>
+ return <section ref={root} className={`ending-journey ${staticMode?'ending-still':''}`} aria-label="Thank you for visiting" aria-hidden={!reading}>
   {!staticMode&&<div className="ending-clouds" aria-hidden="true"><img src="/art/cloud.png" alt=""/><img src="/art/cloud.png" alt=""/><img src="/art/cloud.png" alt=""/></div>}
   <div className="ending-copy" inert={!reading}>
-   <span className="eyebrow">EVERY ENDING HOLDS A BEGINNING</span>
-   <h2>Thank you<br/>for <em>wandering.</em></h2>
-   <p>For your time. Your curiosity.<br/>For being part of this little world.</p>
+
+   <h2>Thank you<br/>for <em>visiting.</em></h2>
+   <p>Sidant Chaturbedi</p>
    <span className="ending-flourish" aria-hidden="true">✧</span>
-   <button onClick={onRestart}>Wander again <span aria-hidden="true">↻</span></button>
-   {!staticMode&&<small>OR KEEP SCROLLING. THE SKY IS WHERE WE BEGIN.</small>}
+   <button onClick={onRestart}>Restart the portfolio <span aria-hidden="true">↻</span></button>
+   {!staticMode&&<small>Or scroll once to return to the beginning.</small>}
   </div>
  </section>
 })

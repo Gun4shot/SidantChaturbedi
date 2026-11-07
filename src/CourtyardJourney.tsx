@@ -35,8 +35,11 @@ const CourtyardJourney=forwardRef<CourtyardHandle,{staticMode:boolean;onTravel(p
   useImperativeHandle(ref,()=>({update(p,time){
     if(staticMode||!root.current)return
     const pose=courtyardMotion(p,innerWidth,innerHeight),s=root.current.style,exit=contactMotion(p)
-    const dt=lastTime.current===null?0:time-lastTime.current
-    lastTime.current=time
+    s.setProperty('--garden-view',String(pose.t*pose.t*(3-2*pose.t)))
+    s.setProperty('--veranda-view',String(exit.t))
+    const now=performance.now()/1000
+    const dt=lastTime.current===null?0:now-lastTime.current
+    lastTime.current=now
     reveal.current=advanceContactReveal(reveal.current,pose.arrival,dt)
     s.setProperty('--community-reveal',String(reveal.current))
     const canRead=p>=COURTYARD_END-.012&&p<=CONTACT_START&&reveal.current>.995
@@ -64,16 +67,16 @@ const CourtyardJourney=forwardRef<CourtyardHandle,{staticMode:boolean;onTravel(p
         <div className="community-folio" ref={sheet}>
           <div className="folio-binding" aria-hidden="true"/>
           <div className="folio-illustration">
-            <span className="folio-issue">COURTYARD FIELD GUIDE</span>
-            <h2>A wider <em>circle.</em></h2>
+            <span className="folio-issue">COMMUNITY FIELD GUIDE</span>
+            <h2>Teaching &amp; <em>leadership.</em></h2>
             <CommunityIllustration index={selected}/>
-            <span className="folio-caption">Notes on teaching<br/>and building together.</span>
+            <span className="folio-caption">Four roles in education</span>
           </div>
           <article id="community-story" className="chalk-story" aria-live="polite" aria-atomic="true"><span className="chalk-eyebrow">{item.label}</span><h3>{item.role}</h3><p>{item.text}</p><div className="chalk-note">{item.note}</div>{item.link&&<a href={item.link} target="_blank" rel="noreferrer">{item.linkLabel} ↗</a>}<span className="folio-flourish" aria-hidden="true">✧</span></article>
         </div>
         <nav className="chalk-tabs" aria-label="Choose a leadership or teaching story">{community.map((story,i)=><button key={story.id} aria-label={story.tab} aria-pressed={i===selected} aria-controls="community-story" onClick={()=>select(i)}><span className="tab-symbol" aria-hidden="true">{['✳','⌘','✧','❋'][i]}</span><span><small>0{i+1}</small>{story.tab}</span></button>)}</nav>
       </div>
-      <footer className="courtyard-footer"><button onClick={()=>staticMode?document.getElementById('contact')?.scrollIntoView({behavior:'instant'}):onTravel(CONTACT_READING)}>Let’s start a conversation ↗</button><button onClick={()=>onTravel(0)}>Back to the sky ↑</button></footer>
+      <footer className="courtyard-footer"><button onClick={()=>staticMode?document.getElementById('contact')?.scrollIntoView({behavior:'instant'}):onTravel(CONTACT_READING)}>Contact me ↗</button><button onClick={()=>onTravel(0)}>Back to the sky ↑</button></footer>
     </section>
     {!staticMode&&<ContactJourney ref={contact} staticMode={false} onTravel={onTravel}/>}
   </div>{staticMode&&<ContactJourney staticMode onTravel={onTravel}/>}</>

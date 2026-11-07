@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 import {ENDING_START,canWrapJourney,endingCameraProgress} from './ending-motion'
 import { journeyToScroll, scrollToJourney } from './scroll-timing'
-import { nextBeat, passageDuration, READING_ROOM } from './scene-snap'
+import { COURTYARD_READING } from "./courtyard-motion"
+import { CANOPY, NEWTON_READING, nextBeat, passageDuration, READING_ROOM } from './scene-snap'
 import { cameraPosition, cameraTarget, groundHeight, HERO_TREE, riverCenter, riverWidth, smooth, APPLES, NEWTON, LANDING, HEAD, canopyAppleWorld, fallingAppleWorld, appleStemAnchor } from './journey-path'
 import type { CollageProjection } from './apple-motion'
 
@@ -75,7 +76,8 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   const onScroll = () => { targetProgress = scrollToJourney(clamp(scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight), 0, 1)) }
 
   const settleAt = (destination: number) => {
-    if (destination === READING_ROOM) {
+    // Let the reader land before accepting another forward gesture.
+    if (destination === READING_ROOM || destination === COURTYARD_READING || (destination >= CANOPY && destination <= NEWTON_READING)) {
       pendingStep = 0
       readingArrival = performance.now()
     }
@@ -438,7 +440,11 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
         // Keep the story on time on lower frame rate devices. Visibility changes reset lastTime.
         passage.elapsed += frameMs
         const t = Math.min(1, passage.elapsed / passage.duration)
-        progress = mix(passage.from, passage.to, .35 * t + .65 * t * t * (3 - 2 * t))
+        // The doorway camera already eases its dolly and pan. A second ease rushes the crossing.
+        const doorway = Math.min(passage.from, passage.to) >= READING_ROOM - .001 &&
+          Math.max(passage.from, passage.to) <= COURTYARD_READING + .001
+        const clock = doorway ? t : .35 * t + .65 * t * t * (3 - 2 * t)
+        progress = mix(passage.from, passage.to, clock)
         if (t === 1) {
           settleAt(passage.to)
           if (pendingStep && !canWrapJourney(progress, targetProgress)) step(pendingStep)

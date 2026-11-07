@@ -33,7 +33,7 @@ export default function App() {
   const honors = useRef<HonorsHandle>(null)
   const library = useRef<LibraryHandle>(null)
   const [skyControlsReady,setSkyControlsReady]=useState(true)
-  const [inFlight, setInFlight] = useState(false)
+
   const [loaded, setLoaded] = useState(false)
   const [loadProgress, setLoadProgress] = useState(0)
   const [failed, setFailed] = useState(false)
@@ -74,7 +74,7 @@ export default function App() {
         journey.current.style.setProperty('--arrival-y', `${slide(.21, .24, .277, .31)}vh`)
         const nextChapter = chapterStarts.findIndex(start => uiValue < start)
         setChapter(nextChapter === -1 ? chapters.length - 1 : nextChapter)
-        setInFlight(uiValue > .10 && value < .24)
+
       },
       onCollageFrame: (value, projection, time) => {
         if (disposed) return
@@ -135,7 +135,7 @@ export default function App() {
   }
   const nextChapter = chapter === chapters.length - 1 ? 0 : chapter + 1
   const nextDestination = chapterStops[nextChapter]
-  const chapterPrompts = ['Meet me below', 'Find my story', 'Follow an apple', 'Keep growing', 'What’s next', 'Meet Newton', 'Look closer', 'Open the grove', 'Enter the reading room', 'Visit the courtyard', 'Write a note', 'Read the final note', 'Back to the sky']
+  const chapterPrompts = ['Meet Sidant', 'My background', 'My education', 'A-Levels', 'Independent research', 'Meet Newton', 'Look closer', 'View awards', 'Read my research', 'Teaching & leadership', 'Contact me', 'Read the final note', 'Back to the sky']
 
   return <main ref={journey} className={`journey ${staticMode ? 'static-mode' : ''} ${readyToEnter ? 'is-ready' : ''}`}>
     <div className="world" ref={host} aria-hidden="true" />
@@ -143,15 +143,15 @@ export default function App() {
     <div className="paper-grain" aria-hidden="true" />
     {!loaded && <div className="loading-screen" role="status" aria-live="polite">
       <Leaf />
-      <span className="eyebrow">A SMALL WORLD IS TAKING SHAPE</span>
-      <p>Somewhere, a little quieter.</p>
+
+      <p>Loading the portfolio…</p>
       <div className="loading-track"><span style={{ width: `${loadProgress * 100}%` }} /></div>
       <span className="loading-percent">{Math.round(loadProgress * 100)}%</span>
     </div>}
 
     <header className="site-header" inert={!staticMode && !skyControlsReady}>
       <a className="identity" href="#sky" onClick={(e) => { e.preventDefault(); scrollTo(0) }} aria-label="Sidant Chaturbedi, back to the sky"><img className="identity-logo" src="/brand/favicon-96.png" width="36" height="36" alt=""/><span>SIDANT<span className="identity-sub">CHATURBEDI</span></span></a>
-      <span className="header-note"><span className="status-dot" /> A WORLD OF MY OWN</span>
+
       <button className="skip-link" onClick={() => {
         if (!staticMode && chapter >= 2 && chapter <= 6) engine.current?.step(1)
         else scrollTo(staticMode ? (chapter === 6 ? 0 : Math.min(1, (chapter + 1) / 6)) : nextDestination)
@@ -160,28 +160,28 @@ export default function App() {
 
     <section id="sky" className="opening" aria-label="Welcome" aria-hidden={!staticMode && chapter !== 0} inert={!staticMode && (chapter !== 0||!skyControlsReady)}>
       <div className="opening-copy">
-        <p className="eyebrow">A MOMENT TO LOOK UP</p>
+        <p className="eyebrow">KATHMANDU, NEPAL</p>
         <h1>Hello<span className="hello-dot">.</span><span className="sr-only"> I’m Sidant Chaturbedi.</span></h1>
-        <p className="opening-subtitle">I’m Sidant Chaturbedi. Welcome to my little world.</p>
-        <p className="opening-proof">Nepal’s first IOAI bronze medal · 2026</p>
+        <p className="opening-subtitle">I’m Sidant Chaturbedi, an AI researcher and full-stack developer.</p>
+        <p className="opening-proof">International Olympiad in AI · Bronze for Nepal, 2026</p>
         <nav className="opening-quick-links" aria-label="Explore Sidant’s portfolio">
           <a href="/profile#projects">See my work <span aria-hidden="true">↗</span></a>
           <a href="/profile">Read my profile <span aria-hidden="true">↗</span></a>
         </nav>
         <span className="tiny-flourish" aria-hidden="true">✧</span>
       </div>
-      <button className="scroll-invitation" onClick={enterMeadow}><span className="scroll-line" /><span>{staticMode ? 'MEET ME BELOW' : 'SCROLL ONCE TO BEGIN'}</span><Arrow /></button>
+      <button className="scroll-invitation" onClick={enterMeadow}><span className="scroll-line" /><span>{staticMode ? 'MEET SIDANT' : 'SCROLL ONCE TO BEGIN'}</span><Arrow /></button>
     </section>
 
-    <div className="travel-caption" aria-hidden="true" style={{ display: inFlight ? undefined : 'none' }}><span className="caption-line" />A change of perspective.</div>
+
 
     <section id="meadow" className={`arrival ${chapter === 1 || staticMode ? 'arrival-present' : ''}`} aria-label="About Sidant Chaturbedi" aria-hidden={!staticMode && chapter !== 1} inert={!staticMode && chapter !== 1}>
       <div className="arrival-copy">
-        <span className="eyebrow arrival-eyebrow"><span className="small-star">✳</span> NICE TO MEET YOU</span>
+        <span className="eyebrow arrival-eyebrow"><span className="small-star">✳</span> ABOUT ME</span>
         <h2><span>Hi, I am</span>Sidant<br /><em>Chaturbedi.</em></h2>
-        <p>AI researcher. Full-stack developer.<br />From Kathmandu, looking outward.</p>
+        <p>I use satellite radar to study how monsoon rains affect roads in Nepal.</p>
         <div className="arrival-rule" />
-        <span className="arrival-footnote">Satellite research · Thoughtful tools · AI education</span>
+        <span className="arrival-footnote">I also build exam practice tools and help train Nepal’s AI Olympiad team.</span>
       </div>
       <div className="portrait-stage" onPointerMove={e=>{if(reduced||e.pointerType==='touch')return;const r=e.currentTarget.getBoundingClientRect();e.currentTarget.style.setProperty('--portrait-ry',`${((e.clientX-r.left)/r.width-.5)*12}deg`);e.currentTarget.style.setProperty('--portrait-rx',`${-((e.clientY-r.top)/r.height-.5)*9}deg`)}} onPointerLeave={e=>{e.currentTarget.style.setProperty('--portrait-ry','0deg');e.currentTarget.style.setProperty('--portrait-rx','0deg')}}>
         <div className="portrait-orbit" aria-hidden="true"><span>✧</span><span>✦</span><Leaf /></div>
@@ -190,9 +190,9 @@ export default function App() {
           <figure className="portrait-paper portrait-photo">
             <span className="portrait-tape" aria-hidden="true" />
             <div className="portrait-window"><img src="/art/sidant-portrait.jpg" alt="Sidant Chaturbedi wearing a dark suit and tie" width="1172" height="1342"/><span className="portrait-glint" aria-hidden="true" /></div>
-            <figcaption><span>A face behind the curiosity.</span><small>KATHMANDU, NEPAL <i>✳</i></small></figcaption>
+            <figcaption><span>Sidant Chaturbedi</span><small>KATHMANDU, NEPAL <i>✳</i></small></figcaption>
           </figure>
-          <span className="portrait-stamp" aria-hidden="true">HELLO<br/>THERE ↗</span>
+
         </div></div>
       </div>
     </section>
@@ -210,11 +210,11 @@ export default function App() {
     </nav>
 
     <footer className="world-footer" inert={!staticMode && (chapter >= 8||!skyControlsReady)}>
-      <div className="coordinates"><span className="compass" aria-hidden="true">✧</span><span><span className="chapter-number">0{chapter + 1}</span> / {chapters[chapter]}</span></div>
-      <span className="footer-center">TAKE THE SCENIC ROUTE</span>
+      <div className="coordinates"><span className="compass" aria-hidden="true">✧</span><span><span className="chapter-number">{String(chapter + 1).padStart(2, '0')}</span> / {chapters[chapter]}</span></div>
+
       <div className="scene-controls">
         {!staticMode && <><button aria-label={ultra ? 'Switch to high rendering quality' : 'Switch to ultra rendering quality'} aria-pressed={ultra} onClick={() => setUltra(!ultra)} className="quality-control">{ultra ? 'ULTRA' : 'HIGH'}<span className="quality-dot" /></button><span className="control-divider" /><button className="motion-control" onClick={() => setPaused(!paused)} aria-label={paused ? 'Resume ambient animation' : 'Pause ambient animation'} aria-pressed={paused}>{paused ? <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m5 3 8 5-8 5Z" fill="currentColor" /></svg> : <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3v10M11 3v10" stroke="currentColor" strokeWidth="1.7" /></svg>}<span>{paused ? 'Play' : 'Pause'}</span></button></>}
-        {staticMode && <span className="static-label">{failed ? 'STILL A BEAUTIFUL VIEW' : 'A QUIETER EXPERIENCE'}</span>}
+        {staticMode && <span className="static-label">Reading view</span>}
       </div>
     </footer>
     <div className="journey-progress" aria-hidden="true"><span /></div>

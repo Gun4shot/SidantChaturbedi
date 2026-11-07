@@ -1,0 +1,107 @@
+/* Paint and clouds move behind these labels. Keep the reading surface with the words. */
+.journey {
+  --caption-ink: #253e32;
+  --caption-paper: #fff8e7;
+  --caption-forest: #263f35;
+}
+.opening-copy {
+  width: min(84%, 570px);
+  padding: clamp(16px, 2.3vh, 28px) clamp(18px, 3vw, 40px);
+  color: var(--caption-ink);
+  background: #fff8e7f5;
+  border: 1px solid #c6b998;
+  border-radius: 3px 3px 26px 3px;
+  box-shadow: 0 8px 24px #253e3226;
+  text-shadow: none;
+}
+.opening-copy::before,.opening-copy .tiny-flourish { display: none }
+.opening-copy h1 { margin: 7px 0 10px }
+.opening-copy .hello-dot { color: #94612e }
+.opening-subtitle { font-size: clamp(18px,2vw,24px); line-height: 1.25 }
+.opening-proof,.opening-quick-links a,.opening-quick-links a:hover {
+  color: var(--caption-ink); text-shadow: none; text-decoration-color: currentColor;
+}
+.opening-proof { font-size: 11px; letter-spacing: .04em; text-transform: none }
+.opening-quick-links a { font-size: 13px }
+.opening-quick-links a:focus-visible { outline-color: var(--caption-ink) }
+.site-header .identity,.site-header .skip-link,.world-footer .coordinates,.world-footer .scene-controls,
+.scroll-invitation > span:nth-child(2),.chapter-label,.tree-invitation button,.tree-invitation span,
+.grove-hint,.grove-library-link,.grove-header > *,.grove-footer > button,.grove-footer > div,
+.library-header > *,.library-footer > *,.contact-header > *,.contact-footer button,
+.pick-caption,.breeze-button {
+  color: #fff9e9; background: var(--caption-forest); text-shadow: none;
+  border-radius: 3px; padding: 5px 9px;
+}
+.tree-invitation span,.pick-caption { width: fit-content; margin-inline: auto }
+.chapter-label { white-space: nowrap }
+.newton-caption,.grove-introduction,.meadow-welcome,.contact-caption,.ending-copy {
+  color: var(--caption-ink); background: #fff8e7f5; text-shadow: none;
+  border-radius: 3px 3px 18px 3px; padding: clamp(12px,2vw,24px);
+}
+.newton-caption { width: fit-content }
+.newton-caption h2,.newton-caption h2 em,.newton-caption .orchard-next,
+.grove-introduction h2,.grove-introduction h2 em,.contact-caption h2,.contact-caption h2 em,.contact-caption p,
+.ending-copy h2 em,.ending-copy button,.ending-copy small,.ending-flourish { color: var(--caption-ink); text-shadow: none }
+.newton-caption h2,.grove-introduction h2,.meadow-welcome h2 { margin: 0 0 8px }
+.newton-caption .orchard-next { margin-bottom: 0 }
+.meadow-welcome { width: fit-content; max-width: 80%; margin-inline: auto; }
+.apple-project-title h2 { display: inline-block; margin: 0; padding: 8px 19px; background: var(--caption-forest); color: #fff8e7; border-radius: 3px }
+.reader-count,.reader-footer { background: var(--caption-paper); border-radius: 3px; padding: 4px 8px; text-shadow: none }
+.ending-copy { inset: 20% auto auto 50%; width: min(82%,560px); transform: translate(-50%,var(--ending-drift,0px)); }
+.ending-copy h2 { font-size: clamp(45px,7vw,93px); margin: 6px 0 15px }
+.ending-copy small,.mail-hint { font-size: 11px; line-height: 1.4; letter-spacing: .02em }
+.ending-copy button { border-color: currentColor }
+.ending-still .ending-copy { top: auto; left: auto; margin: auto; transform: none; min-height: auto }
+.ending-still { display: grid; align-items: center }
+.mail-hint,.note-input small { color: #4d5445 }
+.contact-caption .breeze-button { color: #fff9e9 }
+.contact-footer { justify-content: flex-end }
+.tree-note-label,.education-kicker,.folio-issue,.chalk-eyebrow,.grove-eyebrow { font-size: max(.61rem,9px) }
+@media (max-width: 699px) {
+  .opening-copy { top: 21%; width: 81% }
+  .opening-proof { font-size: 11px; margin-top: 12px }
+  .tree-note p { font-size: 11px; line-height: 1.35 }
+  .newton-caption .orchard-next { display: block; font-size: 13px }
+  .ending-copy { top: 24% }
+  .ending-still .ending-copy { top: auto }
+}
+@media (max-height: 520px) {
+  .opening-copy { top: 15%; padding: 10px 20px }
+  .opening-copy h1 { font-size: 58px }
+  .opening-quick-links,.opening-proof { margin-top: 7px }
+  .ending-copy { top: 13% }
+}
+
+.library-shelf {
+  padding: 10px; background: var(--caption-forest); border-radius: 3px;
+}
+.library-shelf button,.library-shelf .shelf-label { text-shadow: none }
+.library-shelf strong { font-size: 15px }
+.library-shelf small { font-size: 10px }
+.library-paper-top,.library-paper-links { font-size: 11px }
+.paper-abstract p,.paper-methods { font-size: 14px; line-height: 1.65 }
+.contact-letter .conversation-starters button,.note-input,.contact-email,.letter-links a {
+  font-size: 12px; color: #384d3e;
+}
+.contact-letter .conversation-starters button[aria-pressed=true] { color: #723529 }
+.note-input small,.note-topline { font-size: 10px }
+.note-input textarea::placeholder { color: #626654 }
+.destination-description { color: #405344; font-size: 14px }
+.arrival .arrival-footnote { color: #40543f }
+@media (max-width: 699px) {
+  .library-shelf {
+    left: 5%; top: 10%; width: 90%; display: grid; grid-template-columns: repeat(3,minmax(0,1fr));
+    padding: 4px; gap: 3px;
+  }
+  .library-shelf button,.library-shelf button[aria-pressed=true],.library-shelf button:hover {
+    padding: 6px 3px; min-height: 44px; transform: none; border: none; text-align: center;
+  }
+  .library-shelf strong { display: block; font: 600 12px/1.25 'DM Sans',sans-serif }
+  .library-shelf button > span { display: none }
+  .library-shelf button[aria-pressed=true] { background: var(--caption-paper); color: var(--caption-ink); border-radius: 2px }
+  .research-scroll { top: calc(10% + 62px); left: 5%; width: 90%; height: calc(76% - 62px) }
+  .library-footer { left: 5%; right: 5%; bottom: 3%; gap: 6px; flex-wrap: wrap }
+  .library-footer > * { font-size: 10px }
+  .contact-letter .conversation-starters { gap: 8px }
+  .contact-letter .conversation-starters button { font-size: 11px }
+}

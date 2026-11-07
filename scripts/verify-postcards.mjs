@@ -14,10 +14,10 @@ try {
  assert.equal(await page.getByRole('button',{name,exact:true}).getAttribute('aria-pressed'),'true')
  }
  await page.locator('#contact').screenshot({path:`artifacts/review/postcards-${width}-${height}.png`})
- await page.getByRole('button',{name:'A research idea',exact:true}).click()
+ await page.getByRole('button',{name:'Research idea',exact:true}).click()
  await page.getByRole('textbox',{name:/Your note/}).fill('Hello & a question?\nAbout earth observation.')
  const mail=new URL(await page.locator('.postcard-action').getAttribute('href'))
- assert.equal(mail.searchParams.get('subject'),'A research idea')
+ assert.equal(mail.searchParams.get('subject'),'Research idea')
  assert.equal(mail.searchParams.get('body'),'Hello & a question?\nAbout earth observation.')
  await page.getByRole('button',{name:'GitHub',exact:true}).focus()
  await page.keyboard.press('Enter')
