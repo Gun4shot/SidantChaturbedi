@@ -6,15 +6,6 @@ function nativeInput(target: EventTarget | null) {
     (target instanceof Element && target.closest('input, textarea, select, [contenteditable="true"]'))
 }
 
-function canScrollWithin(target: EventTarget | null, direction: number) {
-  for (let el = target instanceof Element ? target : null; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
-    const limit = el.scrollHeight - el.clientHeight
-    if (limit <= 1 || !/^(auto|scroll)$/.test(getComputedStyle(el).overflowY)) continue
-    if (direction > 0 ? el.scrollTop < limit - 1 : el.scrollTop > 1) return true
-  }
-  return false
-}
-
 export function installStoryInput(story: Landscape) {
   const events = new AbortController()
   const { signal } = events
@@ -24,10 +15,9 @@ export function installStoryInput(story: Landscape) {
   let distance = 0
   let consumed = false
   let strokeStart = -Infinity
-  let readWithinStroke = false
 
   window.addEventListener('wheel', event => {
-    if (event.ctrlKey || event.shiftKey || event.defaultPrevented || !event.deltaY ||
+    if (event.ctrlKey || event.shiftKey || !event.deltaY ||
       Math.abs(event.deltaX) > Math.abs(event.deltaY) || nativeInput(event.target)) return
     const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? innerHeight : 1
     const delta = event.deltaY * unit
@@ -42,7 +32,6 @@ export function installStoryInput(story: Landscape) {
       direction !== Math.sign(lastDelta) || (!carriedIntoReadingStop && newStroke)
     if (fresh) {
       strokeStart = now
-      readWithinStroke = false
       consumed = false
       distance = 0
       peak = 0
@@ -50,18 +39,16 @@ export function installStoryInput(story: Landscape) {
     lastWheel = now
     lastDelta = delta
     peak = Math.max(peak, magnitude)
-    if (!consumed && !story.isPlaying() && canScrollWithin(event.target, direction)) {
-      readWithinStroke = true
-      return
-    }
     event.preventDefault()
-    if (consumed || readWithinStroke || strokeStart <= story.readingArrival()) return
+    if (consumed || strokeStart <= story.readingArrival()) return
     distance += magnitude
     if (distance >= 3) {
       consumed = true
       story.step(direction)
     }
-  }, { passive: false, signal })
+  // Capture before decorative overlays, the chapter rail, and canvas layers can
+  // consume the wheel event. Inputs and native dialogs are excluded above.
+  }, { capture: true, passive: false, signal })
 
   let swipe: { x: number; y: number } | null = null
   window.addEventListener('touchstart', event => {
@@ -78,10 +65,9 @@ export function installStoryInput(story: Landscape) {
     if (Math.abs(dy) < 12 || Math.abs(dy) < Math.abs(swipe.x - touch.clientX) * 1.2) return
     swipe = null
     const direction = Math.sign(dy)
-    if (!story.isPlaying() && canScrollWithin(event.target, direction)) return
     event.preventDefault()
     story.step(direction)
-  }, { passive: false, signal })
+  }, { capture: true, passive: false, signal })
   const release = () => { swipe = null }
   window.addEventListener('touchend', release, { signal })
   window.addEventListener('touchcancel', release, { signal })
@@ -93,7 +79,6 @@ export function installStoryInput(story: Landscape) {
       : ['ArrowUp', 'PageUp'].includes(event.key) ? -1
       : event.key === ' ' ? (event.shiftKey ? -1 : 1) : 0
     if (!direction && event.key !== 'Home' && event.key !== 'End') return
-    if (!story.isPlaying() && canScrollWithin(event.target, direction || (event.key === 'Home' ? -1 : 1))) return
     event.preventDefault()
     if (event.repeat) return
     if (direction) story.step(direction)
