@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import {ENDING_START,canWrapJourney,endingCameraProgress} from './ending-motion'
+import {ENDING_READING,ENDING_START,canWrapJourney,endingCameraProgress} from './ending-motion'
 import { journeyToScroll, scrollToJourney } from './scroll-timing'
 import { COURTYARD_READING } from "./courtyard-motion"
 import { CANOPY, NEWTON_READING, nextBeat, passageDuration, READING_ROOM } from './scene-snap'
@@ -63,6 +63,12 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   const timeUniform = { value: 0 }
   const windMaterials: THREE.MeshBasicMaterial[] = []
   const mobile = () => innerWidth < 700
+  // These are readable compositions, not pass-through camera beats. Momentum
+  // from the gesture that reaches one must never start the next passage.
+  const isMomentumStop = (destination: number) => destination === .26 ||
+    destination === READING_ROOM || destination === COURTYARD_READING ||
+    destination === ENDING_READING ||
+    (destination >= CANOPY && destination <= NEWTON_READING)
 
   const resize = () => {
     const ratio = ultra ? Math.min(devicePixelRatio * 1.5, 3) : Math.min(devicePixelRatio, mobile() ? 1.75 : 2)
@@ -77,7 +83,7 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
 
   const settleAt = (destination: number) => {
     // Let the reader land before accepting another forward gesture.
-    if (destination === READING_ROOM || destination === COURTYARD_READING || (destination >= CANOPY && destination <= NEWTON_READING)) {
+    if (isMomentumStop(destination)) {
       pendingStep = 0
       readingArrival = performance.now()
     }
