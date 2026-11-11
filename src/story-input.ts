@@ -3,7 +3,16 @@ import { ENDING_READING } from './ending-motion'
 
 function nativeInput(target: EventTarget | null) {
   return document.querySelector('dialog[open]') ||
-    (target instanceof Element && target.closest('input, textarea, select, [contenteditable="true"], [data-story-scroll]'))
+    (target instanceof Element && target.closest('input, textarea, select, [contenteditable="true"]'))
+}
+
+function scrollArea(target: EventTarget | null) {
+  return target instanceof Element ? target.closest<HTMLElement>('[data-story-scroll]') : null
+}
+
+function canScroll(area: HTMLElement, direction: number) {
+  const remaining = area.scrollHeight - area.clientHeight
+  return direction > 0 ? area.scrollTop < remaining - 1 : area.scrollTop > 1
 }
 
 export function installStoryInput(story: Landscape) {
@@ -24,6 +33,8 @@ export function installStoryInput(story: Landscape) {
     const magnitude = Math.abs(delta)
     const previous = Math.abs(lastDelta)
     const direction = Math.sign(delta)
+    const paper = scrollArea(event.target)
+    if (paper && canScroll(paper, direction)) return
     const now = event.timeStamp
     // A trackpad can start another stroke before its previous momentum stops.
     const newStroke = previous < peak * .6 && magnitude >= Math.max(4, previous * 1.6)
@@ -50,12 +61,12 @@ export function installStoryInput(story: Landscape) {
   // consume the wheel event. Inputs and native dialogs are excluded above.
   }, { capture: true, passive: false, signal })
 
-  let swipe: { x: number; y: number } | null = null
+  let swipe: { x: number; y: number; paper: HTMLElement | null } | null = null
   window.addEventListener('touchstart', event => {
     swipe = null
     if (event.touches.length !== 1 || nativeInput(event.target)) return
     const touch = event.touches[0]
-    swipe = { x: touch.clientX, y: touch.clientY }
+    swipe = { x: touch.clientX, y: touch.clientY, paper: scrollArea(event.target) }
   }, { passive: true, signal })
 
   window.addEventListener('touchmove', event => {
@@ -63,6 +74,10 @@ export function installStoryInput(story: Landscape) {
     const touch = event.touches[0]
     const dy = swipe.y - touch.clientY
     if (Math.abs(dy) < 12 || Math.abs(dy) < Math.abs(swipe.x - touch.clientX) * 1.2) return
+    if (swipe.paper && canScroll(swipe.paper, Math.sign(dy))) {
+      swipe = null
+      return
+    }
     swipe = null
     const direction = Math.sign(dy)
     event.preventDefault()
@@ -79,6 +94,8 @@ export function installStoryInput(story: Landscape) {
       : ['ArrowUp', 'PageUp'].includes(event.key) ? -1
       : event.key === ' ' ? (event.shiftKey ? -1 : 1) : 0
     if (!direction && event.key !== 'Home' && event.key !== 'End') return
+    const paper = scrollArea(event.target)
+    if (direction && paper && canScroll(paper, direction)) return
     event.preventDefault()
     if (event.repeat) return
     if (direction) story.step(direction)
