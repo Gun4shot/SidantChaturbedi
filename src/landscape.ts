@@ -67,7 +67,7 @@ export async function createLandscape(host: HTMLDivElement, options: Options): P
   const isMomentumStop = (destination: number) => destination === .26 ||
     destination === READING_ROOM || destination === COURTYARD_READING ||
     destination === ENDING_READING ||
-    (destination >= CANOPY && destination <= NEWTON_READING)
+    destination === CANOPY || destination === NEWTON_READING
 
   const resize = () => {
     const ratio = ultra ? Math.min(devicePixelRatio * 1.5, 3) : Math.min(devicePixelRatio, mobile() ? 1.75 : 2)
