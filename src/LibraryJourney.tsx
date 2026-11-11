@@ -43,7 +43,7 @@ const LibraryJourney=forwardRef<LibraryHandle,{staticMode:boolean;onTravel(p:num
       <header className="library-header"><span>THE READING ROOM <i>/</i> RESEARCH</span><button onClick={()=>staticMode?document.getElementById('honors')?.scrollIntoView():onTravel(2.03)}>↖ Back to the grove</button></header>
       <nav className="library-shelf" aria-label="Choose a research record"><span className="shelf-label">RESEARCH INDEX</span>{publications.map((item,i)=><button key={item.id} aria-label={`0${i+1} ${item.short} — ${item.status}`} aria-pressed={selected===i} onClick={()=>select(i)}><span>0{i+1}</span><strong>{item.short}</strong><small>{item.status}</small></button>)}</nav>
       <div ref={sheet} className="research-scroll">
-      <article className="library-paper" aria-live="polite" key={record.id} tabIndex={reading?0:-1} aria-label={`${record.short} — scroll to read`}>
+      <article className="library-paper" data-story-scroll aria-live="polite" key={record.id} tabIndex={reading?0:-1} aria-label={`${record.short} — scroll to read`}>
         <div className="library-paper-top"><span>{record.category}</span><span>{record.status}</span></div>
         <h3>{record.title}</h3>
         <p className="library-venue">{record.venue}</p><p className="library-authors">{record.authors}</p>

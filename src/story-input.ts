@@ -3,7 +3,7 @@ import { ENDING_READING } from './ending-motion'
 
 function nativeInput(target: EventTarget | null) {
   return document.querySelector('dialog[open]') ||
-    (target instanceof Element && target.closest('input, textarea, select, [contenteditable="true"]'))
+    (target instanceof Element && target.closest('input, textarea, select, [contenteditable="true"], [data-story-scroll]'))
 }
 
 export function installStoryInput(story: Landscape) {
